@@ -1,0 +1,62 @@
+﻿@using SpaceShop.ViewModels;
+@model ProductCreation
+@{
+    var title = "Create";
+    Product product = Model.product;
+    IEnumerable<Category> categories = Model.categories;
+}
+@if (product.Id != 0)
+{
+    title = "Update";
+}
+
+<h3>@title Product</h3>
+
+<form method="post" asp-action="CreateEdit" enctype="multipart/form-data">
+    <input asp-for="product.Id" hidden/>
+    <p>
+        <label asp-for="product.Name"></label>
+        <input asp-for="product.Name" class="form-control" />
+        <span asp-validation-for="product.Name" class="text-danger"></span>
+    </p>
+    <p>
+        <label asp-for="product.Price"></label>
+        <input asp-for="product.Price" class="form-control" />
+        <span asp-validation-for="product.Price" class="text-danger"></span>
+    </p>
+    <p>
+        <label asp-for="product.Description"></label>
+        <input asp-for="product.Description" class="form-control" />
+        <span asp-validation-for="product.Description" class="text-danger"></span>
+    </p>
+    <p>
+        <label asp-for="product.Image"></label>
+        <input type="file" name="files" class="form-control" multiple/>
+        <span asp-validation-for="product.Image" class="text-danger"></span>
+    </p>
+    <p>
+        
+        <label asp-for="product.Category"></label>
+        <select asp-for="product.CategoryId" class="form-control">
+            @foreach (Category item in categories)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+    </p>
+    <p>
+        <input type="submit" class="btn border btn-success fa-sharp fa-solid fa-check" value="Update " />
+    </p>
+    <p>
+        <a class="btn btn-danger" asp-controller="Product" asp-action="Index"><i class="fa-solid fa-backward"></i> Back</a>
+    </p>
+    <p>
+        <div asp-validation-summary="All"></div>
+    </p>
+</form>
+
+@section Scripts{
+    @{
+    <partial name="_ValidationScriptsPartial" />
+    }
+    }

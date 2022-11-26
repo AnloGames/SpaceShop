@@ -1,0 +1,31 @@
+﻿@model Category
+
+<h3>Edit Category</h3>
+
+<form method="post" asp-action="Edit">
+    <p>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </p>
+    <p>
+        <label asp-for="DisplayOrder"></label>
+        <input asp-for="DisplayOrder" class="form-control" />
+        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+    </p>
+    <p>
+        <input type="submit" class="btn border btn-success fa-sharp fa-solid fa-check" value="Update " />
+    </p>
+    <p>
+        <a class="btn btn-danger" asp-controller="Category" asp-action="Index"><i class="fa-solid fa-backward"></i> Back</a>
+    </p>
+    <p>
+        <div asp-validation-summary="All"></div>
+    </p>
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+    }
