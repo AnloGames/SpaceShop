@@ -26,7 +26,8 @@
     </p>
     <p>
         <label asp-for="product.Description"></label>
-        <input asp-for="product.Description" class="form-control" />
+        <!--<input asp-for="product.Description" class="form-control" />-->
+        <textarea asp-for="product.Description" class="form-control" summernote></textarea>
         <span asp-validation-for="product.Description" class="text-danger"></span>
     </p>
     <p>
@@ -60,3 +61,10 @@
     <partial name="_ValidationScriptsPartial" />
     }
     }
+    <script>
+        $(document).ready(function () {
+            $('.summernote').summernote({
+                height: 200
+            });
+        });
+    </script>

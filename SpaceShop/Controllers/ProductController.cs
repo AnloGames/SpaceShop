@@ -9,10 +9,12 @@ namespace SpaceShop.Controllers
     public class ProductController : Controller
     {
         private ApplicationDbContext database;
+        private IWebHostEnvironment environment;
 
-        public ProductController(ApplicationDbContext database)
+        public ProductController(ApplicationDbContext database, IWebHostEnvironment environment)
         {
             this.database = database;
+            this.environment = environment;
         }
 
         public IActionResult Index(int? CategoryId)
@@ -55,11 +57,39 @@ namespace SpaceShop.Controllers
             return View(product);*/
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CreateEdit(Product product)
         {
-            product.Category = database.Category.Find(product.CategoryId);
+            /*product.Category = database.Category.Find(product.CategoryId);
             product.Image = "";
             if (!database.Product.Contains(product))
+            {
+                database.Product.Add(product);
+            }
+            else
+            {
+                database.Product.Update(product);
+            }
+            database.SaveChanges();*/
+
+            var files = HttpContext.Request.Form.Files;
+            string wwwRoot = environment.WebRootPath;
+
+            //Потом сделать проверку на существование файла
+            string upload = wwwRoot + PathManager.ImageProductPath;
+            string imageName = Guid.NewGuid().ToString();
+
+            string extension = Path.GetExtension(files[0].FileName);
+
+            string path = upload + imageName + extension;
+            //копируем файл на сервер
+            using (var FileStream = new FileStream(path, FileMode.Create))
+            {
+                files[0].CopyTo(FileStream);
+            }
+            product.Image = path;
+
+            if (product.Id == 0)
             {
                 database.Product.Add(product);
             }
