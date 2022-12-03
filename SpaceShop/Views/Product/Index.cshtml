@@ -33,7 +33,9 @@
                     <td width="10%">@item.Name</td>
                     <td width="10%">@item.Price</td>
                     <td width="30%">@item.Description</td>
-                    <td width="20%">@item.Image</td>
+                    <td width="20%">
+                        <img src="@PathManager.ImageProductPath@item.Image" width="100" />
+                    </td>
                     <td width="10%">
                         <a class="btn btn-primary" asp-controller="Product" asp-action="CreateEdit" asp-route-id="@item.Id">
                             <i class="fa-solid fa-pen-to-square"></i>

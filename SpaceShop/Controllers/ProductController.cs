@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using SpaceShop.Data;
 using SpaceShop.Models;
 using SpaceShop.ViewModels;
+using System.IO;
 
 namespace SpaceShop.Controllers
 {
@@ -75,43 +77,84 @@ namespace SpaceShop.Controllers
             var files = HttpContext.Request.Form.Files;
             string wwwRoot = environment.WebRootPath;
 
-            //Потом сделать проверку на существование файла
-            string upload = wwwRoot + PathManager.ImageProductPath;
-            string imageName = Guid.NewGuid().ToString();
 
-            string extension = Path.GetExtension(files[0].FileName);
-
-            string path = upload + imageName + extension;
             //копируем файл на сервер
-            using (var FileStream = new FileStream(path, FileMode.Create))
-            {
-                files[0].CopyTo(FileStream);
-            }
-            product.Image = path;
+
 
             if (product.Id == 0)
             {
                 database.Product.Add(product);
+                //Потом сделать проверку на существование файла
+                string upload = wwwRoot + PathManager.ImageProductPath;
+                string imageName = Guid.NewGuid().ToString();
+
+                string extension = Path.GetExtension(files[0].FileName);
+
+                string path = upload + imageName + extension;
+                using (var FileStream = new FileStream(path, FileMode.Create))
+                {
+                    files[0].CopyTo(FileStream);
+                }
+                product.Image = imageName + extension;
             }
             else
             {
+                Product NowProduct = database.Product.AsNoTracking().FirstOrDefault(u => u.Id == product.Id);
+                if (files.Count>0)
+                {
+                    string upload = wwwRoot + PathManager.ImageProductPath;
+                    string imageName = Guid.NewGuid().ToString();
+
+                    string extension = Path.GetExtension(files[0].FileName);
+                    string path = upload + imageName + extension;
+                    string oldFile = upload + NowProduct.Image;
+
+                    if (System.IO.File.Exists(oldFile))
+                    {
+                        System.IO.File.Delete(oldFile);
+                    }
+                    using (var FileStream = new FileStream(path, FileMode.Create))
+                    {
+                        files[0].CopyTo(FileStream);
+                    }
+
+                    product.Image = imageName + extension;
+                }
+                else
+                {
+                    product.Image = NowProduct.Image;
+                }
                 database.Product.Update(product);
             }
             database.SaveChanges();
             return RedirectToAction("Index");
         }
+
         public IActionResult Delete(int id)
         {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
+            Product product = database.Product.FirstOrDefault(u => u.Id == id);
+            product.Category = database.Category.FirstOrDefault(u => u.Id == product.CategoryId);
 
-            Product product = database.Product.Find(id);
+            return View(product);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(Product product)
+        {
 
             if (product == null)
             {
                 return NotFound();
+            }
+            Product NowProduct = database.Product.AsNoTracking().FirstOrDefault(u => u.Id == product.Id);
+
+            string wwwRoot = environment.WebRootPath;
+            string upload = wwwRoot + PathManager.ImageProductPath;
+            string oldFile = upload + NowProduct.Image;
+
+            if (System.IO.File.Exists(oldFile))
+            {
+                System.IO.File.Delete(oldFile);
             }
 
             database.Product.Remove(product);

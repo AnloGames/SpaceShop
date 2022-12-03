@@ -1,0 +1,57 @@
+﻿@model Product
+@{
+string title = "Delete";
+}
+<h3>@title Product</h3>
+
+<form method="post" asp-action="Delete">
+    <input asp-for="@Model.Id" hidden />
+    <p>
+        <label asp-for="@Model.Name"></label>
+        <input asp-for="@Model.Name" class="form-control" disabled/>
+        <span asp-validation-for="@Model.Name" class="text-danger"></span>
+    </p>
+    <p>
+        <label asp-for="@Model.Price"></label>
+        <input asp-for="@Model.Price" class="form-control" disabled />
+        <span asp-validation-for="@Model.Price" class="text-danger"></span>
+    </p>
+    <p>
+        <label asp-for="@Model.Description"></label>
+        <!--<input asp-for="product.Description" class="form-control" />-->
+        <textarea asp-for="@Model.Description" class="form-control summernote" disabled> </textarea>
+        <span asp-validation-for="@Model.Description" class="text-danger"></span>
+    </p>
+    @if (@Model.Image != null)
+    {
+        <p>
+            <img src="@PathManager.ImageProductPath@Model.Image" width="100" />
+        </p>
+    }
+    <p>
+
+        <label asp-for="@Model.Category">@Model.Category.Name</label>
+       
+    </p>
+    <p>
+        <input type="submit" class="btn border btn-success fa-sharp fa-solid fa-check" value="Delete " />
+    </p>
+    <p>
+        <a class="btn btn-danger" asp-controller="Product" asp-action="Index"><i class="fa-solid fa-backward"></i> Back</a>
+    </p>
+    <p>
+        <div asp-validation-summary="All"></div>
+    </p>
+</form>
+@section Scripts{
+    @{
+    <partial name="_ValidationScriptsPartial" />
+    }
+    <script>
+        $(document).ready(function () {
+            $('.summernote').summernote({
+                height: 200
+            });
+        });
+    </script>
+    }
