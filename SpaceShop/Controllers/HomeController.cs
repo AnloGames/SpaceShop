@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SpaceShop.Data;
 using SpaceShop.Models;
+using SpaceShop.ViewModels;
 using System.Diagnostics;
 
 namespace SpaceShop.Controllers
@@ -7,15 +10,23 @@ namespace SpaceShop.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private ApplicationDbContext database;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext database)
         {
             _logger = logger;
+            this.database = database;
         }
 
         public IActionResult Index()
         {
-            return View();
+            HomeViewModel homeViewModel = new HomeViewModel()
+            {
+                products = database.Product,
+                categories = database.Category
+
+            };
+            return View(homeViewModel);
         }
 
         public IActionResult Privacy()

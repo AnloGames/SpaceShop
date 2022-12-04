@@ -21,6 +21,7 @@ namespace SpaceShop.Controllers
 
         public IActionResult Index(int? CategoryId)
         {
+
             IEnumerable<Product> products;
             if (CategoryId == null)
             {
@@ -28,12 +29,9 @@ namespace SpaceShop.Controllers
             }
             else
             {
-                products = database.Product.Where(p => p.CategoryId == CategoryId);
+                products = database.Product.AsNoTracking().Where(p => p.CategoryId == CategoryId);
+
             }
-            /*foreach (Product item in products)
-            {
-                item.Category = database.Category.FirstOrDefault(x => x.Id == item.CategoryId);
-            }*/
             return View(products);
         }
         public IActionResult CreateEdit(int? id)
