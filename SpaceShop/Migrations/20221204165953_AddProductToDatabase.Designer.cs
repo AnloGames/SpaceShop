@@ -11,7 +11,7 @@ using SpaceShop.Data;
 namespace SpaceShop.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221120173158_AddProductToDatabase")]
+    [Migration("20221204165953_AddProductToDatabase")]
     partial class AddProductToDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,6 +82,9 @@ namespace SpaceShop.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("MyModelId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -92,6 +95,8 @@ namespace SpaceShop.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("MyModelId");
 
                     b.ToTable("Product");
                 });
@@ -104,7 +109,15 @@ namespace SpaceShop.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SpaceShop.Models.MyModel", "MyModel")
+                        .WithMany()
+                        .HasForeignKey("MyModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("MyModel");
                 });
 #pragma warning restore 612, 618
         }

@@ -48,7 +48,7 @@ namespace SpaceShop.Controllers
                     return NotFound();
                 }
             }
-            ProductCreation data = new ProductCreation(product, database.Category);
+            ProductCreation data = new ProductCreation(product, database.Category, database.MyModel);
             return View(data);
             /*IEnumerable<SelectListItem> CategoriesList = database.Category.Select(x => new SelectListItem
             {
@@ -134,6 +134,7 @@ namespace SpaceShop.Controllers
         {
             Product product = database.Product.FirstOrDefault(u => u.Id == id);
             product.Category = database.Category.FirstOrDefault(u => u.Id == product.CategoryId);
+            product.MyModel = database.MyModel.FirstOrDefault(U => U.Id == product.MyModelId);
 
             return View(product);
         }

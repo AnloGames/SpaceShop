@@ -80,6 +80,9 @@ namespace SpaceShop.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("MyModelId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -90,6 +93,8 @@ namespace SpaceShop.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("MyModelId");
 
                     b.ToTable("Product");
                 });
@@ -102,7 +107,15 @@ namespace SpaceShop.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SpaceShop.Models.MyModel", "MyModel")
+                        .WithMany()
+                        .HasForeignKey("MyModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("MyModel");
                 });
 #pragma warning restore 612, 618
         }
