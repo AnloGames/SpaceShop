@@ -38,7 +38,7 @@ namespace SpaceShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Category", (string)null);
                 });
 
             modelBuilder.Entity("SpaceShop.Models.MyModel", b =>
@@ -58,7 +58,7 @@ namespace SpaceShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MyModel");
+                    b.ToTable("MyModel", (string)null);
                 });
 
             modelBuilder.Entity("SpaceShop.Models.Product", b =>
@@ -90,13 +90,17 @@ namespace SpaceShop.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
+                    b.Property<string>("ShortDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("MyModelId");
 
-                    b.ToTable("Product");
+                    b.ToTable("Product", (string)null);
                 });
 
             modelBuilder.Entity("SpaceShop.Models.Product", b =>

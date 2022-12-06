@@ -124,6 +124,9 @@ namespace SpaceShop.Controllers
                 }
                 database.Product.Update(product);
             }
+            product.MyModel = database.MyModel.FirstOrDefault(u => u.Id == product.MyModelId);
+            product.Category = database.Category.FirstOrDefault(u => u.Id == product.CategoryId);
+            product.ShortDescription = "Category: " + product.Category.Name + ", MyModels: " + product.MyModel.Name;
             database.SaveChanges();
             return RedirectToAction("Index");
         }

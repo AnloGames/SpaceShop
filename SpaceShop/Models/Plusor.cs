@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SpaceShop.Models
 {
-    public class Product
+    public class Plusor
     {
         [Key]
         public int Id { get; set; }
@@ -28,7 +28,7 @@ namespace SpaceShop.Models
         public virtual Category Category { get; set; }
         public int MyModelId { get; set; }
 
-        [ForeignKey("MyModelId")]        
+        [ForeignKey("MyModelId")]
         public virtual MyModel MyModel { get; set; }
     }
 }

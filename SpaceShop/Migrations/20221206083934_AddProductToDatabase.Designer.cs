@@ -11,7 +11,7 @@ using SpaceShop.Data;
 namespace SpaceShop.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221204165953_AddProductToDatabase")]
+    [Migration("20221206083934_AddProductToDatabase")]
     partial class AddProductToDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,6 +91,10 @@ namespace SpaceShop.Migrations
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
+
+                    b.Property<string>("ShortDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
