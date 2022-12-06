@@ -124,9 +124,9 @@ namespace SpaceShop.Controllers
                 }
                 database.Product.Update(product);
             }
-            product.MyModel = database.MyModel.FirstOrDefault(u => u.Id == product.MyModelId);
+            //product.MyModel = database.MyModel.FirstOrDefault(u => u.Id == product.MyModelId);
             product.Category = database.Category.FirstOrDefault(u => u.Id == product.CategoryId);
-            product.ShortDescription = "Category: " + product.Category.Name + ", MyModels: " + product.MyModel.Name;
+            //product.ShortDescription = "Category: " + product.Category.Name + ", MyModels: " + product.MyModel.Name;
             database.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -135,7 +135,7 @@ namespace SpaceShop.Controllers
         {
             Product product = database.Product.FirstOrDefault(u => u.Id == id);
             product.Category = database.Category.FirstOrDefault(u => u.Id == product.CategoryId);
-            product.MyModel = database.MyModel.FirstOrDefault(U => U.Id == product.MyModelId);
+            //product.MyModel = database.MyModel.FirstOrDefault(U => U.Id == product.MyModelId);
 
             return View(product);
         }

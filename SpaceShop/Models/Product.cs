@@ -26,9 +26,5 @@ namespace SpaceShop.Models
 
         [ForeignKey("CategoryId")]
         public virtual Category Category { get; set; }
-        public int MyModelId { get; set; }
-
-        [ForeignKey("MyModelId")]        
-        public virtual MyModel MyModel { get; set; }
     }
 }

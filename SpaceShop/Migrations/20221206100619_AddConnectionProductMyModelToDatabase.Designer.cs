@@ -11,8 +11,8 @@ using SpaceShop.Data;
 namespace SpaceShop.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221206083934_AddProductToDatabase")]
-    partial class AddProductToDatabase
+    [Migration("20221206100619_AddConnectionProductMyModelToDatabase")]
+    partial class AddConnectionProductMyModelToDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -41,6 +41,29 @@ namespace SpaceShop.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Category");
+                });
+
+            modelBuilder.Entity("SpaceShop.Models.ConnectionProductMyModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("MyModelId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MyModelId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ConnectionProductMyModel");
                 });
 
             modelBuilder.Entity("SpaceShop.Models.MyModel", b =>
@@ -82,9 +105,6 @@ namespace SpaceShop.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MyModelId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -100,9 +120,26 @@ namespace SpaceShop.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("MyModelId");
-
                     b.ToTable("Product");
+                });
+
+            modelBuilder.Entity("SpaceShop.Models.ConnectionProductMyModel", b =>
+                {
+                    b.HasOne("SpaceShop.Models.MyModel", "MyModel")
+                        .WithMany()
+                        .HasForeignKey("MyModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SpaceShop.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MyModel");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("SpaceShop.Models.Product", b =>
@@ -113,15 +150,7 @@ namespace SpaceShop.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SpaceShop.Models.MyModel", "MyModel")
-                        .WithMany()
-                        .HasForeignKey("MyModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Category");
-
-                    b.Navigation("MyModel");
                 });
 #pragma warning restore 612, 618
         }

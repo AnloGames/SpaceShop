@@ -16,5 +16,7 @@ namespace SpaceShop.Data
         public DbSet<MyModel> MyModel { get; set; }
 
         public DbSet<Product> Product { get; set; }
+
+        public DbSet<ConnectionProductMyModel> ConnectionProductMyModel { get; set; }
     }
 }
