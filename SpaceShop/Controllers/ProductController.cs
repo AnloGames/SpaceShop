@@ -58,19 +58,8 @@ namespace SpaceShop.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateEdit(Product product)
+        public IActionResult CreateEdit(Product product, int[] MyModelsId)
         {
-            /*product.Category = database.Category.Find(product.CategoryId);
-            product.Image = "";
-            if (!database.Product.Contains(product))
-            {
-                database.Product.Add(product);
-            }
-            else
-            {
-                database.Product.Update(product);
-            }
-            database.SaveChanges();*/
 
             var files = HttpContext.Request.Form.Files;
             string wwwRoot = environment.WebRootPath;
@@ -81,8 +70,6 @@ namespace SpaceShop.Controllers
 
             if (product.Id == 0)
             {
-                database.Product.Add(product);
-                //Потом сделать проверку на существование файла
                 string upload = wwwRoot + PathManager.ImageProductPath;
                 string imageName = Guid.NewGuid().ToString();
 
@@ -94,9 +81,14 @@ namespace SpaceShop.Controllers
                     files[0].CopyTo(FileStream);
                 }
                 product.Image = imageName + extension;
+                database.Product.Add(product);
             }
             else
             {
+                foreach (ConnectionProductMyModel connection in database.ConnectionProductMyModel.AsNoTracking().Where(u => u.ProductId == product.Id))
+                {
+                    database.ConnectionProductMyModel.Remove(connection);
+                }
                 Product NowProduct = database.Product.AsNoTracking().FirstOrDefault(u => u.Id == product.Id);
                 if (files.Count>0)
                 {
@@ -124,9 +116,18 @@ namespace SpaceShop.Controllers
                 }
                 database.Product.Update(product);
             }
-            //product.MyModel = database.MyModel.FirstOrDefault(u => u.Id == product.MyModelId);
             product.Category = database.Category.FirstOrDefault(u => u.Id == product.CategoryId);
-            //product.ShortDescription = "Category: " + product.Category.Name + ", MyModels: " + product.MyModel.Name;
+            product.ShortDescription = "Category: " + product.Category.Name + "; MyModels: ";
+            foreach (int MyModelId in MyModelsId)
+            {
+                database.SaveChanges();
+                ConnectionProductMyModel connection = new ConnectionProductMyModel();
+                connection.Id = 0;
+                connection.MyModelId = MyModelId;
+                connection.ProductId = product.Id;
+                database.ConnectionProductMyModel.Add(connection);
+                product.ShortDescription += database.MyModel.Find(MyModelId).Name + ", ";
+            }
             database.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -135,9 +136,16 @@ namespace SpaceShop.Controllers
         {
             Product product = database.Product.FirstOrDefault(u => u.Id == id);
             product.Category = database.Category.FirstOrDefault(u => u.Id == product.CategoryId);
-            //product.MyModel = database.MyModel.FirstOrDefault(U => U.Id == product.MyModelId);
+            IEnumerable<ConnectionProductMyModel> connections = database.ConnectionProductMyModel.Where(u => u.ProductId == id);
+            List<int> ids = new List<int>();
+            foreach (ConnectionProductMyModel connection in connections)
+            {
+                ids.Add(connection.MyModelId);
+            }
+            IEnumerable<MyModel> connectedModels = database.MyModel.Where(u => ids.Contains(u.Id));
+            ProductCreation productCreation = new ProductCreation(product, connectedModels);
 
-            return View(product);
+            return View(productCreation);
         }
 
         [HttpPost]
@@ -157,6 +165,10 @@ namespace SpaceShop.Controllers
             if (System.IO.File.Exists(oldFile))
             {
                 System.IO.File.Delete(oldFile);
+            }
+            foreach (ConnectionProductMyModel connection in database.ConnectionProductMyModel.AsNoTracking().Where(u => u.ProductId == product.Id))
+            {
+                database.ConnectionProductMyModel.Remove(connection);
             }
 
             database.Product.Remove(product);

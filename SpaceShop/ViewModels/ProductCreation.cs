@@ -13,5 +13,10 @@ namespace SpaceShop.ViewModels
             this.categories = categories;
             this.myModels = myModels;
         }
+        public ProductCreation(Product product, IEnumerable<MyModel> myModels)
+        {
+            this.product = product;
+            this.myModels = myModels;
+        }
     }
 }

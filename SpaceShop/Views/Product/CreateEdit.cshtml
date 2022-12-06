@@ -5,6 +5,7 @@
     Product product = Model.product;
     IEnumerable<Category> categories = Model.categories;
     IEnumerable<MyModel> myModels = Model.myModels;
+    int[] MyModelsId = new int[categories.Count()];
 }
 @if (product.Id != 0)
 {
@@ -54,13 +55,13 @@
     </p>
     <p>
 
-        <!--</><label asp-for="product.MyModel"></label>
-        <select asp-for="product.MyModelId" class="form-control">
+        </><label asp-for="@MyModelsId"></label>
+        <select asp-for="@MyModelsId" class="form-control" multiple>
             @foreach (MyModel item in myModels)
             {
                 <option value="@item.Id">@item.Name</option>
             }
-        </select>-->
+        </select>
     </p>
     <p>
         <input type="submit" class="btn border btn-success fa-sharp fa-solid fa-check" value="Update " />

@@ -1,40 +1,51 @@
-﻿@model Product
+﻿@model SpaceShop.ViewModels.ProductCreation
 @{
 string title = "Delete";
+
 }
 <h3>@title Product</h3>
 
 <form method="post" asp-action="Delete">
-    <input asp-for="@Model.Id" hidden />
+    <input asp-for="product.Id" hidden />
     <p>
-        <label asp-for="@Model.Name"></label>
-        <input asp-for="@Model.Name" class="form-control" disabled/>
-        <span asp-validation-for="@Model.Name" class="text-danger"></span>
+        <label asp-for="product.Name"></label>
+        <input asp-for="product.Name" class="form-control" disabled/>
+        <span asp-validation-for="product.Name" class="text-danger"></span>
     </p>
     <p>
-        <label asp-for="@Model.Price"></label>
-        <input asp-for="@Model.Price" class="form-control" disabled />
-        <span asp-validation-for="@Model.Price" class="text-danger"></span>
+        <label asp-for="product.Price"></label>
+        <input asp-for="product.Price" class="form-control" disabled />
+        <span asp-validation-for="product.Price" class="text-danger"></span>
     </p>
     <p>
-        <label asp-for="@Model.Description"></label>
+        <label asp-for="product.Description"></label>
         <!--<input asp-for="product.Description" class="form-control" />-->
-        <input asp-for="@Model.Description" disabled />
-        <span asp-validation-for="@Model.Description" class="text-danger"></span>
+        <input asp-for="product.Description" disabled />
+        <span asp-validation-for="product.Description" class="text-danger"></span>
     </p>
-    @if (@Model.Image != null)
+    @if (@Model.product.Image != null)
     {
         <p>
-            <img src="@PathManager.ImageProductPath@Model.Image" width="100" />
+            <img src="@PathManager.ImageProductPath@Model.product.Image" width="100" />
         </p>
     }
     <p>
 
-        <label asp-for="@Model.Category"></label>
-        <input asp-for="@Model.Category.Name" disabled />
+        <label asp-for="@Model.product.Category"></label>
+        <input asp-for="@Model.product.Category.Name" disabled />
     </p>
     <p>
-
+        <label asp-for="myModels"></label>
+        <table class="table table-bordered table-striped" style="width: 1rem; display:inline-table;">
+            <tbody>
+                <tr>
+                    @foreach (MyModel myModel in Model.myModels)
+                    {
+                        <td>@myModel.Name</td>
+                    }
+                </tr>
+            </tbody>
+        </table>
 
     </p>
     <p>
