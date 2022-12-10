@@ -28,6 +28,11 @@ namespace SpaceShop.Controllers
             };
             return View(homeViewModel);
         }
+        public IActionResult Details(int id)
+        {
+            DetailsViewModel detailsViewModel = new DetailsViewModel(false, database.Product.Include(x => x.Category).Where(x => x.Id == id).FirstOrDefault());
+            return View(detailsViewModel);
+        }
 
         public IActionResult Privacy()
         {

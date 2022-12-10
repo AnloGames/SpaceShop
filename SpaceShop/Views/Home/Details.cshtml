@@ -1,0 +1,15 @@
+﻿@model SpaceShop.ViewModels.DetailsViewModel
+<p>
+    <h2>@Model.Product.Name</h2>
+
+    <h2>@Model.Product.Price</h2>
+</p>
+<p>
+    <img src="@PathManager.ImageProductPath@Model.Product.Image" />
+</p>
+<p>
+    <h2>@Model.Product.Category.Name</h2>
+</p>
+<p>
+    @Html.Raw(Model.Product.Description)
+</p>

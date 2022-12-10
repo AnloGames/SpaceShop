@@ -30,4 +30,24 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+/*app.Use((context, next) =>
+{
+    context.Items["name"] = "Dany";
+    return next.Invoke();
+});*/
+
+app.Run(x =>
+{
+    //return x.Response.WriteAsync("Hello " + x.Items["name"]);
+    if (x.Request.Cookies.ContainsKey("name"))
+    {
+        return x.Response.WriteAsync("OK");
+    }
+    else
+    {
+        x.Response.Cookies.Append("name", "Dany");
+        return x.Response.WriteAsync("NO");
+    }
+});
+
 app.Run();
