@@ -3,6 +3,14 @@ using SpaceShop.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = "Winter";
+    //options.IdleTimeout = TimeSpan.FromSeconds(10);
+});
+
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddDbContext<ApplicationDbContext>(
     options=>options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
     );
@@ -36,18 +44,20 @@ app.MapControllerRoute(
     return next.Invoke();
 });*/
 
-app.Run(x =>
+app.UseSession(); //Добавление промежуточного ПО для работы с сессиями
+
+/*app.Run(x =>
 {
     //return x.Response.WriteAsync("Hello " + x.Items["name"]);
-    if (x.Request.Cookies.ContainsKey("name"))
+    if (x.Session.Keys.Contains("name"))
     {
-        return x.Response.WriteAsync("OK");
+        return x.Response.WriteAsync("OK " + x.Session.GetString("name"));
     }
     else
     {
-        x.Response.Cookies.Append("name", "Dany");
+        x.Session.SetString("name", "Anton");
         return x.Response.WriteAsync("NO");
     }
-});
+});*/
 
 app.Run();

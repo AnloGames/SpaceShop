@@ -1,4 +1,5 @@
 ﻿@model SpaceShop.ViewModels.DetailsViewModel
+
 <p>
     <h2>@Model.Product.Name</h2>
 
@@ -12,4 +13,8 @@
 </p>
 <p>
     @Html.Raw(Model.Product.Description)
+</p>
+<p>
+    <a class="btn btn-primary" asp-action="Index">Back</a>
+    <button type="submit" class="btn btn-success">Add to cart</button>
 </p>
