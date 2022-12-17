@@ -1,0 +1,139 @@
+{\rtf1\ansi\ansicpg1251\deff0\nouicompat{\fonttbl{\f0\fnil Cascadia Mono;}{\f1\fnil\fcharset0 Calibri;}}
+{\colortbl ;\red0\green0\blue255;\red0\green0\blue0;\red163\green21\blue21;}
+{\*\generator Riched20 10.0.19041}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\cf1\f0\fs19\lang9 public\cf2  Vector2 GetPersonalTargetPosition()\par
+        \{\par
+            Vector2 TargetPosition = \cf1 new\cf2  Vector2();\par
+            \cf1 if\cf2  (GhostName == \cf3 "Blinky"\cf2 )\par
+            \{\par
+                TargetPosition = Game1.pacman.Position;\par
+            \}\par
+            \cf1 else\cf2  \cf1 if\cf2  (GhostName == \cf3 "Clyde"\cf2 )\par
+            \{\par
+                Vector2 minusVector = Position - Game1.pacman.Position;\par
+                minusVector = \cf1 new\cf2  Vector2(minusVector.X, minusVector.Y) / 24;\par
+                \cf1 if\cf2  (Math.Abs(minusVector.X) <= 4 && Math.Abs(minusVector.Y) <= 4)\par
+                \{\par
+                    \cf1 for\cf2  (\cf1 int\cf2  i = 0; i < Game1.Ghosts.Count; i++)\par
+                    \{\par
+                        \cf1 if\cf2  (Game1.Ghosts[i].GhostName == \cf3 "Pinky"\cf2 )\par
+                        \{\par
+                            TargetPosition = Game1.Ghosts[i].Position;\par
+                        \}\par
+                    \}\par
+                \}\par
+                \cf1 else\cf2\par
+                \{\par
+                    TargetPosition = Game1.pacman.Position;\par
+                \}\par
+            \}\par
+            \cf1 else\cf2  \cf1 if\cf2  (GhostName == \cf3 "Pinky"\cf2 )\par
+            \{\par
+                \cf1 if\cf2  (Game1.pacman.Position.Y / 24 + 3 <= 29 && Game1.pacman.Position.Y / 24 - 3 >= 1 && Game1.pacman.Position.X / 24 + 3 <= 26 && Game1.pacman.Position.X / 24 - 3 >= 1)\par
+                \{\par
+                    \cf1 if\cf2  (!Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y / 24 - 2.5)][(\cf1 int\cf2 )(Game1.pacman.Position.X / 24 - 2.5)]))\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2((\cf1 int\cf2 )(Game1.pacman.Position.X - 24 * 2.5), (\cf1 int\cf2 )(Game1.pacman.Position.Y - 24 * 2.5));\par
+                    \}\par
+                    \cf1 else\cf2  \cf1 if\cf2  (!Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y / 24 + 2.5)][(\cf1 int\cf2 )(Game1.pacman.Position.X / 24 + 2.5)]))\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2((\cf1 int\cf2 )(Game1.pacman.Position.X + 24 * 2.5), (\cf1 int\cf2 )(Game1.pacman.Position.Y + 24 * 2.5));\par
+                    \}\par
+                    \cf1 else\cf2  \cf1 if\cf2  (!Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y / 24 - 2.5)][(\cf1 int\cf2 )(Game1.pacman.Position.X / 24 + 2.5)]))\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2((\cf1 int\cf2 )(Game1.pacman.Position.X + 24 * 2.5), (\cf1 int\cf2 )(Game1.pacman.Position.Y - 24 * 2.5));\par
+                    \}\par
+                    \cf1 else\cf2  \cf1 if\cf2  (!Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y / 24 + 2.5)][(\cf1 int\cf2 )(Game1.pacman.Position.X / 24 - 2.5)]))\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2((\cf1 int\cf2 )(Game1.pacman.Position.X - 24 * 2.5), (\cf1 int\cf2 )(Game1.pacman.Position.Y + 24 * 2.5));\par
+                    \}\par
+                    \cf1 else\cf2  \cf1 if\cf2  (!Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y / 24 + 2.5)][(\cf1 int\cf2 )(Game1.pacman.Position.X / 24)]) && Game1.pacman.Direction != \cf3 "Down"\cf2 )\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2((\cf1 int\cf2 )(Game1.pacman.Position.X), (\cf1 int\cf2 )(Game1.pacman.Position.Y + 24 * 2.5));\par
+                    \}\par
+                    \cf1 else\cf2  \cf1 if\cf2  (!Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y / 24 - 2.5)][(\cf1 int\cf2 )(Game1.pacman.Position.X / 24)]) && Game1.pacman.Direction != \cf3 "Up"\cf2 )\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2((\cf1 int\cf2 )(Game1.pacman.Position.X), (\cf1 int\cf2 )(Game1.pacman.Position.Y - 24 * 2.5));\par
+                    \}\par
+                    \cf1 else\cf2  \cf1 if\cf2  (!Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y / 24)][(\cf1 int\cf2 )(Game1.pacman.Position.X / 24 + 2.5)]) && Game1.pacman.Direction != \cf3 "Right"\cf2 )\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2((\cf1 int\cf2 )(Game1.pacman.Position.X + 24 * 2.5), (\cf1 int\cf2 )(Game1.pacman.Position.Y));\par
+                    \}\par
+                    \cf1 else\cf2  \cf1 if\cf2  (!Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y / 24)][(\cf1 int\cf2 )(Game1.pacman.Position.X / 24 - 2.5)]) && Game1.pacman.Direction != \cf3 "Left"\cf2 )\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2((\cf1 int\cf2 )(Game1.pacman.Position.X - 24 * 2.5), (\cf1 int\cf2 )(Game1.pacman.Position.Y));\par
+                    \}\par
+                \}\par
+                \cf1 else\cf2\par
+                \{\par
+                    TargetPosition = Game1.pacman.Position;\par
+                \}\par
+            \}\par
+            \cf1 else\cf2  \cf1 if\cf2  (GhostName == \cf3 "Inky"\cf2 )\par
+            \{\par
+                \cf1 if\cf2  (Game1.pacman.Position.Y / 24 + 3 <= 29 && Game1.pacman.Position.Y / 24 - 3 >= 1 && Game1.pacman.Position.X / 24 + 3 <= 26 && Game1.pacman.Position.X / 24 - 3 >= 1)\par
+                \{\par
+                    \cf1 int\cf2  X = 0;\par
+                    \cf1 int\cf2  Y = 0;\par
+                    \cf1 float\cf2  i = (\cf1 float\cf2 )1.5;\par
+                    \cf1 if\cf2  (Game1.pacman.Direction != \cf3 "Up"\cf2  && !Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y/48 + i)][(\cf1 int\cf2 )(Game1.pacman.Position.X/48)]))\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2(Game1.pacman.Position.X/2, Game1.pacman.Position.Y/2 + i*24);\par
+                    \}\par
+                    \cf1 else\cf2  \cf1 if\cf2  (Game1.pacman.Direction != \cf3 "Down"\cf2  && !Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y / 48 - i)][(\cf1 int\cf2 )(Game1.pacman.Position.X/48)]))\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2(Game1.pacman.Position.X/2, Game1.pacman.Position.Y/2 - i*24);\par
+                    \}\par
+                    \cf1 else\cf2  \cf1 if\cf2  (Game1.pacman.Direction != \cf3 "Left"\cf2  && !Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y / 48)][(\cf1 int\cf2 )(Game1.pacman.Position.X / 48 + i)]))\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2(Game1.pacman.Position.X / 2 + i * 24, Game1.pacman.Position.Y / 2);\par
+                    \}\par
+                    \cf1 else\cf2  \cf1 if\cf2  (Game1.pacman.Direction != \cf3 "Right"\cf2  && !Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y / 48)][(\cf1 int\cf2 )(Game1.pacman.Position.X / 48 - i)]))\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2(Game1.pacman.Position.X / 2 - i * 24, Game1.pacman.Position.Y / 2);\par
+                    \}\par
+                    \cf1 else\cf2  \cf1 if\cf2  (Game1.pacman.Direction != \cf3 "Up"\cf2  && !Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y / 48 + i + 1)][(\cf1 int\cf2 )(Game1.pacman.Position.X / 48)]))\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2(Game1.pacman.Position.X / 2, Game1.pacman.Position.Y / 2 + i * 24 + 24);\par
+                    \}\par
+                    \cf1 else\cf2  \cf1 if\cf2  (Game1.pacman.Direction != \cf3 "Left"\cf2  && !Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y / 48)][(\cf1 int\cf2 )(Game1.pacman.Position.X / 48 + i + 1)]))\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2(Game1.pacman.Position.X / 2 + i * 24 + 24, Game1.pacman.Position.Y / 2);\par
+                    \}\par
+                    \cf1 else\cf2  \cf1 if\cf2  (Game1.pacman.Direction != \cf3 "Down"\cf2  && !Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y/48 - i - 1)][(\cf1 int\cf2 )(Game1.pacman.Position.X/48)]))\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2(Game1.pacman.Position.X/2, Game1.pacman.Position.Y/2 - i*24 - 24);\par
+                    \}\par
+                    \cf1 else\cf2  \cf1 if\cf2  (Game1.pacman.Direction != \cf3 "Right"\cf2  && !Obstackles.Contains(file[(\cf1 int\cf2 )(Game1.pacman.Position.Y/48)][(\cf1 int\cf2 )(Game1.pacman.Position.X/48 - i - 1)]))\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2(Game1.pacman.Position.X/2 - i*24 - 24, Game1.pacman.Position.Y/2);\par
+                    \}\par
+                    \cf1 else\cf2\par
+                    \{\par
+                        TargetPosition = Game1.pacman.Position;\par
+                    \}\par
+                \}\par
+                \cf1 else\cf2\par
+                \{\par
+                    \cf1 if\cf2  (Game1.pacman.Position.X<180)\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2(14 * 24, 26 * 24);\par
+                    \}\par
+                    \cf1 else\cf2  \cf1 if\cf2  (Game1.pacman.Position.X > 408)\par
+                    \{\par
+                        TargetPosition = \cf1 new\cf2  Vector2(14 * 24, 24);\par
+                    \}\par
+                    \cf1 else\cf2\par
+                    \{\par
+                        TargetPosition = Game1.pacman.Position;\par
+                    \}\par
+                \}\par
+            \}\par
+            \cf1 if\cf2  (TargetPosition == \cf1 new\cf2  Vector2(0, 0))\par
+            \{\par
+                TargetPosition = Position;\par
+            \}\par
+            \cf1 return\cf2  TargetPosition;\par
+        \}\cf0\f1\fs22\par
+}
+ 
