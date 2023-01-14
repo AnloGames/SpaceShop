@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using SpaceShop.Models;
+using SpaceShop;
 
 namespace SpaceShop.Areas.Identity.Pages.Account
 {
@@ -31,15 +32,16 @@ namespace SpaceShop.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
-        //добавляем новую роль
+        // добавляем новую роль
         private readonly RoleManager<IdentityRole> _roleManager;
+
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            RoleManager<IdentityRole> roleManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -47,6 +49,7 @@ namespace SpaceShop.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+
             _roleManager = roleManager;
         }
 
@@ -103,16 +106,19 @@ namespace SpaceShop.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-            public string FullName { get; set; }    
+            public string FullName { get; set; }
         }
 
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if (!await _roleManager.RoleExistsAsync(PathManager.CustomerRole))
+            // существует ли роль а бд?
+            if (!await _roleManager.RoleExistsAsync(PathManager.AdminRole))
             {
-
+                await _roleManager.CreateAsync(new IdentityRole(PathManager.AdminRole));
+                await _roleManager.CreateAsync(new IdentityRole(PathManager.CustomerRole));
             }
+
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
@@ -123,10 +129,12 @@ namespace SpaceShop.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser() { 
-                    FullName = Input.FullName,
+                //var user = CreateUser(); 
+                var user = new ApplicationUser()
+                {
                     UserName = Input.Email,
-                    Email = Input.Email
+                    Email = Input.Email,
+                    FullName = Input.FullName
                 };
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -137,12 +145,15 @@ namespace SpaceShop.Areas.Identity.Pages.Account
                 {
                     if (User.IsInRole(PathManager.AdminRole))
                     {
+                        // назначение роли
                         await _userManager.AddToRoleAsync(user, PathManager.AdminRole);
                     }
                     else
                     {
                         await _userManager.AddToRoleAsync(user, PathManager.CustomerRole);
                     }
+
+
 
                     _logger.LogInformation("User created a new account with password.");
 
