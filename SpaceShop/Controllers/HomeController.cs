@@ -69,7 +69,7 @@ namespace SpaceShop.Controllers
             {
                 cartList = HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).ToList();
             }
-            var cart = cartList.Single(x=> x.ProductId == id);
+            var cart = cartList.FirstOrDefault(x=> x.ProductId == id);
             cartList.Remove(cart);
             HttpContext.Session.Set(PathManager.SessionCart, cartList);
             return RedirectToAction("Index");
