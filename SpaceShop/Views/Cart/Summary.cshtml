@@ -1,31 +1,42 @@
 ﻿@model SpaceShop.ViewModels.ProductUserViewModel
 
-<h1>Summary</h1>
+<h1> Summary </h1>
 
-<form> 
+
+<form>
+
+    <!-- User -->
     <p>
         <label>Name</label>
-        <input type="text" asp-for="@Model.applicationUser.FullName" class="form-control"/>
-    </p>
-    <p>
-        <label>Phone</label>
-        <input type="text" asp-for="@Model.applicationUser.PhoneNumber" class="form-control" />
-    </p>
-    <p>
-        <label>Email</label>
-        <input type="text" asp-for="@Model.applicationUser.Email" class="form-control" />
+        <input type="text" asp-for="@Model.ApplicationUser.FullName" class="form-control" />
     </p>
 
-    @foreach (var item in Model.products)
+    <p>
+        <label>Phone</label>
+        <input type="text" asp-for="@Model.ApplicationUser.PhoneNumber" class="form-control" />
+    </p>
+
+    <p>
+        <label>Email</label>
+        <input type="text" asp-for="@Model.ApplicationUser.Email" class="form-control" />
+    </p>
+
+
+    <!-- Products -->
+    @foreach (var item in Model.ProductList)
     {
         <p>
-            Product name: @item.Name
+            Product Name: @item.Name
         </p>
+
         <p>
             Price: @item.Price
         </p>
     }
+
+
     <p>
         <button type="submit" class="btn btn-success form-control">Submit</button>
     </p>
+
 </form>

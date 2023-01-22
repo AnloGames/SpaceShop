@@ -1,52 +1,67 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SpaceShop.Data;
 using SpaceShop.Models;
 using SpaceShop.ViewModels;
 using SpaceShop.Utility;
-using SpaceShop.ViewModels;
-using System.Diagnostics;
-using System.Security.Claims;
 
 namespace SpaceShop.Controllers
 {
     [Authorize]
     public class CartController : Controller
     {
-        public ApplicationDbContext database;
+        ApplicationDbContext db;
 
-        public ProductUserViewModel productUserViewModel;
+        ProductUserViewModel productUserViewModel;
 
-        public CartController(ApplicationDbContext database)
+        public CartController(ApplicationDbContext db)
         {
-            this.database = database;
+            this.db = db;
         }
 
+
+        // GET: /<controller>/
         public IActionResult Index()
         {
             List<Cart> cartList = new List<Cart>();
-            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
+
+            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
+                && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
             {
-                cartList = HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).ToList();
+                cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
+
+                // хотим получить каждый товар из корзины
             }
 
-            List<int> productIdList = cartList.Select(x => x.ProductId).ToList();
+            // получаем лист id товаров
+            List<int> productsIdInCart = cartList.Select(x => x.ProductId).ToList();
 
-            IEnumerable<Product> productList = database.Product.Where(x => productIdList.Contains(x.Id));
+            // извлекаем сами продукты по списку id
+            IEnumerable<Product> productList = db.Product.Where(x => productsIdInCart.Contains(x.Id));
 
             return View(productList);
         }
 
         public IActionResult Remove(int id)
         {
+            // удаление из корзины
             List<Cart> cartList = new List<Cart>();
-            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
+
+            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
+                && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
             {
-                cartList = HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).ToList();
+                cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
             }
-            var cart = cartList.FirstOrDefault(x => x.ProductId == id);
-            cartList.Remove(cart);
+
+            cartList.Remove(cartList.FirstOrDefault(x => x.ProductId == id));
+
+            // переназначение сессии
             HttpContext.Session.Set(PathManager.SessionCart, cartList);
 
             return RedirectToAction("Index");
@@ -56,22 +71,30 @@ namespace SpaceShop.Controllers
         public IActionResult Summary()
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
+
+            // если пользователь вошел в систему, то объект будет определен
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
             List<Cart> cartList = new List<Cart>();
-            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
+
+            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
+                && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
             {
-                cartList = HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).ToList();
+                cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
             }
-            List<int> productIdList = cartList.Select(x => x.ProductId).ToList();
 
-            IEnumerable<Product> productList = database.Product.Where(x => productIdList.Contains(x.Id));
+            // получаем лист id товаров
+            List<int> productsIdInCart = cartList.Select(x => x.ProductId).ToList();
 
-            /*productUserViewModel = new ProductUserViewModel()
+            // извлекаем сами продукты по списку id
+            IEnumerable<Product> productList = db.Product.Where(x => productsIdInCart.Contains(x.Id));
+
+
+            productUserViewModel = new ProductUserViewModel()
             {
-                products = productList,
-                applicationUser = database.ApplicationUser.FirstOrDefault
-            };*/
+                ApplicationUser = db.ApplicationUser.FirstOrDefault(x => x.Id == claim.Value),
+                ProductList = productList
+            };
 
             return View(productUserViewModel);
         }

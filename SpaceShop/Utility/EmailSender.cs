@@ -2,6 +2,8 @@
 using Mailjet.Client;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Mailjet.Client.Resources;
+using System.Net.Mail;
+using System.Net;
 
 namespace SpaceShop.Utility
 {
@@ -18,7 +20,7 @@ namespace SpaceShop.Utility
 
         public Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            return Execute(email, subject, htmlMessage);
+            return ExecuteGmail(email, subject, htmlMessage);
         }
         public async Task Execute(string email, string subject, string htmlMessage)
         {
@@ -42,7 +44,29 @@ namespace SpaceShop.Utility
         }
         public async Task ExecuteGmail(string email, string subject, string htmlMessage)
         {
-            //Cделать
+            var fromAddress = new MailAddress("7383an@gmail.com", "AnloGames");
+            var toAddress = new MailAddress(email);
+            MailJetSettings settings = configuration.GetSection("MailJet").Get<MailJetSettings>();
+            string fromPassword = settings.GmailSecretKey;
+
+            var smtp = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
+            };
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = htmlMessage,
+                IsBodyHtml = true
+            })
+            {
+                smtp.Send(message);
+            }
         }
     }
 }

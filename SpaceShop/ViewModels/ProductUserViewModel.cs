@@ -4,7 +4,7 @@ namespace SpaceShop.ViewModels
 {
     public class ProductUserViewModel
     {
-        public ApplicationUser applicationUser { get; set; }
-        public List<Product> products { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
+        public IEnumerable<Product> ProductList { get; set; }
     }
 }

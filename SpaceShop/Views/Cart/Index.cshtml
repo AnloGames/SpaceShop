@@ -1,43 +1,49 @@
 ﻿@model IEnumerable<Product>
 
-<h1>Shopping cart</h1>
+<h1>Shooping Cart</h1>
+
+<p><a class="btn btn-primary" asp-controller="Home">Continue Shopping</a></p>
+
 
 @if (Model.Count() > 0)
 {
-    <form method="post">
-
-        <p><a class="btn btn-info" asp-controller="Home">Continue shopping</a></p>
+    <form method="post" asp-action="Summary">
 
         @foreach (var item in Model)
         {
             <p>
-                <img class="rounded" width="100" src="@PathManager.ImageProductPath@item.Image" />
+                <img src="@PathManager.ImageProductPath@item.Image" width="100" class="rounded" />
             </p>
+
             <p>
                 Product Name: @item.Name
             </p>
+
             <p>
-                @item.ShortDescription
+                Description: @item.ShortDescription
             </p>
+
             <p>
-                Description: @item.Description
+                Price: @item.Price
             </p>
+
             <p>
-                Price $$$: @item.Price
-            </p>
-            <p>
-                <a class="btn btn-danger" asp-action="Remove" asp-route-id="@item.Id">Trash</a>
+                <a class="btn btn-danger" asp-action="Remove" asp-route-Id="@item.Id">
+                    TRASH
+                </a>
             </p>
         }
+
+
         <p>
-            <button class="btn btn-success" type="submit">Continue</button>
+            <button type="submit" class="btn btn-success">
+                Continue
+            </button>
         </p>
 
     </form>
 }
 else
 {
-    <p>Cart is empty</p>
+    <p>Cart is emty</p>
 }
-
-
