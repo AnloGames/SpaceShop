@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage;
 using SpaceShop.Data;
 using SpaceShop.Models;
-
 namespace SpaceShop.Controllers
 {
+    [Authorize(Roles = PathManager.AdminRole)]
     public class CategoryController : Controller
     {
         public ApplicationDbContext database;

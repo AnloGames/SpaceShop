@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SpaceShop.Data;
@@ -8,6 +9,7 @@ using System.IO;
 
 namespace SpaceShop.Controllers
 {
+    [Authorize(Roles = PathManager.AdminRole)]
     public class ProductController : Controller
     {
         private ApplicationDbContext database;
