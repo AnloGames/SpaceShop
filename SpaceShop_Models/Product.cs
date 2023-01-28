@@ -1,10 +1,10 @@
 ﻿using System;
-using SpaceShop.Models;
+using SpaceShop_Models;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Net.Http.Headers;
+//using Microsoft.Net.Http.Headers;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SpaceShop.Models
+namespace SpaceShop_Models
 {
     public class Product
     {

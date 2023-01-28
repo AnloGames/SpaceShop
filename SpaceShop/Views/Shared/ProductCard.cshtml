@@ -1,7 +1,7 @@
-﻿@model SpaceShop.Models.Product
+﻿@model SpaceShop_Models.Product
 
 <div class="card filter @Model.Category.Name.Replace(' ', '_')" style="width: 18rem; float:left">
-    <img src="@PathManager.ImageProductPath@Model.Image" class="card-img-top" alt="...">
+    <img src="@SpaceShop_Utility.PathManager.ImageProductPath@Model.Image" class="card-img-top" alt="...">
     <div class="card-body">
         <h5 class="card-title">@Model.Name</h5>
         <p class="card-text">@Model.ShortDescription</p>

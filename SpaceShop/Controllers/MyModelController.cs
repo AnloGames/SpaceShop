@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpaceShop.Data;
-using SpaceShop.Models;
+using SpaceShop_Models;
+using SpaceShop_Utility;
 namespace SpaceShop.Controllers
 {
     [Authorize(Roles = PathManager.AdminRole)]

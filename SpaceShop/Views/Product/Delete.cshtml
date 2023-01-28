@@ -1,4 +1,4 @@
-﻿@model SpaceShop.ViewModels.ProductCreation
+﻿@model SpaceShop_ViewModels.ProductCreation
 @{
 string title = "Delete";
 
@@ -26,7 +26,7 @@ string title = "Delete";
     @if (@Model.product.Image != null)
     {
         <p>
-            <img src="@PathManager.ImageProductPath@Model.product.Image" width="100" />
+            <img src="@SpaceShop_Utility.PathManager.ImageProductPath@Model.product.Image" width="100" />
         </p>
     }
     <p>

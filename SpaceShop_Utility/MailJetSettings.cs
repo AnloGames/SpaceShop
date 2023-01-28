@@ -1,4 +1,4 @@
-﻿namespace SpaceShop.Utility
+﻿namespace SpaceShop_Utility
 {
     public class MailJetSettings
     {

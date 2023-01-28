@@ -1,6 +1,7 @@
 ﻿using System;
-using SpaceShop.Models;
-namespace SpaceShop.ViewModels
+using SpaceShop_Models;
+
+namespace SpaceShop_ViewModels
 {
     public class HomeViewModel
     {

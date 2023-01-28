@@ -18,8 +18,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using SpaceShop.Models;
+using SpaceShop_Models;
 using SpaceShop;
+using SpaceShop_Utility;
 
 namespace SpaceShop.Areas.Identity.Pages.Account
 {

@@ -1,4 +1,4 @@
-﻿namespace SpaceShop.Models
+﻿namespace SpaceShop_Models
 {
     public class Cart
     {

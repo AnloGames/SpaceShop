@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SpaceShop.Data;
-using SpaceShop.Models;
-using SpaceShop.Utility;
-using SpaceShop.ViewModels;
+using SpaceShop_Models;
+using SpaceShop_Utility;
+using SpaceShop_ViewModels;
 using System.Diagnostics;
 
 namespace SpaceShop.Controllers

@@ -232,7 +232,7 @@ namespace SpaceShop.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("SpaceShop.Models.Category", b =>
+            modelBuilder.Entity("SpaceShop_Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -252,7 +252,7 @@ namespace SpaceShop.Migrations
                     b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("SpaceShop.Models.ConnectionProductMyModel", b =>
+            modelBuilder.Entity("SpaceShop_Models.ConnectionProductMyModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -275,7 +275,7 @@ namespace SpaceShop.Migrations
                     b.ToTable("ConnectionProductMyModel");
                 });
 
-            modelBuilder.Entity("SpaceShop.Models.MyModel", b =>
+            modelBuilder.Entity("SpaceShop_Models.MyModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -295,7 +295,7 @@ namespace SpaceShop.Migrations
                     b.ToTable("MyModel");
                 });
 
-            modelBuilder.Entity("SpaceShop.Models.Product", b =>
+            modelBuilder.Entity("SpaceShop_Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -332,7 +332,7 @@ namespace SpaceShop.Migrations
                     b.ToTable("Product");
                 });
 
-            modelBuilder.Entity("SpaceShop.Models.ApplicationUser", b =>
+            modelBuilder.Entity("SpaceShop_Models.ApplicationUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
@@ -394,15 +394,15 @@ namespace SpaceShop.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SpaceShop.Models.ConnectionProductMyModel", b =>
+            modelBuilder.Entity("SpaceShop_Models.ConnectionProductMyModel", b =>
                 {
-                    b.HasOne("SpaceShop.Models.MyModel", "MyModel")
+                    b.HasOne("SpaceShop_Models.MyModel", "MyModel")
                         .WithMany()
                         .HasForeignKey("MyModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SpaceShop.Models.Product", "Product")
+                    b.HasOne("SpaceShop_Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -413,9 +413,9 @@ namespace SpaceShop.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("SpaceShop.Models.Product", b =>
+            modelBuilder.Entity("SpaceShop_Models.Product", b =>
                 {
-                    b.HasOne("SpaceShop.Models.Category", "Category")
+                    b.HasOne("SpaceShop_Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)

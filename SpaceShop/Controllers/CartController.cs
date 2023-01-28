@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SpaceShop.Data;
-using SpaceShop.Models;
-using SpaceShop.ViewModels;
-using SpaceShop.Utility;
+using SpaceShop_Models;
+using SpaceShop_ViewModels;
+using SpaceShop_Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore.Storage;
 

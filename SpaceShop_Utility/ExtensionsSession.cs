@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Text.Json;
-namespace SpaceShop.Utility
+namespace SpaceShop_Utility
 {
     public static class ExtensionsSession
     {

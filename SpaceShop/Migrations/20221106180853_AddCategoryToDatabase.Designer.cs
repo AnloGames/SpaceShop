@@ -23,7 +23,7 @@ namespace SpaceShop.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("SpaceShop.Models.Category", b =>
+            modelBuilder.Entity("SpaceShop_Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

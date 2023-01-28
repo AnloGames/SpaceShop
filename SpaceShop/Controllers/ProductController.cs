@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SpaceShop.Data;
-using SpaceShop.Models;
-using SpaceShop.ViewModels;
+using SpaceShop_Models;
+using SpaceShop_ViewModels;
 using System.IO;
+using SpaceShop_Utility;
 
 namespace SpaceShop.Controllers
 {

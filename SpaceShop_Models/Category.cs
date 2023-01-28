@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace SpaceShop.Models
+namespace SpaceShop_Models
 {
     public class Category
     {

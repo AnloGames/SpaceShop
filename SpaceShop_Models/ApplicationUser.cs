@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace SpaceShop.Models
+namespace SpaceShop_Models
 {
     public class ApplicationUser : IdentityUser
     {

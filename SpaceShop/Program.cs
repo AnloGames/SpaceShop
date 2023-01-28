@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using SpaceShop.Utility;
+using SpaceShop_Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 

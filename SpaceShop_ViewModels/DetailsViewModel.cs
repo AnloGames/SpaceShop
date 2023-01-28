@@ -1,6 +1,6 @@
-﻿using SpaceShop.Models;
+﻿using SpaceShop_Models;
 
-namespace SpaceShop.ViewModels
+namespace SpaceShop_ViewModels
 {
     public class DetailsViewModel
     {

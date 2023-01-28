@@ -1,11 +1,9 @@
-﻿using Mailjet.Client.TransactionalEmails;
-using Mailjet.Client;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Mailjet.Client.Resources;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Net.Mail;
 using System.Net;
+using Microsoft.Extensions.Configuration;
 
-namespace SpaceShop.Utility
+namespace SpaceShop_Utility
 {
     public class EmailSender : IEmailSender
     {

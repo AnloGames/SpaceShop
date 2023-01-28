@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SpaceShop.Models;
+using SpaceShop_Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 

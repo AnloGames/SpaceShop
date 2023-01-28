@@ -1,4 +1,4 @@
-﻿namespace SpaceShop
+﻿namespace SpaceShop_Utility
 {
     public static class PathManager
     {

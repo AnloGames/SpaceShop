@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 
-namespace SpaceShop.Models
+namespace SpaceShop_Models
 {
     public class MyModel
     {

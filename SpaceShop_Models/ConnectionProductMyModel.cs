@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SpaceShop.Models
+namespace SpaceShop_Models
 {
     public class ConnectionProductMyModel
     {

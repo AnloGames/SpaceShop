@@ -1,4 +1,4 @@
-﻿@using SpaceShop.ViewModels;
+﻿@using SpaceShop_ViewModels;
 @model ProductCreation
 @{
     var title = "Create";
@@ -35,7 +35,7 @@
     @if (product.Image != null)
     {
         <p>
-            <img src="@PathManager.ImageProductPath@product.Image" width="100" />
+            <img src="@SpaceShop_Utility.PathManager.ImageProductPath@product.Image" width="100" />
         </p>
     }
     <p>
