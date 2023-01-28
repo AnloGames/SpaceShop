@@ -6,5 +6,7 @@
         public const string SessionCart = "SessionCart";
         public const string AdminRole = "Admin";
         public const string CustomerRole = "Customer";
+        public const string EmailSender = "7383an@gmail.com";
+        public const string EmailSenderName = "AnloGames";
     }
 }

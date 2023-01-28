@@ -119,7 +119,7 @@ namespace SpaceShop.Controllers
             string textProducts = "";
             foreach (Product product in products)
             {
-                textProducts += $"Name: {product.Name}, Price: {product.Price}";
+                textProducts += $"Name: {product.Name}, Price: {product.Price}\n";
             }
             //Body
             string body = string.Format(bodyHtml, user.FullName, user.Email, user.PhoneNumber, textProducts);

@@ -22,7 +22,7 @@ namespace SpaceShop.Utility
         {
             return ExecuteGmail(email, subject, htmlMessage);
         }
-        public async Task Execute(string email, string subject, string htmlMessage)
+        /*public async Task Execute(string email, string subject, string htmlMessage)
         {
             MailJetSettings settings = configuration.GetSection("MailJet").Get<MailJetSettings>();
             MailjetClient client = new MailjetClient(settings.ApiKey, settings.SecretKey);
@@ -41,10 +41,10 @@ namespace SpaceShop.Utility
                 .Build();
 
             var response = await client.SendTransactionalEmailAsync(emailMessage);
-        }
+        }*/ //Для mailjet
         public async Task ExecuteGmail(string email, string subject, string htmlMessage)
         {
-            var fromAddress = new MailAddress("7383an@gmail.com", "AnloGames");
+            var fromAddress = new MailAddress(PathManager.EmailSender, PathManager.EmailSenderName);
             var toAddress = new MailAddress(email);
             MailJetSettings settings = configuration.GetSection("MailJet").Get<MailJetSettings>();
             string fromPassword = settings.GmailSecretKey;
