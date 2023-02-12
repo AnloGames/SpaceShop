@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SpaceShop.Data;
+using SpaceShop_DataMigrations;
 using SpaceShop_Models;
 using SpaceShop_ViewModels;
 using SpaceShop_Utility;

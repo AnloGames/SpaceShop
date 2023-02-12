@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SpaceShop.Data;
+using SpaceShop_DataMigrations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;

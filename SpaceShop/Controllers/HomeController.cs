@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SpaceShop.Data;
+using SpaceShop_DataMigrations;
 using SpaceShop_Models;
 using SpaceShop_Utility;
 using SpaceShop_ViewModels;

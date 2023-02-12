@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SpaceShop.Data;
+using SpaceShop_DataMigrations;
 using SpaceShop_Models;
 using SpaceShop_Utility;
 namespace SpaceShop.Controllers
