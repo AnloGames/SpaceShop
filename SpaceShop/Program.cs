@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using SpaceShop_Utility;
 
+using SpaceShop_DataMigrations.Repository.IRepository;
+using SpaceShop_DataMigrations.Repository;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,6 +23,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultUI().AddDefaultTokenProviders().AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+builder.Services.AddScoped<IRepositoryCategory, RepositoryCategory>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(
     options=>options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))

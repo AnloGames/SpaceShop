@@ -1,24 +1,25 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage;
-using SpaceShop_DataMigrations;
+using SpaceShop_DataMigrations.Repository.IRepository;
 using SpaceShop_Models;
 using SpaceShop_Utility;
 namespace SpaceShop.Controllers
 {
-    [Authorize(Roles = PathManager.AdminRole)]
+    //[Authorize(Roles = PathManager.AdminRole)]
     public class CategoryController : Controller
     {
-        public ApplicationDbContext database;
+        //public ApplicationDbContext database;
+        private IRepositoryCategory repositoryCategory;
 
-        public CategoryController(ApplicationDbContext database)
+        public CategoryController(IRepositoryCategory repositoryCategory)
         {
-            this.database = database;
+            this.repositoryCategory = repositoryCategory;
         }
 
         public IActionResult Index()
         {
-            IEnumerable<Category> categories = database.Category;
+            IEnumerable<Category> categories = repositoryCategory.GetAll();
             return View(categories);
         }
         public IActionResult Create()
@@ -33,8 +34,8 @@ namespace SpaceShop.Controllers
         {
             if (ModelState.IsValid)
             {
-                database.Category.Add(category);
-                database.SaveChanges();
+                repositoryCategory.Add(category);
+                repositoryCategory.Save();
                 return RedirectToAction("Index");
             }
             return View(category);
@@ -47,7 +48,7 @@ namespace SpaceShop.Controllers
                 return NotFound();
             }
 
-            Category category = database.Category.Find(id);
+            Category category = repositoryCategory.Find((int)id);
 
             if (category == null)
             {
@@ -62,8 +63,8 @@ namespace SpaceShop.Controllers
         {
             if (ModelState.IsValid)
             {
-                database.Category.Update(category);
-                database.SaveChanges();
+                repositoryCategory.Update(category);
+                repositoryCategory.Save();
                 return RedirectToAction("Index");
             }
             return View(category);
@@ -75,15 +76,15 @@ namespace SpaceShop.Controllers
                 return NotFound();
             }
 
-            Category category = database.Category.Find(id);
+            Category category = repositoryCategory.Find((int)id);
 
             if (category == null)
             {
                 return NotFound();
             }
 
-            database.Category.Remove(category);
-            database.SaveChanges();
+            repositoryCategory.Remove(category);
+            repositoryCategory.Save();
             return RedirectToAction("Index");
         }
         public IActionResult Show(int id)
