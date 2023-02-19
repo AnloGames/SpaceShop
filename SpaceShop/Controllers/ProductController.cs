@@ -7,34 +7,42 @@ using SpaceShop_Models;
 using SpaceShop_ViewModels;
 using System.IO;
 using SpaceShop_Utility;
+using SpaceShop_DataMigrations.Repository.IRepository;
 
 namespace SpaceShop.Controllers
 {
-    [Authorize(Roles = PathManager.AdminRole)]
+    //[Authorize(Roles = PathManager.AdminRole)]
     public class ProductController : Controller
     {
-        private ApplicationDbContext database;
+        //private ApplicationDbContext database;
+        private IRepositoryProduct repositoryProduct;
+        private IRepositoryMyModel repositoryMyModel;
+        private IRepositoryCategory repositoryCategory;
+        private IRepositoryConnectionProductMyModel repositoryConnectionProductMyModel;
         private IWebHostEnvironment environment;
 
-        public ProductController(ApplicationDbContext database, IWebHostEnvironment environment)
+        public ProductController(IWebHostEnvironment environment, IRepositoryProduct repositoryProduct, IRepositoryMyModel repositoryMyModel, IRepositoryCategory repositoryCategory, IRepositoryConnectionProductMyModel repositoryConnectionProductMyModel)
         {
-            this.database = database;
             this.environment = environment;
+            this.repositoryProduct = repositoryProduct;
+            this.repositoryMyModel = repositoryMyModel;
+            this.repositoryCategory = repositoryCategory;
+            this.repositoryConnectionProductMyModel = repositoryConnectionProductMyModel;
         }
 
         public IActionResult Index(int? CategoryId)
         {
 
-            IEnumerable<Product> products;
-            if (CategoryId == null)
+            IEnumerable<Product> products = repositoryProduct.GetAll(); ;
+            /*if (CategoryId == null)
             {
-                products = database.Product;
+                products = repositoryProduct.GetAll();
             }
             else
             {
                 products = database.Product.AsNoTracking().Where(p => p.CategoryId == CategoryId);
 
-            }
+            }*/
             return View(products);
         }
         public IActionResult CreateEdit(int? id)
@@ -43,13 +51,13 @@ namespace SpaceShop.Controllers
             if (id != null)
             {
                 //edit
-                product = database.Product.Find(id);
+                product = repositoryProduct.Find((int)id);
                 if (product == null)
                 {
                     return NotFound();
                 }
             }
-            ProductCreation data = new ProductCreation(product, database.Category, database.MyModel);
+            ProductCreation data = new ProductCreation(product, repositoryCategory.GetAll(), repositoryMyModel.GetAll());
             return View(data);
             /*IEnumerable<SelectListItem> CategoriesList = database.Category.Select(x => new SelectListItem
             {
@@ -70,7 +78,7 @@ namespace SpaceShop.Controllers
 
             //копируем файл на сервер
 
-
+            product.ShortDescription = "";
             if (product.Id == 0)
             {
                 string upload = wwwRoot + PathManager.ImageProductPath;
@@ -84,15 +92,15 @@ namespace SpaceShop.Controllers
                     files[0].CopyTo(FileStream);
                 }
                 product.Image = imageName + extension;
-                database.Product.Add(product);
+                repositoryProduct.Add(product);
             }
             else
             {
-                foreach (ConnectionProductMyModel connection in database.ConnectionProductMyModel.AsNoTracking().Where(u => u.ProductId == product.Id))
+                foreach (ConnectionProductMyModel connection in repositoryConnectionProductMyModel.GetAll(filter: u => u.ProductId == product.Id, isTracking:false))
                 {
-                    database.ConnectionProductMyModel.Remove(connection);
+                    repositoryConnectionProductMyModel.Remove(connection);
                 }
-                Product NowProduct = database.Product.AsNoTracking().FirstOrDefault(u => u.Id == product.Id);
+                Product NowProduct = repositoryProduct.FirstOrDefault(filter: u => u.Id == product.Id, isTracking: false);
                 if (files.Count>0)
                 {
                     string upload = wwwRoot + PathManager.ImageProductPath;
@@ -117,38 +125,64 @@ namespace SpaceShop.Controllers
                 {
                     product.Image = NowProduct.Image;
                 }
-                database.Product.Update(product);
+                repositoryProduct.Update(product);
+
             }
-            product.Category = database.Category.FirstOrDefault(u => u.Id == product.CategoryId);
+            repositoryProduct.Save();
+            product.Category = repositoryCategory.Find(product.CategoryId);
             product.ShortDescription = "Category: " + product.Category.Name + "; MyModels: ";
             foreach (int MyModelId in MyModelsId)
             {
-                database.SaveChanges();
+                repositoryConnectionProductMyModel.Save();
                 ConnectionProductMyModel connection = new ConnectionProductMyModel();
                 connection.Id = 0;
                 connection.MyModelId = MyModelId;
                 connection.ProductId = product.Id;
-                database.ConnectionProductMyModel.Add(connection);
-                product.ShortDescription += database.MyModel.Find(MyModelId).Name + ", ";
+                repositoryConnectionProductMyModel.Add(connection);
+                product.ShortDescription += repositoryMyModel.Find(MyModelId).Name + ", ";
             }
-            database.SaveChanges();
+            repositoryProduct.Update(product);
+            repositoryProduct.Save();
             return RedirectToAction("Index");
         }
 
         public IActionResult Delete(int id)
         {
-            Product product = database.Product.FirstOrDefault(u => u.Id == id);
-            product.Category = database.Category.FirstOrDefault(u => u.Id == product.CategoryId);
-            IEnumerable<ConnectionProductMyModel> connections = database.ConnectionProductMyModel.Where(u => u.ProductId == id);
+            Product product = repositoryProduct.FirstOrDefault(filter: u => u.Id == id, isTracking: false);
+            /*product.Category = repositoryCategory.FirstOrDefault(u => u.Id == product.CategoryId, isTracking: false);
+            IEnumerable<ConnectionProductMyModel> connections = repositoryConnectionProductMyModel.GetAll(filter: u => u.ProductId == id, isTracking: false);
             List<int> ids = new List<int>();
             foreach (ConnectionProductMyModel connection in connections)
             {
                 ids.Add(connection.MyModelId);
             }
-            IEnumerable<MyModel> connectedModels = database.MyModel.Where(u => ids.Contains(u.Id));
+            IEnumerable<MyModel> connectedModels = repositoryMyModel.GetAll(filter: u => ids.Contains(u.Id), isTracking: false);
             ProductCreation productCreation = new ProductCreation(product, connectedModels);
 
-            return View(productCreation);
+            return View(productCreation);*/
+            if (product == null)
+            {
+                return NotFound();
+            }
+            Product NowProduct = repositoryProduct.FirstOrDefault(filter: u => u.Id == product.Id, isTracking: false);
+
+            string wwwRoot = environment.WebRootPath;
+            string upload = wwwRoot + PathManager.ImageProductPath;
+            string oldFile = upload + NowProduct.Image;
+
+            if (System.IO.File.Exists(oldFile))
+            {
+                System.IO.File.Delete(oldFile);
+            }
+            foreach (ConnectionProductMyModel connection in repositoryConnectionProductMyModel.GetAll(filter: u => u.ProductId == product.Id, isTracking: false))
+            {
+                repositoryConnectionProductMyModel.Remove(connection);
+            }
+
+            repositoryProduct.Remove(product);
+            repositoryProduct.Save();
+            repositoryConnectionProductMyModel.Save();
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
@@ -159,7 +193,7 @@ namespace SpaceShop.Controllers
             {
                 return NotFound();
             }
-            Product NowProduct = database.Product.AsNoTracking().FirstOrDefault(u => u.Id == product.Id);
+            Product NowProduct = repositoryProduct.FirstOrDefault(filter: u => u.Id == product.Id, isTracking: false);
 
             string wwwRoot = environment.WebRootPath;
             string upload = wwwRoot + PathManager.ImageProductPath;
@@ -169,13 +203,14 @@ namespace SpaceShop.Controllers
             {
                 System.IO.File.Delete(oldFile);
             }
-            foreach (ConnectionProductMyModel connection in database.ConnectionProductMyModel.AsNoTracking().Where(u => u.ProductId == product.Id))
+            foreach (ConnectionProductMyModel connection in repositoryConnectionProductMyModel.GetAll(filter: u => u.ProductId == product.Id, isTracking: false))
             {
-                database.ConnectionProductMyModel.Remove(connection);
+                repositoryConnectionProductMyModel.Remove(connection);
             }
 
-            database.Product.Remove(product);
-            database.SaveChanges();
+            repositoryProduct.Remove(product);
+            repositoryProduct.Save();
+            repositoryConnectionProductMyModel.Save();
             return RedirectToAction("Index");
         }
     }

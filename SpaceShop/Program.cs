@@ -25,6 +25,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultUI().AddDef
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.AddScoped<IRepositoryCategory, RepositoryCategory>();
+builder.Services.AddScoped<IRepositoryMyModel, RepositoryMyModel>();
+builder.Services.AddScoped<IRepositoryProduct, RepositoryProduct>();
+builder.Services.AddScoped<IRepositoryConnectionProductMyModel, RepositoryConnectionProductMyModel>();  
 
 builder.Services.AddDbContext<ApplicationDbContext>(
     options=>options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
