@@ -7,7 +7,7 @@ namespace SpaceShop_DataMigrations.Repository
     public class Repository<T> : IRepository<T> where T : class
     {
         protected readonly ApplicationDbContext db;
-        private DbSet<T> dbSet;
+        protected DbSet<T> dbSet;
       
         public Repository(ApplicationDbContext db)
         {
@@ -31,20 +31,20 @@ namespace SpaceShop_DataMigrations.Repository
         {
             IQueryable<T> query = dbSet;
 
+            if (!isTracking)
+            {
+                query = query.AsNoTracking();
+            }
             if (filter != null)
             {
-                query.Where(filter);
+                query = query.Where(filter);
             }
             if (includeProperties != null)
             {
                 foreach (var item in includeProperties.Split(','))
                 {
-                    query.Include(item);
+                    query = query.Include(item);
                 }
-            }
-            if (!isTracking)
-            {
-                query.AsNoTracking();
             }
 
             return query.FirstOrDefault();
@@ -57,24 +57,25 @@ namespace SpaceShop_DataMigrations.Repository
         {
             IQueryable<T> query = dbSet;
 
+
+            if (!isTracking)
+            {
+                query = query.AsNoTracking();
+            }
             if (filter != null) 
             {
-                query.Where(filter);
+                query = query.Where(filter);
             }
             if (includeProperties != null)
             {
                 foreach (var item in includeProperties.Split(','))
                 {
-                    query.Include(item);
+                    query = query.Include(item);
                 }
             }
             if (orderBy != null) 
             {
-                query = orderBy(query);
-            }
-            if (!isTracking)
-            {
-                query.AsNoTracking();
+                query = query = orderBy(query);
             }
 
             return query.ToList();

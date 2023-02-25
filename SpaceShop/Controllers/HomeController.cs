@@ -36,13 +36,13 @@ namespace SpaceShop.Controllers
             {
                 cartList = HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).ToList();
             }
-            DetailsViewModel detailsViewModel = new DetailsViewModel(false, database.Product.Include(x => x.Category).Where(x => x.Id == id).FirstOrDefault());
+            DetailsViewModel detailsViewModel = new DetailsViewModel(false, database.Product.AsNoTracking().Include(x => x.Category).Where(x => x.Id == id).FirstOrDefault());
             foreach (var item in cartList)
             {
                 if (item.ProductId == id)
                 {
-
-                }detailsViewModel.IsInCart = true;
+                    detailsViewModel.IsInCart = true;
+                }
             }
             return View(detailsViewModel);
         }

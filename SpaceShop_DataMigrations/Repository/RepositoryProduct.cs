@@ -1,4 +1,5 @@
-﻿using SpaceShop_DataMigrations.Repository.IRepository;
+﻿using Microsoft.EntityFrameworkCore;
+using SpaceShop_DataMigrations.Repository.IRepository;
 using SpaceShop_Models;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace SpaceShop_DataMigrations.Repository
 
         public void Update(Product obj)
         {
-            var objFromDb = db.Product.FirstOrDefault(x => x.Id == obj.Id);
+            /*var objFromDb = db.Product.FirstOrDefault(x => x.Id == obj.Id);
             if (objFromDb != null)
             {
                 objFromDb.Name = obj.Name;
@@ -23,7 +24,8 @@ namespace SpaceShop_DataMigrations.Repository
                 objFromDb.ShortDescription = obj.ShortDescription;
                 objFromDb.Image = obj.Image;
                 objFromDb.CategoryId = obj.CategoryId;
-            }
+            }*/
+            dbSet.Update(obj);
         }
     }
 }
