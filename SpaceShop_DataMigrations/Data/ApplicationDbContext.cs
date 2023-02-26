@@ -21,5 +21,7 @@ namespace SpaceShop_DataMigrations
 
         public DbSet<ConnectionProductMyModel> ConnectionProductMyModel { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
+        public DbSet<QueryHeader> QueryHeader { get; set; }
+        public DbSet<QueryDetail> QueryDetail { get; set; }
     }
 }

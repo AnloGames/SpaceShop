@@ -1,88 +1,120 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SpaceShop_DataMigrations;
+using SpaceShop_DataMigrations.Repository.IRepository;
 using SpaceShop_Models;
 using SpaceShop_Utility;
 using SpaceShop_ViewModels;
-using System.Diagnostics;
 
-namespace SpaceShop.Controllers
+namespace SpaceShop.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly ILogger<HomeController> _logger;
+
+    //private ApplicationDbContext db;
+    private IRepositoryProduct repositoryProduct;
+    private IRepositoryCategory repositoryCategory;
+
+    public HomeController(ILogger<HomeController> logger,
+        IRepositoryProduct repositoryProduct, IRepositoryCategory repositoryCategory)
     {
-        private readonly ILogger<HomeController> _logger;
-        private ApplicationDbContext database;
+        _logger = logger;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext database)
-        {
-            _logger = logger;
-            this.database = database;
-        }
+        this.repositoryCategory = repositoryCategory;
+        this.repositoryProduct = repositoryProduct;
+    }
 
-        public IActionResult Index()
+    public IActionResult Index()
+    {
+        HomeViewModel homeViewModel = new HomeViewModel()
         {
-            HomeViewModel homeViewModel = new HomeViewModel()
-            {
-                products = database.Product,
-                categories = database.Category
+            products = repositoryProduct.GetAll(),
+            categories = repositoryCategory.GetAll()
+        };
 
-            };
-            return View(homeViewModel);
-        }
-        public IActionResult Details(int? id)
+
+        return View(homeViewModel);
+    }
+
+    public IActionResult Details(int? id)
+    {
+        List<Cart> cartList = new List<Cart>();
+
+        if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
+            && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
         {
-            List<Cart> cartList = new List<Cart>();
-            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
-            {
-                cartList = HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).ToList();
-            }
-            DetailsViewModel detailsViewModel = new DetailsViewModel(false, database.Product.AsNoTracking().Include(x => x.Category).Where(x => x.Id == id).FirstOrDefault());
-            foreach (var item in cartList)
-            {
-                if (item.ProductId == id)
-                {
-                    detailsViewModel.IsInCart = true;
-                }
-            }
-            return View(detailsViewModel);
-        }
-        [HttpPost]
-        public IActionResult Details(int id)
-        {
-            List<Cart> cartList = new List<Cart>();
-            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count()>0)
-            {
-                cartList = HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).ToList();
-            }
-            if (cartList.FirstOrDefault(x => x.ProductId == id) != null)
-            {
-                return RemoveFromCart(id);
-            }
-            cartList.Add(new Cart() { ProductId = id });
-            HttpContext.Session.Set(PathManager.SessionCart, cartList);
-            return RedirectToAction("Index");
-        }
-        public IActionResult RemoveFromCart(int id)
-        {
-            List<Cart> cartList = new List<Cart>();
-            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
-            {
-                cartList = HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).ToList();
-            }
-            var cart = cartList.FirstOrDefault(x=> x.ProductId == id);
-            cartList.Remove(cart);
-            HttpContext.Session.Set(PathManager.SessionCart, cartList);
-            return RedirectToAction("Index");
-        }
-        public IActionResult Privacy()
-        {
-            return View();
+            cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+
+        DetailsViewModel detailsViewModel = new DetailsViewModel(false, repositoryProduct.FirstOrDefault(
+                filter: x => x.Id == id));
+        detailsViewModel.Product.Category = repositoryCategory.Find(detailsViewModel.Product.CategoryId);
+        // проверка на наличие товара в корзине
+        // если товар есть, то меняем свойство
+        foreach (var item in cartList)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (item.ProductId == id)
+            {
+                detailsViewModel.IsInCart = true;
+            }
         }
+
+        return View(detailsViewModel);
+    }
+
+    [HttpPost]
+    public IActionResult Details(int id)
+    {
+        List<Cart> cartList = new List<Cart>();
+
+        if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
+            && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
+        {
+            cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
+        }
+
+        cartList.Add(new Cart() { ProductId = id });
+
+        HttpContext.Session.Set(PathManager.SessionCart, cartList);
+
+        return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public IActionResult RemoveFromCart(int id)
+    {
+        List<Cart> cartList = new List<Cart>();
+
+        if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
+            && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
+        {
+            cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
+        }
+
+        // get product from cart
+        var item = cartList.Single(x => x.ProductId == id);
+
+        if (item != null)
+        {
+            cartList.Remove(item);
+        }
+
+        // SET SESSION
+        HttpContext.Session.Set(PathManager.SessionCart, cartList);
+
+        return RedirectToAction("Index");
+    }
+
+    public IActionResult Privacy()
+    {
+        return View();
+    }
+
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

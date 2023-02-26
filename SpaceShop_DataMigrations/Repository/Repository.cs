@@ -75,7 +75,7 @@ namespace SpaceShop_DataMigrations.Repository
             }
             if (orderBy != null) 
             {
-                query = query = orderBy(query);
+                query = orderBy(query);
             }
 
             return query.ToList();

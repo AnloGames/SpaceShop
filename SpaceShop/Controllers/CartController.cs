@@ -12,23 +12,32 @@ using SpaceShop_ViewModels;
 using SpaceShop_Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore.Storage;
+using SpaceShop_DataMigrations.Repository.IRepository;
 
 namespace SpaceShop.Controllers
 {
     [Authorize]
     public class CartController : Controller
     {
-        ApplicationDbContext db;
         private IWebHostEnvironment environment;
         IEmailSender emailSender;
 
         ProductUserViewModel productUserViewModel;
 
-        public CartController(ApplicationDbContext db, IWebHostEnvironment environment, IEmailSender emailSender)
+        IRepositoryApplicationUser repositoryApplicationUser;
+        IRepositoryProduct repositoryProduct;
+
+        IRepositoryQueryHeader repositoryQueryHeader;
+        IRepositoryQueryDetail repositoryQueryDetail;
+
+        public CartController(IWebHostEnvironment environment, IEmailSender emailSender, IRepositoryProduct repositoryProduct, IRepositoryApplicationUser repositoryApplicationUser, IRepositoryQueryHeader repositoryQueryHeader, IRepositoryQueryDetail repositoryQueryDetail)
         {
-            this.db = db;
             this.environment = environment;
             this.emailSender = emailSender;
+            this.repositoryProduct = repositoryProduct;
+            this.repositoryApplicationUser = repositoryApplicationUser;
+            this.repositoryQueryHeader = repositoryQueryHeader;
+            this.repositoryQueryDetail = repositoryQueryDetail;
         }
 
 
@@ -49,7 +58,7 @@ namespace SpaceShop.Controllers
             List<int> productsIdInCart = cartList.Select(x => x.ProductId).ToList();
 
             // извлекаем сами продукты по списку id
-            IEnumerable<Product> productList = db.Product.Where(x => productsIdInCart.Contains(x.Id));
+            IEnumerable<Product> productList = repositoryProduct.GetAll(x => productsIdInCart.Contains(x.Id));
 
             return View(productList);
         }
@@ -93,22 +102,22 @@ namespace SpaceShop.Controllers
             List<int> productsIdInCart = cartList.Select(x => x.ProductId).ToList();
 
             // извлекаем сами продукты по списку id
-            IEnumerable<Product> productList = db.Product.Where(x => productsIdInCart.Contains(x.Id));
+            IEnumerable<Product> productList = repositoryProduct.GetAll(x => productsIdInCart.Contains(x.Id));
 
 
             productUserViewModel = new ProductUserViewModel()
             {
-                ApplicationUser = db.ApplicationUser.FirstOrDefault(x => x.Id == claim.Value),
+                ApplicationUser = repositoryApplicationUser.FirstOrDefault(x => x.Id == claim.Value),
                 ProductList = productList
             };
 
             return View(productUserViewModel);
         }
 
-        public async Task<IActionResult> InquiryConfirmation(int[] ProductIds, string UserId)
+        public async Task<IActionResult> InquiryConfirmation(string PhoneNumber, int[] ProductIds, string UserId)
         {
-            List<Product> products = db.Product.Where(x => ProductIds.Contains(x.Id)).ToList();
-            ApplicationUser user = db.ApplicationUser.Find(UserId);
+            List<Product> products = repositoryProduct.GetAll(x => ProductIds.Contains(x.Id)).ToList();
+            ApplicationUser user = repositoryApplicationUser.FirstOrDefault(u => u.Id == UserId);
             var path = environment.WebRootPath + Path.DirectorySeparatorChar.ToString() + "templates" + Path.DirectorySeparatorChar.ToString() + "Inquiry.cshtml";
             string subject = "New sub";
             string bodyHtml = "";
@@ -124,6 +133,27 @@ namespace SpaceShop.Controllers
             //Body
             string body = string.Format(bodyHtml, user.FullName, user.Email, user.PhoneNumber, textProducts);
             await emailSender.SendEmailAsync(user.Email, subject, body);
+            QueryHeader queryHeader = new QueryHeader()
+            {
+                ApplicationUserId = user.Id,
+                QueryDate = DateTime.Now,
+                FullName = user.FullName,
+                PhoneNumber = PhoneNumber,
+                Email = user.Email,
+            };
+            repositoryQueryHeader.Add(queryHeader);
+            repositoryQueryHeader.Save();
+
+            foreach (var item in products)
+            {
+                QueryDetail queryDetail = new QueryDetail()
+                {
+                    ProductId = item.Id,
+                    QueryHeaderId = queryHeader.Id
+                };
+                repositoryQueryDetail.Add(queryDetail);
+            }
+            repositoryQueryDetail.Save();
             HttpContext.Session.Clear();
             return View();
         }

@@ -1,7 +1,10 @@
 ﻿@model SpaceShop_ViewModels.DetailsViewModel
+@{
+    int id = Model.Product.Id;
+}
 
 <form method="post">
-    <input asp-for="Product.Id" hidden></input>
+    <input asp-for="@id" hidden></input>
     <p>
         <h2>@Model.Product.Name</h2>
 
@@ -20,7 +23,7 @@
         <a class="btn btn-primary" asp-action="Index">Back</a>
         @if (Model.IsInCart)
         {
-            <button type="submit" class="btn btn-danger">Remove from cart</button>
+            <button type="submit" class="btn btn-danger" asp-action="RemoveFromCart">Remove from cart</button>
         }
         else
         {

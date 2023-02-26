@@ -2,6 +2,7 @@
 @{
     int[] ProductIds = new int[Model.ProductList.Count()];
     string UserId = Model.ApplicationUser.Id;
+    string PhoneNumber = "";
 }
 <h1> Summary </h1>
 
@@ -16,7 +17,7 @@
 
     <p>
         <label>Phone</label>
-        <input type="text" asp-for="@Model.ApplicationUser.PhoneNumber" class="form-control" />
+        <input type="text" asp-for="@PhoneNumber" class="form-control"/>
     </p>
 
     <p>

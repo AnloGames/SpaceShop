@@ -27,7 +27,10 @@ builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IRepositoryCategory, RepositoryCategory>();
 builder.Services.AddScoped<IRepositoryMyModel, RepositoryMyModel>();
 builder.Services.AddScoped<IRepositoryProduct, RepositoryProduct>();
-builder.Services.AddScoped<IRepositoryConnectionProductMyModel, RepositoryConnectionProductMyModel>();  
+builder.Services.AddScoped<IRepositoryConnectionProductMyModel, RepositoryConnectionProductMyModel>();
+builder.Services.AddScoped<IRepositoryQueryHeader, RepositoryQueryHeader>();
+builder.Services.AddScoped<IRepositoryQueryDetail, RepositoryQueryDetail>();
+builder.Services.AddScoped<IRepositoryApplicationUser, RepositoryApplicationUser>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(
     options=>options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -52,6 +55,7 @@ app.MapRazorPages();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",
