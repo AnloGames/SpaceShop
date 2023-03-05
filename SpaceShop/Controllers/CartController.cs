@@ -44,6 +44,7 @@ namespace SpaceShop.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
+            TempData["Success"] = "Ok";
             List<Cart> cartList = new List<Cart>();
 
             if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null

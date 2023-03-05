@@ -1,0 +1,41 @@
+﻿@model SpaceShop_ViewModels.QueryViewModel
+<form method="post">
+    <input hidden asp-for="QueryHeader.Id"/>
+    <p>
+        <a class="btn btn-success form-control" asp-controller="Query" asp-action="Index"><i class="fa-solid fa-backward"></i> Back</a>
+    </p>
+    <h2>
+        Information
+    </h2>
+    <table>
+        <tr>
+            <td>Name</td>
+            <td><input asp-for="QueryHeader.FullName" type="text" class="form-control"/></td>
+        </tr>
+        <tr>
+            <td>Phone</td>
+            <td><input asp-for="QueryHeader.PhoneNumber" type="text" class="form-control" /></td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td><input asp-for="QueryHeader.Email" type="text" class="form-control" /></td>
+        </tr>
+        <tr>
+            <td>Query Date</td>
+            <td><input value="@Model.QueryHeader.QueryDate.ToShortDateString()" type="text" class="form-control" readonly /></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="Change" class="btn form-control btn-primary" /></td>
+            <td><input formaction="/Query/Delete" type="submit" value="Delete" class="form-control btn btn-danger" /></td>
+        </tr>
+    </table>
+
+    <br/>
+    <h2>Details</h2>
+    @foreach (var item in Model.QueryDetails)
+    {
+        <h5>Product Name: @item.Product.Name</h5>
+        <p>Price: @item.Product.Price</p>
+    }
+
+</form>
