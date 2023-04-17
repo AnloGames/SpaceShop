@@ -12,5 +12,7 @@
         public const string NameCategory = "Category";
         public const string NameMyModel = "MyModel";
         public const string NameProduct = "Product";
+        public const string Success = "Success";
+        public const string Error = "Error";
     }
 }

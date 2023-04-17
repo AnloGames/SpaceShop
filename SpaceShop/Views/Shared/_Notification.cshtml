@@ -1,8 +1,18 @@
-﻿
+﻿@using SpaceShop_Utility;
+@if (TempData[PathManager.Success]!=null)
 {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
-        toastr.info('Are you the 6 fingered man?')
+        toastr.success('@TempData[PathManager.Success]')
     </script>
 }
+@if (TempData[PathManager.Error] != null)
+{
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script>
+        toastr.error('@TempData[PathManager.Error]')
+    </script>
+}
+

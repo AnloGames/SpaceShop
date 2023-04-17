@@ -2,7 +2,8 @@
 @{
     int[] ProductIds = new int[Model.ProductList.Count()];
     string UserId = Model.ApplicationUser.Id;
-    string PhoneNumber = "";
+    string PhoneNumber = "NONE";
+    double totalProductsPrice = 0;
 }
 <h1> Summary </h1>
 
@@ -33,11 +34,20 @@
         <p>
             Product Name: @item.Name
         </p>
-
+        <p>
+            Count: @item.TempCount
+        </p>
         <p>
             Price: @item.Price
         </p>
+        <p>
+            Total Price: @(item.Price * item.TempCount)
+        </p>
+        totalProductsPrice += item.Price * item.TempCount;
     }
+    <h3>
+        Total Products Price: @totalProductsPrice
+    </h3>
     <select asp-for="@ProductIds" class="form-control" hidden multiple>
         @foreach (var item in Model.ProductList)
         {

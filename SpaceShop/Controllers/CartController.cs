@@ -13,6 +13,7 @@ using SpaceShop_Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore.Storage;
 using SpaceShop_DataMigrations.Repository.IRepository;
+using Microsoft.CodeAnalysis;
 
 namespace SpaceShop.Controllers
 {
@@ -44,7 +45,7 @@ namespace SpaceShop.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            TempData["Success"] = "Ok";
+            TempData[PathManager.Success] = "Ok";
             List<Cart> cartList = new List<Cart>();
 
             if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
@@ -60,6 +61,10 @@ namespace SpaceShop.Controllers
 
             // извлекаем сами продукты по списку id
             IEnumerable<Product> productList = repositoryProduct.GetAll(x => productsIdInCart.Contains(x.Id));
+            foreach (Product product in productList)
+            {
+                product.TempCount = cartList.FirstOrDefault(x => x.ProductId == product.Id).TempCount;
+            }
 
             return View(productList);
         }
@@ -86,10 +91,36 @@ namespace SpaceShop.Controllers
         [HttpPost]
         public IActionResult Summary()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            ApplicationUser applicationUser;
 
-            // если пользователь вошел в систему, то объект будет определен
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            if (true) //(User.IsInRole(PathManager.AdminRole))
+            {
+                if (HttpContext.Session.Get<int>(PathManager.SessionQuery) != 0)
+                {
+                    QueryHeader queryHeader = repositoryQueryHeader.FirstOrDefault(
+                        x => x.Id == HttpContext.Session.Get<int>(PathManager.SessionQuery));
+
+                    applicationUser = new ApplicationUser()
+                    {
+                        Id = queryHeader.ApplicationUserId,
+                        Email = queryHeader.Email,
+                        PhoneNumber = queryHeader.PhoneNumber,
+                        FullName = queryHeader.FullName
+                    };
+                }
+                else
+                {
+                    applicationUser = new ApplicationUser();
+                }
+            }
+            else
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+
+                // если пользователь вошел в систему, то объект будет определен
+                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                applicationUser = repositoryApplicationUser.FirstOrDefault(x => x.Id == claim.Value);
+            }
 
             List<Cart> cartList = new List<Cart>();
 
@@ -99,16 +130,18 @@ namespace SpaceShop.Controllers
                 cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
             }
 
-            // получаем лист id товаров
-            List<int> productsIdInCart = cartList.Select(x => x.ProductId).ToList();
-
             // извлекаем сами продукты по списку id
-            IEnumerable<Product> productList = repositoryProduct.GetAll(x => productsIdInCart.Contains(x.Id));
-
+            List<Product> productList = new List<Product>();
+            foreach (var cart in cartList)
+            {
+                Product product = repositoryProduct.Find(cart.ProductId);
+                product.TempCount = cart.TempCount;
+                productList.Add(product);
+            }
 
             productUserViewModel = new ProductUserViewModel()
             {
-                ApplicationUser = repositoryApplicationUser.FirstOrDefault(x => x.Id == claim.Value),
+                ApplicationUser = applicationUser,
                 ProductList = productList
             };
 
@@ -132,7 +165,7 @@ namespace SpaceShop.Controllers
                 textProducts += $"Name: {product.Name}, Price: {product.Price}\n";
             }
             //Body
-            string body = string.Format(bodyHtml, user.FullName, user.Email, user.PhoneNumber, textProducts);
+            string body = string.Format(bodyHtml, user.FullName, user.Email, PhoneNumber, textProducts);
             await emailSender.SendEmailAsync(user.Email, subject, body);
             QueryHeader queryHeader = new QueryHeader()
             {
@@ -157,6 +190,23 @@ namespace SpaceShop.Controllers
             repositoryQueryDetail.Save();
             HttpContext.Session.Clear();
             return View();
+        }
+
+        public IActionResult Update(Product[] products)
+        {
+            List<Cart> cartList = new List<Cart>();
+            foreach (var prod in products)
+            {
+                cartList.Add(new Cart()
+                {
+                    ProductId = prod.Id,
+                    TempCount = prod.TempCount
+                });
+            }
+
+            HttpContext.Session.Set(PathManager.SessionCart, cartList);
+
+            return RedirectToAction("Index");
         }
     }
 }

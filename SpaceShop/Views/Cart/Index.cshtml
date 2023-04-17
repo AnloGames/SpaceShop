@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<Product>
-
+@using SpaceShop_Utility;
+@{
+    List<Product> products = Model.ToList();
+    double totalPriceProducts = 0;
+}
 <h1>Shooping Cart</h1>
 
 <p><a class="btn btn-primary" asp-controller="Home">Continue Shopping</a></p>
@@ -7,31 +11,47 @@
 
 @if (Model.Count() > 0)
 {
+
     <form method="post" asp-action="Summary">
 
-        @foreach (var item in Model)
+        @for (int i = 0; i < products.Count(); i++)
         {
+            <input asp-for="@products[i].Id" hidden /> 
             <p>
-                <img src="@SpaceShop_Utility.PathManager.ImageProductPath@item.Image" width="100" class="rounded" />
+                <img src="@PathManager.ImageProductPath@products[i].Image" width="100" class="rounded" />
             </p>
 
             <p>
-                Product Name: @item.Name
+            Product Name: @products[i].Name
             </p>
 
             <p>
-                Description: @item.ShortDescription
+            Description: @products[i].ShortDescription
             </p>
 
             <p>
-                Price: @item.Price
+            Price: @products[i].Price
             </p>
 
+            @if (true)//(User.IsInRole(PathManager.AdminRole))
+            {
+                <p>
+                    Count:
+                    <input type ="text" asp-for="@products[i].TempCount" class="form-control"/>
+                </p>
+                <p>
+                    Total Price: @(products[i].TempCount * products[i].Price)
+                </p>
+                totalPriceProducts += (products[i].TempCount * products[i].Price);
+            }
             <p>
-                <a class="btn btn-danger" asp-action="Remove" asp-route-Id="@item.Id">
+                <a class="btn btn-danger" asp-action="Remove" asp-route-Id="@products[i].Id">
                     TRASH
                 </a>
             </p>
+            <h3>
+                Total Products Price: @totalPriceProducts
+            </h3>
         }
 
 
@@ -39,6 +59,9 @@
             <button type="submit" class="btn btn-success">
                 Continue
             </button>
+        </p>
+        <p>
+            <button type="submit" asp-action="Update" class="btn btn-info">Update</button>
         </p>
 
     </form>

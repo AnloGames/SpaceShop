@@ -65,7 +65,7 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult Details(int id)
+    public IActionResult Details(int id, int count)
     {
         List<Cart> cartList = new List<Cart>();
 
@@ -75,7 +75,7 @@ public class HomeController : Controller
             cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
         }
 
-        cartList.Add(new Cart() { ProductId = id });
+        cartList.Add(new Cart() { ProductId = id, TempCount=count });
 
         HttpContext.Session.Set(PathManager.SessionCart, cartList);
 
