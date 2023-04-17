@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace SpaceShop.Controllers
 {
-    //[Authorize(Roles = PathManager.AdminRole)]
+    [Authorize(Roles = PathManager.AdminRole)]
     public class QueryController : Controller
     {
         private IRepositoryQueryHeader repositoryQueryHeader;

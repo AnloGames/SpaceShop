@@ -45,7 +45,7 @@ namespace SpaceShop.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            TempData[PathManager.Success] = "Ok";
+            TempData[PathManager.Success] = User.IsInRole(PathManager.AdminRole).ToString();
             List<Cart> cartList = new List<Cart>();
 
             if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
@@ -93,7 +93,7 @@ namespace SpaceShop.Controllers
         {
             ApplicationUser applicationUser;
 
-            if (true) //(User.IsInRole(PathManager.AdminRole))
+            if (User.IsInRole(PathManager.AdminRole))
             {
                 if (HttpContext.Session.Get<int>(PathManager.SessionQuery) != 0)
                 {
@@ -148,47 +148,74 @@ namespace SpaceShop.Controllers
             return View(productUserViewModel);
         }
 
-        public async Task<IActionResult> InquiryConfirmation(string PhoneNumber, int[] ProductIds, string UserId)
+        public async Task<IActionResult> InquiryConfirmation(ProductUserViewModel productUserViewModel)
         {
-            List<Product> products = repositoryProduct.GetAll(x => ProductIds.Contains(x.Id)).ToList();
-            ApplicationUser user = repositoryApplicationUser.FirstOrDefault(u => u.Id == UserId);
-            var path = environment.WebRootPath + Path.DirectorySeparatorChar.ToString() + "templates" + Path.DirectorySeparatorChar.ToString() + "Inquiry.cshtml";
-            string subject = "New sub";
-            string bodyHtml = "";
-            using (StreamReader reader = new StreamReader(path))
-            {
-                bodyHtml = reader.ReadToEnd();
-            }
-            string textProducts = "";
-            foreach (Product product in products)
-            {
-                textProducts += $"Name: {product.Name}, Price: {product.Price}\n";
-            }
-            //Body
-            string body = string.Format(bodyHtml, user.FullName, user.Email, PhoneNumber, textProducts);
-            await emailSender.SendEmailAsync(user.Email, subject, body);
-            QueryHeader queryHeader = new QueryHeader()
-            {
-                ApplicationUserId = user.Id,
-                QueryDate = DateTime.Now,
-                FullName = user.FullName,
-                PhoneNumber = PhoneNumber,
-                Email = user.Email,
-            };
-            repositoryQueryHeader.Add(queryHeader);
-            repositoryQueryHeader.Save();
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            ApplicationUser user = productUserViewModel.ApplicationUser;
 
-            foreach (var item in products)
+            if (User.IsInRole(PathManager.AdminRole))
             {
-                QueryDetail queryDetail = new QueryDetail()
+                //Work With Order
+                OrderHeader orderHeader = new OrderHeader()
                 {
-                    ProductId = item.Id,
-                    QueryHeaderId = queryHeader.Id
+                    AdminId = claim.Value,
+                    DateOrder = DateTime.Now,
+                    TotalPrice = 0, //Посчитать
+                    Status = "",
+                    FullName = user.FullName,
+                    Email = user.Email,
+                    Phone = user.PhoneNumber,
+                    City = user.City,
+                    Street = user.Street,
+                    House = user.House,
+                    Apartment = user.Apartment,
+                    PostalCode = user.PostalCode
                 };
-                repositoryQueryDetail.Add(queryDetail);
             }
-            repositoryQueryDetail.Save();
-            HttpContext.Session.Clear();
+            else
+            {
+                //Work With Query
+                var path = environment.WebRootPath + Path.DirectorySeparatorChar.ToString() + "templates" + Path.DirectorySeparatorChar.ToString() + "Inquiry.cshtml";
+                string subject = "New sub";
+                string bodyHtml = "";
+                using (StreamReader reader = new StreamReader(path))
+                {
+                    bodyHtml = reader.ReadToEnd();
+                }
+                string textProducts = "";
+                foreach (Product product in productUserViewModel.ProductList)
+                {
+                    Product nowProduct = repositoryProduct.Find(product.Id);
+                    textProducts += $"Name: {nowProduct.Name}, Price: {nowProduct.Price}\n";
+                }
+                //Body
+                string body = string.Format(bodyHtml, user.FullName, user.Email, user.PhoneNumber, textProducts);
+                await emailSender.SendEmailAsync(user.Email, subject, body);
+                QueryHeader queryHeader = new QueryHeader()
+                {
+                    ApplicationUserId = claim.Value,
+                    QueryDate = DateTime.Now,
+                    FullName = user.FullName,
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email,
+                };
+                repositoryQueryHeader.Add(queryHeader);
+                repositoryQueryHeader.Save();
+
+                foreach (var item in productUserViewModel.ProductList)
+                {
+                    QueryDetail queryDetail = new QueryDetail()
+                    {
+                        ProductId = item.Id,
+                        QueryHeaderId = queryHeader.Id
+                    };
+                    repositoryQueryDetail.Add(queryDetail);
+                }
+                repositoryQueryDetail.Save();
+                HttpContext.Session.Clear();
+            }
+
             return View();
         }
 

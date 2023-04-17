@@ -1,8 +1,5 @@
 ﻿@model SpaceShop_ViewModels.ProductUserViewModel
 @{
-    int[] ProductIds = new int[Model.ProductList.Count()];
-    string UserId = Model.ApplicationUser.Id;
-    string PhoneNumber = "NONE";
     double totalProductsPrice = 0;
 }
 <h1> Summary </h1>
@@ -14,50 +11,89 @@
     <p>
         <label>Name</label>
         <input type="text" asp-for="@Model.ApplicationUser.FullName" class="form-control" />
+        <span asp-validation-for="ApplicationUser.FullName" class="text-danger"></span>
     </p>
 
     <p>
         <label>Phone</label>
-        <input type="text" asp-for="@PhoneNumber" class="form-control"/>
+        <input type="text" asp-for="@Model.ApplicationUser.PhoneNumber" required class="form-control"/>
+        <span asp-validation-for="ApplicationUser.PhoneNumber" class="text-danger"></span>
     </p>
 
     <p>
         <label>Email</label>
-        <input type="text" asp-for="@Model.ApplicationUser.Email" class="form-control" />
+        <input type="text" asp-for="@Model.ApplicationUser.Email" required class="form-control" />
+        <span asp-validation-for="ApplicationUser.Email" class="text-danger"></span>
     </p>
 
+    <!--Address-->
+    @if (User.IsInRole(SpaceShop_Utility.PathManager.AdminRole))
+    {
+        <p>
+            <label>City</label>
+            <input type="text" asp-for="@Model.ApplicationUser.City" class="form-control" />
+            <span asp-validation-for="ApplicationUser.City" class="text-danger"></span>
+        </p>
+        <p>
+            <label>Street</label>
+            <input type="text" asp-for="@Model.ApplicationUser.Street" class="form-control" />
+            <span asp-validation-for="ApplicationUser.Street" class="text-danger"></span>
+        </p>
+        <p>
+            <label>House</label>
+            <input type="text" asp-for="@Model.ApplicationUser.House" class="form-control" />
+            <span asp-validation-for="ApplicationUser.House" class="text-danger"></span>
+        </p>
+        <p>
+            <label>Apartment</label>
+            <input type="text" asp-for="@Model.ApplicationUser.Apartment" class="form-control" />
+            <span asp-validation-for="ApplicationUser.Apartment" class="text-danger"></span>
+        </p>
+        <p>
+            <label>Postal Code</label>
+            <input type="text" asp-for="@Model.ApplicationUser.PostalCode" class="form-control" />
+            <span asp-validation-for="ApplicationUser.PostalCode" class="text-danger"></span>
+        </p>
+    }
 
     <!-- Products -->
-    @foreach (var item in Model.ProductList)
+    @for (int i = 0; i < Model.ProductList.Count(); i++)
     {
-        <input type="hidden" asp-for="@item.Id" asp-route-ProductIds/>
+        <input type="hidden" asp-for="@Model.ProductList[i].Id" asp-route-ProductIds/>
+        <input type="hidden" asp-for="@Model.ProductList[i].TempCount" asp-route-ProductIds />
         <p>
-            Product Name: @item.Name
+            Product Name: @Model.ProductList[i].Name
         </p>
         <p>
-            Count: @item.TempCount
+            Count: @Model.ProductList[i].TempCount
         </p>
         <p>
-            Price: @item.Price
+            Price: @Model.ProductList[i].Price
         </p>
         <p>
-            Total Price: @(item.Price * item.TempCount)
+            Total Price: @(Model.ProductList[i].Price * Model.ProductList[i].TempCount)
         </p>
-        totalProductsPrice += item.Price * item.TempCount;
+        totalProductsPrice += Model.ProductList[i].Price * Model.ProductList[i].TempCount;
     }
     <h3>
         Total Products Price: @totalProductsPrice
     </h3>
-    <select asp-for="@ProductIds" class="form-control" hidden multiple>
-        @foreach (var item in Model.ProductList)
-        {
-            <option value="@item.Id" selected></option>
-        }
-    </select>
-    <input asp-for="@UserId" hidden></input>
-
-    <p>
-        <button type="submit" class="btn btn-success form-control">Submit</button>
-    </p>
+    @if (User.IsInRole(SpaceShop_Utility.PathManager.AdminRole))
+    {
+        <p>
+            <button type="submit" class="btn btn-success form-control">Submit Order</button>
+        </p>
+    }
+    else
+    {
+        <p>
+            <button type="submit" class="btn btn-success form-control">Submit Query</button>
+        </p>
+    }
 
 </form>
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+    }
