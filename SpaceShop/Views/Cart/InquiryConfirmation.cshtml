@@ -1,5 +1,13 @@
-﻿<div class="text-center">
+﻿@model bool //isOrder
+<div class="text-center">
     <h1>Information</h1>
 
-    <p>We sent the message to your email!</p>
+    @if (Model)
+    {
+        <h2>Order Has Created</h2>
+    }
+    else
+    {
+        <h2>Query Has Created</h2>
+    }
 </div>

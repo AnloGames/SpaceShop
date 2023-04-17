@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using SpaceShop_Utility;
+using ShopM4_Utility.BrainTree;
 
 using SpaceShop_DataMigrations.Repository.IRepository;
 using SpaceShop_DataMigrations.Repository;
@@ -37,6 +38,8 @@ builder.Services.AddScoped<IRepositoryApplicationUser, RepositoryApplicationUser
 builder.Services.AddDbContext<ApplicationDbContext>(
     options=>options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
     );
+
+builder.Services.Configure<SettingsBrainTree>(builder.Configuration.GetSection("BrainTree"));
 
 builder.Services.AddControllersWithViews();
 

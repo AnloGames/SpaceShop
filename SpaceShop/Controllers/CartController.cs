@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore.Storage;
 using SpaceShop_DataMigrations.Repository.IRepository;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace SpaceShop.Controllers
 {
@@ -31,7 +32,13 @@ namespace SpaceShop.Controllers
         IRepositoryQueryHeader repositoryQueryHeader;
         IRepositoryQueryDetail repositoryQueryDetail;
 
-        public CartController(IWebHostEnvironment environment, IEmailSender emailSender, IRepositoryProduct repositoryProduct, IRepositoryApplicationUser repositoryApplicationUser, IRepositoryQueryHeader repositoryQueryHeader, IRepositoryQueryDetail repositoryQueryDetail)
+        IRepositoryOrderHeader repositoryOrderHeader;
+        IRepositoryOrderDetail repositoryOrderDetail;
+
+        public CartController(IWebHostEnvironment environment, IEmailSender emailSender, 
+            IRepositoryProduct repositoryProduct, IRepositoryApplicationUser repositoryApplicationUser, 
+            IRepositoryQueryHeader repositoryQueryHeader, IRepositoryQueryDetail repositoryQueryDetail,
+            IRepositoryOrderHeader repositoryOrderHeader, IRepositoryOrderDetail repositoryOrderDetail)
         {
             this.environment = environment;
             this.emailSender = emailSender;
@@ -39,6 +46,8 @@ namespace SpaceShop.Controllers
             this.repositoryApplicationUser = repositoryApplicationUser;
             this.repositoryQueryHeader = repositoryQueryHeader;
             this.repositoryQueryDetail = repositoryQueryDetail;
+            this.repositoryOrderHeader = repositoryOrderHeader;
+            this.repositoryOrderDetail = repositoryOrderDetail;
         }
 
 
@@ -156,13 +165,19 @@ namespace SpaceShop.Controllers
 
             if (User.IsInRole(PathManager.AdminRole))
             {
+                int totalPrice = 0;
+
+                foreach (var item in productUserViewModel.ProductList)
+                {
+                    totalPrice += (int)(item.TempCount * item.Price);
+                }
                 //Work With Order
                 OrderHeader orderHeader = new OrderHeader()
                 {
                     AdminId = claim.Value,
                     DateOrder = DateTime.Now,
-                    TotalPrice = 0, //Посчитать
-                    Status = "",
+                    TotalPrice = totalPrice,
+                    Status = PathManager.StatusPending,
                     FullName = user.FullName,
                     Email = user.Email,
                     Phone = user.PhoneNumber,
@@ -172,6 +187,25 @@ namespace SpaceShop.Controllers
                     Apartment = user.Apartment,
                     PostalCode = user.PostalCode
                 };
+                repositoryOrderHeader.Add(orderHeader);
+                repositoryOrderHeader.Save();
+
+
+                foreach (var product in productUserViewModel.ProductList)
+                {
+                    OrderDetail orderDetail = new OrderDetail()
+                    {
+                        OrderHeaderId = orderHeader.Id,
+                        ProductId = product.Id,
+                        Count = product.TempCount,
+                        PricePerUnit = (int)product.Price    // !!! fix need 
+                    };
+
+                    repositoryOrderDetail.Add(orderDetail);
+                }
+
+                repositoryOrderDetail.Save();
+                return View(true);
             }
             else
             {
@@ -216,7 +250,7 @@ namespace SpaceShop.Controllers
                 HttpContext.Session.Clear();
             }
 
-            return View();
+            return View(false);
         }
 
         public IActionResult Update(Product[] products)
