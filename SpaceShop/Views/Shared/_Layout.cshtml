@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SpaceShop.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/fontawesome/css/all.css"/>
+    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/21.1.35/material.css" />
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
@@ -55,6 +56,21 @@
                                         <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Admin user register</a>
                                     </li>
                                 </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Orders
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Query" asp-action="Index">Query</a>
+                                    </li>
+
+                                    <li>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="Index">Order</a>
+                                    </li>
+                                </ul>
+
                             </li>
                         }
 
@@ -115,6 +131,7 @@
             &copy; 2022 - SpaceShop - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    <script src="https://cdn.syncfusion.com/ej2/21.1.35/dist/ej2.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -122,5 +139,6 @@
     <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <ejs-scripts></ejs-scripts>
 </body>
 </html>
