@@ -5,6 +5,7 @@ using SpaceShop_Utility;
 using SpaceShop_ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Braintree;
+using SpaceShop_Models;
 
 namespace SpaceShop.Controllers
 {
@@ -71,6 +72,45 @@ namespace SpaceShop.Controllers
 
 
             return View(OrderViewModel);
+        }
+        [HttpPost]
+        public IActionResult StartInProcessing()
+        {
+            // получаем объект из бд
+            OrderHeader orderHeader = repositoryOrderHeader.
+                FirstOrDefault(x => x.Id == OrderViewModel.OrderHeader.Id);
+
+            orderHeader.Status = PathManager.StatusInProcess;
+
+            repositoryOrderHeader.Save();
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult StartOrderDone()
+        {
+            OrderHeader orderHeader = repositoryOrderHeader.
+    FirstOrDefault(x => x.Id == OrderViewModel.OrderHeader.Id);
+
+            orderHeader.Status = PathManager.StatusAccepted;
+
+            repositoryOrderHeader.Save();
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult StartOrderCancel()
+        {
+            OrderHeader orderHeader = repositoryOrderHeader.
+     FirstOrDefault(x => x.Id == OrderViewModel.OrderHeader.Id);
+
+            orderHeader.Status = PathManager.StatusDenied;
+
+            repositoryOrderHeader.Save();
+
+            return RedirectToAction("Index");
         }
     }
     

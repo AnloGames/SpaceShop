@@ -27,5 +27,8 @@ namespace SpaceShop_Models
         public string House { get; set; }
         public string Apartment { get; set; }
         public string PostalCode { get; set; }
+        public string TransactionId { get; set; }
+
+        public DateTime DateExecution { get; set; }
     }
 }
