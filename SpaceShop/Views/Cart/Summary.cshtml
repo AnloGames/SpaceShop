@@ -1,4 +1,6 @@
-﻿@model SpaceShop_ViewModels.ProductUserViewModel
+﻿@using SpaceShop_ViewModels;
+@using SpaceShop_Utility;
+@model ProductUserViewModel
 @{
     double totalProductsPrice = 0;
 }
@@ -90,13 +92,17 @@
     @if (User.IsInRole(SpaceShop_Utility.PathManager.AdminRole))
     {
         <p>
-            <button type="submit" class="btn btn-success form-control">Submit Order</button>
+            <button type="submit" class="btn btn-primary form-control" onclick="return funcValidation()">
+                Submit Order
+            </button>
         </p>
     }
     else
     {
         <p>
-            <button type="submit" class="btn btn-success form-control">Submit Query</button>
+            <button type="submit" class="btn btn-success form-control" onclick="return funcValidation()">
+                Submit Query
+            </button>
         </p>
     }
 
@@ -106,30 +112,63 @@
     <partial name="_ValidationScriptsPartial" />
 
 
-        <script src="https://js.braintreegateway.com/web/dropin/1.34.0/js/dropin.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/dropin/1.34.0/js/dropin.min.js"></script>
 
-        <script>
-            var tokenClient = "@ViewBag.TokenClient";
-            var form = document.querySelector('#payment-form');
-            // подключение для braintree
-            braintree.dropin.create({
-                authorization: tokenClient,
-                container: '#dropin-container'
-            },
-                // первый параметр для ошибки, второй - экземпляр подключения
-                function (error, dropinInstance) {
-                    // тут происходит обработка события
-                    form.addEventListener('submit', function () {
-                        // блочим автоматическую передачу формы
-                        event.preventDefault();
-                        // добавить nonce в форму и затем отправить ее
-                        dropinInstance.requestPaymentMethod(function (err, payload) {
-                            // отправить nonce на наш сервер
-                            document.querySelector('#nonce').value = payload.nonce;
-                            form.submit();
-                        })
-                    })
-                });
-        </script>
+    <script>
+                            var tokenClient = "@ViewBag.TokenClient";
+                            var form = document.querySelector('#payment-form');
+                            // подключение для braintree
+                            braintree.dropin.create({
+                                authorization: tokenClient,
+                                container: '#dropin-container'
+                            },
+                                // первый параметр для ошибки, второй - экземпляр подключения
+                                function (error, dropinInstance) {
+                                    // тут происходит обработка события
+                                    form.addEventListener('submit', function () {
+                                        // блочим автоматическую передачу формы
+                                        event.preventDefault();
+                                        // добавить nonce в форму и затем отправить ее
+                                        dropinInstance.requestPaymentMethod(function (err, payload) {
+                                            // отправить nonce на наш сервер
+                                            document.querySelector('#nonce').value = payload.nonce;
+                                            form.submit();
+                                        })
+                                    })
+                                });
+
+                            function funcValidation() {
+                                var full_name = document.getElementById("ApplicationUser_FullName").value;
+                                var phone = document.getElementById("ApplicationUser_PhoneNumber").value;
+                                var email = document.getElementById("ApplicationUser_Email").value;
+                                console.log("232323")
+                                if (full_name == '') {
+                                    Swal.fire(
+                                        'Error!',
+                                        'Пожалуйста, введите имя!',
+                                        'error'
+                                    )
+                                    return false;
+                                }
+                                if (phone == '') {
+                                    Swal.fire(
+                                        'Error!',
+                                        'Пожалуйста, введите телефон!',
+                                        'error'
+                                    )
+                                    return false;
+                                }
+                                if (email == '') {
+                                    Swal.fire(
+                                        'Error!',
+                                        'Пожалуйста, введите email!',
+                                        'error'
+                                    )
+                                    return false;
+                                }
+
+                                return true;
+                            }
+    </script>
     }
 }
