@@ -5,7 +5,7 @@
 <h1> Summary </h1>
 
 
-<form asp-action="InquiryConfirmation">
+<form asp-action="InquiryConfirmation" id="payment-form">
 
     <!-- User -->
     <p>
@@ -81,6 +81,14 @@
     </h3>
     @if (User.IsInRole(SpaceShop_Utility.PathManager.AdminRole))
     {
+        <div class="checkout container">
+            <div id="dropin-container"></div>
+            <input id="nonce" name="payment_method_nonce" type="hidden" />
+        </div>
+    }
+
+    @if (User.IsInRole(SpaceShop_Utility.PathManager.AdminRole))
+    {
         <p>
             <button type="submit" class="btn btn-success form-control">Submit Order</button>
         </p>
@@ -95,6 +103,33 @@
 </form>
 @section Scripts{
     @{
-        <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
+
+
+        <script src="https://js.braintreegateway.com/web/dropin/1.34.0/js/dropin.min.js"></script>
+
+        <script>
+            var tokenClient = "@ViewBag.TokenClient";
+            var form = document.querySelector('#payment-form');
+            // подключение для braintree
+            braintree.dropin.create({
+                authorization: tokenClient,
+                container: '#dropin-container'
+            },
+                // первый параметр для ошибки, второй - экземпляр подключения
+                function (error, dropinInstance) {
+                    // тут происходит обработка события
+                    form.addEventListener('submit', function () {
+                        // блочим автоматическую передачу формы
+                        event.preventDefault();
+                        // добавить nonce в форму и затем отправить ее
+                        dropinInstance.requestPaymentMethod(function (err, payload) {
+                            // отправить nonce на наш сервер
+                            document.querySelector('#nonce').value = payload.nonce;
+                            form.submit();
+                        })
+                    })
+                });
+        </script>
     }
-    }
+}

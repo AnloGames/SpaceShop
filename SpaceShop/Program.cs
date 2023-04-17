@@ -9,6 +9,7 @@ using ShopM4_Utility.BrainTree;
 
 using SpaceShop_DataMigrations.Repository.IRepository;
 using SpaceShop_DataMigrations.Repository;
+using SpaceShop_Utility.BrainTree;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +41,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(
     );
 
 builder.Services.Configure<SettingsBrainTree>(builder.Configuration.GetSection("BrainTree"));
+builder.Services.AddSingleton<IBrainTreeBridge, BrainTreeBridge>();
 
 builder.Services.AddControllersWithViews();
 

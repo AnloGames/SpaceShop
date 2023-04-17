@@ -15,6 +15,8 @@ using Microsoft.EntityFrameworkCore.Storage;
 using SpaceShop_DataMigrations.Repository.IRepository;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SpaceShop_Utility.BrainTree;
+using Braintree;
 
 namespace SpaceShop.Controllers
 {
@@ -25,6 +27,8 @@ namespace SpaceShop.Controllers
         IEmailSender emailSender;
 
         ProductUserViewModel productUserViewModel;
+
+        IBrainTreeBridge brainTreeBridge;
 
         IRepositoryApplicationUser repositoryApplicationUser;
         IRepositoryProduct repositoryProduct;
@@ -38,7 +42,8 @@ namespace SpaceShop.Controllers
         public CartController(IWebHostEnvironment environment, IEmailSender emailSender, 
             IRepositoryProduct repositoryProduct, IRepositoryApplicationUser repositoryApplicationUser, 
             IRepositoryQueryHeader repositoryQueryHeader, IRepositoryQueryDetail repositoryQueryDetail,
-            IRepositoryOrderHeader repositoryOrderHeader, IRepositoryOrderDetail repositoryOrderDetail)
+            IRepositoryOrderHeader repositoryOrderHeader, IRepositoryOrderDetail repositoryOrderDetail,
+            IBrainTreeBridge brainTreeBridge)
         {
             this.environment = environment;
             this.emailSender = emailSender;
@@ -48,6 +53,7 @@ namespace SpaceShop.Controllers
             this.repositoryQueryDetail = repositoryQueryDetail;
             this.repositoryOrderHeader = repositoryOrderHeader;
             this.repositoryOrderDetail = repositoryOrderDetail;
+            this.brainTreeBridge = brainTreeBridge;
         }
 
 
@@ -121,6 +127,10 @@ namespace SpaceShop.Controllers
                 {
                     applicationUser = new ApplicationUser();
                 }
+                //Оплата
+                var getWay = brainTreeBridge.GetGateWay();
+                var tokenClient = getWay.ClientToken.Generate();
+                ViewBag.TokenClient = tokenClient;
             }
             else
             {
@@ -157,7 +167,7 @@ namespace SpaceShop.Controllers
             return View(productUserViewModel);
         }
 
-        public async Task<IActionResult> InquiryConfirmation(ProductUserViewModel productUserViewModel)
+        public async Task<IActionResult> InquiryConfirmation(IFormCollection collection, ProductUserViewModel productUserViewModel)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -205,6 +215,26 @@ namespace SpaceShop.Controllers
                 }
 
                 repositoryOrderDetail.Save();
+
+
+                string nonce = collection["payment_method_nonce"];
+
+                var request = new TransactionRequest
+                {
+                    Amount = 1, 
+                    PaymentMethodNonce = nonce,
+                    OrderId = "1",
+                    Options = new TransactionOptionsRequest{ SubmitForSettlement = true }
+                };
+
+                var getWay = brainTreeBridge.GetGateWay();
+
+                var resultTransaction = getWay.Transaction.Sale(request);
+
+                var id = resultTransaction.Target.Id;
+                var status = resultTransaction.Target.ProcessorResponseText;
+
+
                 return View(true);
             }
             else
