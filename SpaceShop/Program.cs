@@ -24,11 +24,11 @@ builder.Services.AddHttpContextAccessor();
 //builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultUI().AddDefaultTokenProviders().AddEntityFrameworkStores<ApplicationDbContext>();
 
-/*builder.Services.AddAuthentication().AddGoogle(googleOptions =>
+builder.Services.AddAuthentication().AddGoogle(googleOptions =>
 {
     googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
     googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-});*/
+});
 
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
