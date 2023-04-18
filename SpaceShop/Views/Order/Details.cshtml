@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        @if (Model.OrderHeader.Status != PathManager.StatusAccepted && Model.OrderHeader.Status != PathManager.StatusDenied)
+        @if (Model.OrderHeader.Status != PathManager.StatusOrderDone && Model.OrderHeader.Status != PathManager.StatusDenied)
         {
             <!-- Details Order -->
             <div class="col-sm">
@@ -153,24 +153,33 @@
 
 
                 <!-- BUTTONS -->
-
-                <div class="row m-2">
-                    <div class="col-sm">
-                        <input asp-action="StartInProcessing" type="submit" value="In Processing" class="btn form-control btn-primary" />
+                @if (Model.OrderHeader.Status == PathManager.StatusAccepted)
+                {
+                    <div class="row m-2">
+                        <div class="col-sm">
+                            <input asp-action="StartInProcessing" type="submit" value="In Processing" class="btn form-control btn-primary" />
+                        </div>
                     </div>
-                </div>
+                }
 
-                <div class="row m-2">
-                    <div class="col-sm">
-                        <input asp-action="StartOrderDone" type="submit" value="Order Done" class="btn form-control btn-primary" />
+                @if (Model.OrderHeader.Status == PathManager.StatusInProcess)
+                {
+                    <div class="row m-2">
+                        <div class="col-sm">
+                            <input asp-action="StartOrderDone" type="submit" value="Order Done" class="btn form-control btn-primary" />
+                        </div>
                     </div>
-                </div>
+                }
 
-                <div class="row m-2">
-                    <div class="col-sm">
-                        <input asp-action="StartOrderCancel" type="submit" value="Cancel Order" class="btn form-control btn-primary" />
-                    </div>
-                </div>
+                @if (Model.OrderHeader.Status != PathManager.StatusDenied && Model.OrderHeader.Status != PathManager.StatusOrderDone)
+                {
+                        <div class="row m-2">
+                            <div class="col-sm">
+                                <input asp-action="StartOrderCancel" type="submit" value="Cancel Order"
+                                   class="btn form-control btn-primary" />
+                            </div>
+                        </div>
+                }
 
 
 

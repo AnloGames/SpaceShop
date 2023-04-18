@@ -187,7 +187,7 @@ namespace SpaceShop.Controllers
                     AdminId = claim.Value,
                     DateOrder = DateTime.Now,
                     TotalPrice = totalPrice,
-                    Status = PathManager.StatusPending,
+                    Status = PathManager.StatusAccepted,
                     FullName = user.FullName,
                     Email = user.Email,
                     Phone = user.PhoneNumber,
@@ -195,7 +195,8 @@ namespace SpaceShop.Controllers
                     Street = user.Street,
                     House = user.House,
                     Apartment = user.Apartment,
-                    PostalCode = user.PostalCode
+                    PostalCode = user.PostalCode,
+                    TransactionId = "NONE"
                 };
                 repositoryOrderHeader.Add(orderHeader);
                 repositoryOrderHeader.Save();
@@ -234,6 +235,8 @@ namespace SpaceShop.Controllers
                 var id = resultTransaction.Target.Id;
                 var status = resultTransaction.Target.ProcessorResponseText;
 
+                orderHeader.TransactionId = id;
+                repositoryOrderHeader.Save();
 
                 return View(true);
             }
