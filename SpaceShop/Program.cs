@@ -29,7 +29,11 @@ builder.Services.AddAuthentication().AddGoogle(googleOptions =>
     googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
     googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 });
-
+builder.Services.AddAuthentication().AddFacebook(options =>
+{
+    options.AppId = "157162407301753";
+    options.AppSecret = "93231d072bdf20af32d3662db9649415";
+});
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
@@ -46,6 +50,9 @@ builder.Services.AddScoped<IRepositoryApplicationUser, RepositoryApplicationUser
 builder.Services.AddDbContext<ApplicationDbContext>(
     options=>options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
     );
+
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//   .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.Configure<SettingsBrainTree>(builder.Configuration.GetSection("BrainTree"));
 builder.Services.AddSingleton<IBrainTreeBridge, BrainTreeBridge>();
