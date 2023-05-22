@@ -1,7 +1,6 @@
 ﻿@model SpaceShop_ViewModels.OrderHeaderDetailViewModel
 @using SpaceShop_Utility;
 <form method="post">
-
     <input asp-for="OrderHeader.Id" hidden />
 
     <div class="container">
@@ -101,14 +100,16 @@
                                class="form-control" readonly />
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="col-3">ID Transaction: </div>
-                    <div class="col-9">
-                        <input asp-for="@Model.OrderHeader.TransactionId" type="text" class="form-control"
-                               readonly />
+                @if (User.IsInRole(PathManager.AdminRole))
+                {
+                    <div class="row">
+                        <div class="col-3">ID Transaction: </div>
+                        <div class="col-9">
+                            <input asp-for="@Model.OrderHeader.TransactionId" type="text" class="form-control"
+                                   readonly />
+                        </div>
                     </div>
-                </div>
+                }
 
                 <div class="row">
                     <div class="col-3">Status: </div>
@@ -159,32 +160,35 @@
 
 
                 <!-- BUTTONS -->
-                @if (Model.OrderHeader.Status == PathManager.StatusAccepted)
+                @if (User.IsInRole(PathManager.AdminRole))
                 {
-                    <div class="row m-2">
-                        <div class="col-sm">
-                            <input asp-action="StartInProcessing" type="submit" value="In Processing" class="btn form-control btn-primary" />
+                    @if (Model.OrderHeader.Status == PathManager.StatusAccepted)
+                    {
+                        <div class="row m-2">
+                            <div class="col-sm">
+                                <input asp-action="StartInProcessing" type="submit" value="In Processing" class="btn form-control btn-primary" />
+                            </div>
                         </div>
-                    </div>
-                }
+                    }
 
-                @if (Model.OrderHeader.Status == PathManager.StatusInProcess)
-                {
-                    <div class="row m-2">
-                        <div class="col-sm">
-                            <input asp-action="StartOrderDone" type="submit" value="Order Done" class="btn form-control btn-primary" />
+                    @if (Model.OrderHeader.Status == PathManager.StatusInProcess)
+                    {
+                        <div class="row m-2">
+                            <div class="col-sm">
+                                <input asp-action="StartOrderDone" type="submit" value="Order Done" class="btn form-control btn-primary" />
+                            </div>
                         </div>
-                    </div>
-                }
+                    }
 
-                @if (Model.OrderHeader.Status != PathManager.StatusDenied && Model.OrderHeader.Status != PathManager.StatusOrderDone)
-                {
+                    @if (Model.OrderHeader.Status != PathManager.StatusDenied && Model.OrderHeader.Status != PathManager.StatusOrderDone)
+                    {
                         <div class="row m-2">
                             <div class="col-sm">
                                 <input asp-action="StartOrderCancel" type="submit" value="Cancel Order"
-                                   class="btn form-control btn-primary" />
+                               class="btn form-control btn-primary" />
                             </div>
                         </div>
+                    }
                 }
 
 

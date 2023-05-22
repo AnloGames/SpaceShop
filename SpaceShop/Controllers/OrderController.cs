@@ -6,6 +6,8 @@ using SpaceShop_ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Braintree;
 using SpaceShop_Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace SpaceShop.Controllers
 {
@@ -32,12 +34,24 @@ namespace SpaceShop.Controllers
         public IActionResult Index(string searchName = null, string searchEmail = null,
                     string searchPhone = null, string status = null)
         {
+            IEnumerable<OrderHeader> orderHeaderList;
+            if (User.IsInRole(PathManager.AdminRole))
+            {
+                orderHeaderList = repositoryOrderHeader.GetAll();
+            }
+            else
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                orderHeaderList = repositoryOrderHeader.GetAll(x => x.UserId == claim.Value);
+            }
             OrderViewModel viewModel = new OrderViewModel()
             {
-                OrderHeaderList = repositoryOrderHeader.GetAll(),
+                OrderHeaderList = orderHeaderList,
                 StatusList = PathManager.StatusList.ToList().
                                 Select(x => new SelectListItem { Text = x, Value = x })
 };
+            viewModel.OrderHeaderList = viewModel.OrderHeaderList.Reverse();
 
             if (searchName != null)
             {
@@ -65,6 +79,7 @@ namespace SpaceShop.Controllers
 
             return View(viewModel);
         }
+
         public IActionResult Details(int id)
         {
             OrderViewModel = new OrderHeaderDetailViewModel()
@@ -76,6 +91,7 @@ namespace SpaceShop.Controllers
 
             return View(OrderViewModel);
         }
+        [Authorize(Roles = PathManager.AdminRole)]
         public IActionResult ReturnInStock(int id)
         {
             OrderDetail fullDetail = repositoryOrderDetail.Find(id);
@@ -90,7 +106,7 @@ namespace SpaceShop.Controllers
 
             return RedirectToAction("Details", "Order", new {id = fullDetail.OrderHeaderId});
         }
-
+        [Authorize(Roles = PathManager.AdminRole)]
         [HttpPost]
         public IActionResult StartInProcessing()
         {
@@ -104,7 +120,7 @@ namespace SpaceShop.Controllers
 
             return RedirectToAction("Details", "Order", new { id = orderHeader.Id });
         }
-
+        [Authorize(Roles = PathManager.AdminRole)]
         [HttpPost]
         public IActionResult StartOrderDone()
         {
@@ -116,7 +132,7 @@ namespace SpaceShop.Controllers
 
             return RedirectToAction("Details", "Order", new { id = orderHeader.Id });
         }
-
+        [Authorize(Roles = PathManager.AdminRole)]
         [HttpPost]
         public IActionResult StartOrderCancel()
         {
