@@ -16,14 +16,17 @@ namespace SpaceShop.Controllers
 
         IRepositoryOrderHeader repositoryOrderHeader;
         IRepositoryOrderDetail repositoryOrderDetail;
+        IRepositoryProduct repositoryProduct;
         IBrainTreeBridge brainTreeBridge;
 
         public OrderController(IRepositoryOrderHeader repositoryOrderHeader,
-            IRepositoryOrderDetail repositoryOrderDetail, IBrainTreeBridge brainTreeBridge)
+            IRepositoryOrderDetail repositoryOrderDetail, IBrainTreeBridge brainTreeBridge,
+            IRepositoryProduct repositoryProduct)
         {
             this.brainTreeBridge = brainTreeBridge;
             this.repositoryOrderDetail = repositoryOrderDetail;
             this.repositoryOrderHeader = repositoryOrderHeader;
+            this.repositoryProduct = repositoryProduct;
         }
 
         public IActionResult Index(string searchName = null, string searchEmail = null,
@@ -73,6 +76,21 @@ namespace SpaceShop.Controllers
 
             return View(OrderViewModel);
         }
+        public IActionResult ReturnInStock(int id)
+        {
+            OrderDetail fullDetail = repositoryOrderDetail.Find(id);
+            Product product = repositoryProduct.Find(fullDetail.ProductId);
+            product.ShopCount += fullDetail.Count;
+            fullDetail.IsProductHadReturn = true;
+
+            repositoryProduct.Update(product);
+            repositoryOrderDetail.Update(fullDetail);
+            repositoryProduct.Save();
+
+
+            return RedirectToAction("Details", "Order", new {id = fullDetail.OrderHeaderId});
+        }
+
         [HttpPost]
         public IActionResult StartInProcessing()
         {
@@ -84,7 +102,7 @@ namespace SpaceShop.Controllers
 
             repositoryOrderHeader.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", "Order", new { id = orderHeader.Id });
         }
 
         [HttpPost]
@@ -96,7 +114,7 @@ namespace SpaceShop.Controllers
             orderHeader.Status = PathManager.StatusOrderDone;
             repositoryOrderHeader.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", "Order", new { id = orderHeader.Id });
         }
 
         [HttpPost]
@@ -125,7 +143,7 @@ namespace SpaceShop.Controllers
             orderHeader.Status = PathManager.StatusDenied;
             repositoryOrderHeader.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", "Order", new { id = orderHeader.Id });
         }
     }
     

@@ -33,15 +33,12 @@ namespace SpaceShop.Controllers
         IRepositoryApplicationUser repositoryApplicationUser;
         IRepositoryProduct repositoryProduct;
 
-        IRepositoryQueryHeader repositoryQueryHeader;
-        IRepositoryQueryDetail repositoryQueryDetail;
 
         IRepositoryOrderHeader repositoryOrderHeader;
         IRepositoryOrderDetail repositoryOrderDetail;
 
         public CartController(IWebHostEnvironment environment, IEmailSender emailSender, 
             IRepositoryProduct repositoryProduct, IRepositoryApplicationUser repositoryApplicationUser, 
-            IRepositoryQueryHeader repositoryQueryHeader, IRepositoryQueryDetail repositoryQueryDetail,
             IRepositoryOrderHeader repositoryOrderHeader, IRepositoryOrderDetail repositoryOrderDetail,
             IBrainTreeBridge brainTreeBridge)
         {
@@ -49,8 +46,6 @@ namespace SpaceShop.Controllers
             this.emailSender = emailSender;
             this.repositoryProduct = repositoryProduct;
             this.repositoryApplicationUser = repositoryApplicationUser;
-            this.repositoryQueryHeader = repositoryQueryHeader;
-            this.repositoryQueryDetail = repositoryQueryDetail;
             this.repositoryOrderHeader = repositoryOrderHeader;
             this.repositoryOrderDetail = repositoryOrderDetail;
             this.brainTreeBridge = brainTreeBridge;
@@ -108,38 +103,16 @@ namespace SpaceShop.Controllers
         {
             ApplicationUser applicationUser;
 
-            if (User.IsInRole(PathManager.AdminRole))
-            {
-                if (HttpContext.Session.Get<int>(PathManager.SessionQuery) != 0)
-                {
-                    QueryHeader queryHeader = repositoryQueryHeader.FirstOrDefault(
-                        x => x.Id == HttpContext.Session.Get<int>(PathManager.SessionQuery));
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
 
-                    applicationUser = new ApplicationUser()
-                    {
-                        Id = queryHeader.ApplicationUserId,
-                        Email = queryHeader.Email,
-                        PhoneNumber = queryHeader.PhoneNumber,
-                        FullName = queryHeader.FullName
-                    };
-                }
-                else
-                {
-                    applicationUser = new ApplicationUser();
-                }
-                //Оплата
-                var getWay = brainTreeBridge.GetGateWay();
-                var tokenClient = getWay.ClientToken.Generate();
-                ViewBag.TokenClient = tokenClient;
-            }
-            else
-            {
-                var claimsIdentity = (ClaimsIdentity)User.Identity;
+            // если пользователь вошел в систему, то объект будет определен
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            applicationUser = repositoryApplicationUser.FirstOrDefault(x => x.Id == claim.Value);
 
-                // если пользователь вошел в систему, то объект будет определен
-                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                applicationUser = repositoryApplicationUser.FirstOrDefault(x => x.Id == claim.Value);
-            }
+            //Оплата
+            var getWay = brainTreeBridge.GetGateWay();
+            var tokenClient = getWay.ClientToken.Generate();
+            ViewBag.TokenClient = tokenClient;
 
             List<Cart> cartList = new List<Cart>();
 
@@ -172,119 +145,73 @@ namespace SpaceShop.Controllers
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             ApplicationUser user = productUserViewModel.ApplicationUser;
+            int totalPrice = 0;
 
-            if (User.IsInRole(PathManager.AdminRole))
+            foreach (var item in productUserViewModel.ProductList)
             {
-                int totalPrice = 0;
+                totalPrice += (int)(item.TempCount * item.Price);
+            }
+            //Work With Order
+            OrderHeader orderHeader = new OrderHeader()
+            {
+                UserId = claim.Value,
+                DateOrder = DateTime.Now,
+                TotalPrice = totalPrice,
+                Status = PathManager.StatusAccepted,
+                FullName = user.FullName,
+                Email = user.Email,
+                Phone = user.PhoneNumber,
+                City = user.City,
+                Street = user.Street,
+                House = user.House,
+                Apartment = user.Apartment,
+                PostalCode = user.PostalCode,
+                TransactionId = "NONE"
+            };
+            repositoryOrderHeader.Add(orderHeader);
+            repositoryOrderHeader.Save();
 
-                foreach (var item in productUserViewModel.ProductList)
+
+            foreach (var product in productUserViewModel.ProductList)
+            {
+                OrderDetail orderDetail = new OrderDetail()
                 {
-                    totalPrice += (int)(item.TempCount * item.Price);
-                }
-                //Work With Order
-                OrderHeader orderHeader = new OrderHeader()
-                {
-                    AdminId = claim.Value,
-                    DateOrder = DateTime.Now,
-                    TotalPrice = totalPrice,
-                    Status = PathManager.StatusAccepted,
-                    FullName = user.FullName,
-                    Email = user.Email,
-                    Phone = user.PhoneNumber,
-                    City = user.City,
-                    Street = user.Street,
-                    House = user.House,
-                    Apartment = user.Apartment,
-                    PostalCode = user.PostalCode,
-                    TransactionId = "NONE"
+                    OrderHeaderId = orderHeader.Id,
+                    ProductId = product.Id,
+                    Count = product.TempCount,
+                    PricePerUnit = (int)product.Price,
+                    IsProductHadReturn = false
                 };
-                repositoryOrderHeader.Add(orderHeader);
-                repositoryOrderHeader.Save();
-
-
-                foreach (var product in productUserViewModel.ProductList)
-                {
-                    OrderDetail orderDetail = new OrderDetail()
-                    {
-                        OrderHeaderId = orderHeader.Id,
-                        ProductId = product.Id,
-                        Count = product.TempCount,
-                        PricePerUnit = (int)product.Price    // !!! fix need 
-                    };
-
-                    repositoryOrderDetail.Add(orderDetail);
-                }
-
-                repositoryOrderDetail.Save();
-
-
-                string nonce = collection["payment_method_nonce"];
-
-                var request = new TransactionRequest
-                {
-                    Amount = 1, 
-                    PaymentMethodNonce = nonce,
-                    OrderId = "1",
-                    Options = new TransactionOptionsRequest{ SubmitForSettlement = true }
-                };
-
-                var getWay = brainTreeBridge.GetGateWay();
-
-                var resultTransaction = getWay.Transaction.Sale(request);
-
-                var id = resultTransaction.Target.Id;
-                var status = resultTransaction.Target.ProcessorResponseText;
-
-                orderHeader.TransactionId = id;
-                repositoryOrderHeader.Save();
-
-                return View(true);
+                Product ShopProduct = repositoryProduct.Find(product.Id);
+                ShopProduct.ShopCount -= product.TempCount;
+                repositoryProduct.Update(ShopProduct);
+                repositoryOrderDetail.Add(orderDetail);
             }
 
-            else
+            repositoryOrderDetail.Save();
+
+
+            string nonce = collection["payment_method_nonce"];
+
+            var request = new TransactionRequest
             {
-                //Work With Query
-                var path = environment.WebRootPath + Path.DirectorySeparatorChar.ToString() + "templates" + Path.DirectorySeparatorChar.ToString() + "Inquiry.cshtml";
-                string subject = "New sub";
-                string bodyHtml = "";
-                using (StreamReader reader = new StreamReader(path))
-                {
-                    bodyHtml = reader.ReadToEnd();
-                }
-                string textProducts = "";
-                foreach (Product product in productUserViewModel.ProductList)
-                {
-                    Product nowProduct = repositoryProduct.Find(product.Id);
-                    textProducts += $"Name: {nowProduct.Name}, Price: {nowProduct.Price}\n";
-                }
-                //Body
-                string body = string.Format(bodyHtml, user.FullName, user.Email, user.PhoneNumber, textProducts);
-                await emailSender.SendEmailAsync(user.Email, subject, body);
-                QueryHeader queryHeader = new QueryHeader()
-                {
-                    ApplicationUserId = claim.Value,
-                    QueryDate = DateTime.Now,
-                    FullName = user.FullName,
-                    PhoneNumber = user.PhoneNumber,
-                    Email = user.Email,
-                };
-                repositoryQueryHeader.Add(queryHeader);
-                repositoryQueryHeader.Save();
+                Amount = 1, 
+                PaymentMethodNonce = nonce,
+                OrderId = "1",
+                Options = new TransactionOptionsRequest{ SubmitForSettlement = true }
+            };
 
-                foreach (var item in productUserViewModel.ProductList)
-                {
-                    QueryDetail queryDetail = new QueryDetail()
-                    {
-                        ProductId = item.Id,
-                        QueryHeaderId = queryHeader.Id
-                    };
-                    repositoryQueryDetail.Add(queryDetail);
-                }
-                repositoryQueryDetail.Save();
-                HttpContext.Session.Clear();
-            }
+            var getWay = brainTreeBridge.GetGateWay();
 
-            return View(false);
+            var resultTransaction = getWay.Transaction.Sale(request);
+
+            var id = resultTransaction.Target.Id;
+            var status = resultTransaction.Target.ProcessorResponseText;
+
+            orderHeader.TransactionId = id;
+            repositoryOrderHeader.Save();
+
+            return View();
         }
 
         public IActionResult Update(Product[] products)

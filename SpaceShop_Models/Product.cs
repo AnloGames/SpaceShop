@@ -26,6 +26,7 @@ namespace SpaceShop_Models
 
         [ForeignKey("CategoryId")]
         public virtual Category Category { get; set; }
+        public int ShopCount { get; set; }
         [NotMapped]
         [Range(1, 100)]
         public int TempCount { get; set; } = 1;

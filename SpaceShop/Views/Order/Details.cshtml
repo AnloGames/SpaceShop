@@ -128,20 +128,26 @@
                     <h2>Product Details</h2>
                 </div>
 
-                @foreach (var item in Model.OrderDetail)
+                @foreach (OrderDetail detail in Model.OrderDetail)
                 {
                     <div class="row bg-light m-2">
-                        <h5>Product Name: @item.Product.Name</h5>
+                        <h5>Product Name: @detail.Product.Name</h5>
 
                         <div class="col-sm">
-                            Price: @item.PricePerUnit
+                            Price per unit: @detail.PricePerUnit
                         </div>
                         <div class="col-sm">
-                            Count: @item.Count
+                            Count: @detail.Count
                         </div>
                         <div class="col-sm">
-                            Total: @(item.PricePerUnit * item.Count)
+                            Total: @(detail.PricePerUnit * detail.Count)
                         </div>
+                        @if (!detail.IsProductHadReturn && Model.OrderHeader.Status == PathManager.StatusDenied)
+                        {
+                            <div class="col-sm">
+                                <input asp-action="ReturnInStock" asp-route-id="@detail.Id" type="submit" value="Return in stock" class="btn form-control btn-primary" />
+                            </div>
+                        }
                     </div>
                 }
 

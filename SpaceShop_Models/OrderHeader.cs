@@ -13,9 +13,9 @@ namespace SpaceShop_Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string AdminId { get; set; }
-        [ForeignKey("AdminId")]
-        public ApplicationUser Admin { get; set; }
+        public string UserId { get; set; }
+        [ForeignKey("UserId")]
+        public ApplicationUser User { get; set; }
         public DateTime DateOrder { get; set; }
         public int TotalPrice { get; set; }
         public string Status { get; set; }

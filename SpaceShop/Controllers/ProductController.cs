@@ -11,7 +11,7 @@ using SpaceShop_DataMigrations.Repository.IRepository;
 
 namespace SpaceShop.Controllers
 {
-    //[Authorize(Roles = PathManager.AdminRole)]
+    [Authorize(Roles = PathManager.AdminRole)]
     public class ProductController : Controller
     {
         private ApplicationDbContext database;
@@ -99,6 +99,7 @@ namespace SpaceShop.Controllers
                     files[0].CopyTo(FileStream);
                 }
                 product.Image = imageName + extension;
+                product.ShopCount = 0;
                 repositoryProduct.Add(product);
             }
             else
@@ -109,6 +110,7 @@ namespace SpaceShop.Controllers
                     repositoryProduct.Save();
                 }
                 Product NowProduct = repositoryProduct.FirstOrDefault(filter: u => u.Id == product.Id, isTracking: false);
+                product.ShopCount = NowProduct.ShopCount;
                 if (files.Count > 0)
                 {
                     string upload = wwwRoot + PathManager.ImageProductPath;
@@ -148,6 +150,22 @@ namespace SpaceShop.Controllers
                 product.ShortDescription += repositoryMyModel.Find(MyModelId).Name + ", ";
             }
             repositoryProduct.Save();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult ChangeCount(int id)
+        {
+            return View(id);
+        }
+
+        [HttpPost]
+        public IActionResult ChangeCount(int id, int count)
+        {
+            Product product = repositoryProduct.Find(id);
+            product.ShopCount = count;
+            repositoryProduct.Update(product);
+            repositoryProduct.Save();
+
             return RedirectToAction("Index");
         }
 

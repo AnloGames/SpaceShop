@@ -29,34 +29,31 @@
     </p>
 
     <!--Address-->
-    @if (User.IsInRole(SpaceShop_Utility.PathManager.AdminRole))
-    {
-        <p>
-            <label>City</label>
-            <input type="text" asp-for="@Model.ApplicationUser.City" class="form-control" />
-            <span asp-validation-for="ApplicationUser.City" class="text-danger"></span>
-        </p>
-        <p>
-            <label>Street</label>
-            <input type="text" asp-for="@Model.ApplicationUser.Street" class="form-control" />
-            <span asp-validation-for="ApplicationUser.Street" class="text-danger"></span>
-        </p>
-        <p>
-            <label>House</label>
-            <input type="text" asp-for="@Model.ApplicationUser.House" class="form-control" />
-            <span asp-validation-for="ApplicationUser.House" class="text-danger"></span>
-        </p>
-        <p>
-            <label>Apartment</label>
-            <input type="text" asp-for="@Model.ApplicationUser.Apartment" class="form-control" />
-            <span asp-validation-for="ApplicationUser.Apartment" class="text-danger"></span>
-        </p>
-        <p>
-            <label>Postal Code</label>
-            <input type="text" asp-for="@Model.ApplicationUser.PostalCode" class="form-control" />
-            <span asp-validation-for="ApplicationUser.PostalCode" class="text-danger"></span>
-        </p>
-    }
+    <p>
+        <label>City</label>
+        <input type="text" asp-for="@Model.ApplicationUser.City" class="form-control" />
+        <span asp-validation-for="ApplicationUser.City" class="text-danger"></span>
+    </p>
+    <p>
+        <label>Street</label>
+        <input type="text" asp-for="@Model.ApplicationUser.Street" class="form-control" />
+        <span asp-validation-for="ApplicationUser.Street" class="text-danger"></span>
+    </p>
+    <p>
+        <label>House</label>
+        <input type="text" asp-for="@Model.ApplicationUser.House" class="form-control" />
+        <span asp-validation-for="ApplicationUser.House" class="text-danger"></span>
+    </p>
+    <p>
+        <label>Apartment</label>
+        <input type="text" asp-for="@Model.ApplicationUser.Apartment" class="form-control" />
+        <span asp-validation-for="ApplicationUser.Apartment" class="text-danger"></span>
+    </p>
+    <p>
+        <label>Postal Code</label>
+        <input type="text" asp-for="@Model.ApplicationUser.PostalCode" class="form-control" />
+        <span asp-validation-for="ApplicationUser.PostalCode" class="text-danger"></span>
+    </p>
 
     <!-- Products -->
     @for (int i = 0; i < Model.ProductList.Count(); i++)
@@ -81,13 +78,10 @@
     <h3>
         Total Products Price: @totalProductsPrice
     </h3>
-    @if (User.IsInRole(SpaceShop_Utility.PathManager.AdminRole))
-    {
         <div class="checkout container">
             <div id="dropin-container"></div>
             <input id="nonce" name="payment_method_nonce" type="hidden" />
         </div>
-    }
 
     @if (User.IsInRole(SpaceShop_Utility.PathManager.AdminRole))
     {

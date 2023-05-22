@@ -22,6 +22,7 @@
                 <th>Product Name</th>
                 <th>Price</th>
                 <th>Description</th>
+                <th>Products in stock</th>
                 <th>Image</th>
                 <th>Product Method</th>
             </tr>
@@ -32,7 +33,8 @@
                 <tr>
                     <td width="10%">@item.Name</td>
                     <td width="10%">@item.Price</td>
-                    <td width="30%">@item.Description</td>
+                    <td width="20%">@item.Description</td>
+                    <td width="10%">@item.ShopCount</td>
                     <td width="20%">
                         <img src="@SpaceShop_Utility.PathManager.ImageProductPath@item.Image" width="100" />
                     </td>
@@ -42,6 +44,9 @@
                         </a>
                         <a class="btn btn-danger" asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id">
                             <i class="fa-regular fa-eraser"></i>
+                        </a>
+                        <a class="btn btn-success" asp-controller="Product" asp-action="ChangeCount" asp-route-id="@item.Id">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
                         </a>
                     </td>
                 </tr>

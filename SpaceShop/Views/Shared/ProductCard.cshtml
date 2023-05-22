@@ -5,6 +5,7 @@
     <div class="card-body">
         <h5 class="card-title">@Model.Name</h5>
         <p class="card-text">@Model.ShortDescription</p>
+        <p class="card-text">Products in stock: @Model.ShopCount</p>
         <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-primary">Details</a>
     </div>
 </div>

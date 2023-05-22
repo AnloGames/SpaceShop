@@ -41,8 +41,6 @@ builder.Services.AddScoped<IRepositoryCategory, RepositoryCategory>();
 builder.Services.AddScoped<IRepositoryMyModel, RepositoryMyModel>();
 builder.Services.AddScoped<IRepositoryProduct, RepositoryProduct>();
 builder.Services.AddScoped<IRepositoryConnectionProductMyModel, RepositoryConnectionProductMyModel>();
-builder.Services.AddScoped<IRepositoryQueryHeader, RepositoryQueryHeader>();
-builder.Services.AddScoped<IRepositoryQueryDetail, RepositoryQueryDetail>();
 builder.Services.AddScoped<IRepositoryOrderHeader, RepositoryOrderHeader>();
 builder.Services.AddScoped<IRepositoryOrderDetail, RepositoryOrderDetail>();
 builder.Services.AddScoped<IRepositoryApplicationUser, RepositoryApplicationUser>();

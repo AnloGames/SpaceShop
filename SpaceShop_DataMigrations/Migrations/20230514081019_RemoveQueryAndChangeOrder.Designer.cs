@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SpaceShop_DataMigrations;
 
@@ -11,9 +12,10 @@ using SpaceShop_DataMigrations;
 namespace SpaceShop_DataMigrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230514081019_RemoveQueryAndChangeOrder")]
+    partial class RemoveQueryAndChangeOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -300,9 +302,6 @@ namespace SpaceShop_DataMigrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsProductHadReturn")
-                        .HasColumnType("bit");
-
                     b.Property<int>("OrderHeaderId")
                         .HasColumnType("int");
 
@@ -414,9 +413,6 @@ namespace SpaceShop_DataMigrations
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
-
-                    b.Property<int>("ShopCount")
-                        .HasColumnType("int");
 
                     b.Property<string>("ShortDescription")
                         .IsRequired()

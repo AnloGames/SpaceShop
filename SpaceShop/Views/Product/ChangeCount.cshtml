@@ -1,0 +1,15 @@
+﻿@model int
+@{
+    int count = 0;
+    int id = Model;
+}
+<form method="post">
+    <input asp-for="@id" hidden/>
+    <input asp-for="@count" class="form-control"/>
+    <p>
+        <input type="submit" class="btn border btn-success fa-sharp fa-solid fa-check" value="Change count" />
+    </p>
+    <p>
+        <a class="btn btn-danger" asp-controller="Product" asp-action="Index"><i class="fa-solid fa-backward"></i> Back</a>
+    </p>
+</form>

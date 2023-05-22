@@ -29,10 +29,9 @@ public class HomeController : Controller
     {
         HomeViewModel homeViewModel = new HomeViewModel()
         {
-            products = repositoryProduct.GetAll(),
+            products = repositoryProduct.GetAll(x => x.ShopCount > 0),
             categories = repositoryCategory.GetAll()
         };
-
 
         return View(homeViewModel);
     }
@@ -67,19 +66,26 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult Details(int id, int count)
     {
-        List<Cart> cartList = new List<Cart>();
-
-        if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
-            && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
+        Product product = repositoryProduct.Find(id);
+        if (count <= product.ShopCount)
         {
-            cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
+            List<Cart> cartList = new List<Cart>();
+
+            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
+                && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
+            {
+                cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
+            }
+
+            cartList.Add(new Cart() { ProductId = id, TempCount = count });
+
+            HttpContext.Session.Set(PathManager.SessionCart, cartList);
+
+            return RedirectToAction("Index");
         }
+        TempData[PathManager.Error] = "Not enough items in stock";
 
-        cartList.Add(new Cart() { ProductId = id, TempCount=count });
-
-        HttpContext.Session.Set(PathManager.SessionCart, cartList);
-
-        return RedirectToAction("Index");
+        return RedirectToAction("Details", id);
     }
 
     [HttpPost]

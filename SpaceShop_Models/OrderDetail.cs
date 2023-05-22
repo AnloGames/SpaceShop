@@ -23,5 +23,6 @@ namespace SpaceShop_Models
         public virtual Product Product { get; set; }
         public int Count { get; set; }
         public int PricePerUnit { get; set; }
+        public bool IsProductHadReturn { get; set; }
     }
 }
