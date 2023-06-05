@@ -11,7 +11,7 @@ namespace SpaceShop_DataMigrations
             migrationBuilder.AddColumn<bool>(
                 name: "IsProductHadReturn",
                 table: "OrderDetail",
-                type: "bit",
+                type: "boolean",
                 nullable: false,
                 defaultValue: false);
         }

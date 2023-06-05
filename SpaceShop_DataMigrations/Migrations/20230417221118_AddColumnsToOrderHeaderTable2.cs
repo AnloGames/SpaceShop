@@ -12,14 +12,14 @@ namespace SpaceShop_DataMigrations
             migrationBuilder.AddColumn<DateTime>(
                 name: "DateExecution",
                 table: "OrderHeader",
-                type: "datetime2",
+                type: "date",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
                 name: "TransactionId",
                 table: "OrderHeader",
-                type: "nvarchar(max)",
+                type: "text",
                 nullable: false,
                 defaultValue: "");
         }

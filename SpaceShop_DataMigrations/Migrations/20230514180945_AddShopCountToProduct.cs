@@ -11,7 +11,7 @@ namespace SpaceShop_DataMigrations
             migrationBuilder.AddColumn<int>(
                 name: "ShopCount",
                 table: "Product",
-                type: "int",
+                type: "integer",
                 nullable: false,
                 defaultValue: 0);
         }

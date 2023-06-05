@@ -12,10 +12,10 @@ namespace SpaceShop_DataMigrations
                 name: "ConnectionProductMyModel",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    MyModelId = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "integer", nullable: false),
+                    MyModelId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

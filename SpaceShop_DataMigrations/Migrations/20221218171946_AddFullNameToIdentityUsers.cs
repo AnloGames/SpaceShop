@@ -11,14 +11,14 @@ namespace SpaceShop_DataMigrations
             migrationBuilder.AddColumn<string>(
                 name: "Discriminator",
                 table: "AspNetUsers",
-                type: "nvarchar(max)",
+                type: "text",
                 nullable: false,
                 defaultValue: "");
 
             migrationBuilder.AddColumn<string>(
                 name: "FullName",
                 table: "AspNetUsers",
-                type: "nvarchar(max)",
+                type: "text",
                 nullable: true);
         }
 

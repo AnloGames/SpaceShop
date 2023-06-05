@@ -11,37 +11,37 @@ namespace SpaceShop_DataMigrations
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
                 table: "AspNetUserTokens",
-                type: "nvarchar(450)",
+                type: "text",
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(128)",
+                oldType: "text",
                 oldMaxLength: 128);
 
             migrationBuilder.AlterColumn<string>(
                 name: "LoginProvider",
                 table: "AspNetUserTokens",
-                type: "nvarchar(450)",
+                type: "text",
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(128)",
+                oldType: "text",
                 oldMaxLength: 128);
 
             migrationBuilder.AlterColumn<string>(
                 name: "ProviderKey",
                 table: "AspNetUserLogins",
-                type: "nvarchar(450)",
+                type: "text",
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(128)",
+                oldType: "text",
                 oldMaxLength: 128);
 
             migrationBuilder.AlterColumn<string>(
                 name: "LoginProvider",
                 table: "AspNetUserLogins",
-                type: "nvarchar(450)",
+                type: "text",
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(128)",
+                oldType: "text",
                 oldMaxLength: 128);
         }
 
@@ -50,38 +50,38 @@ namespace SpaceShop_DataMigrations
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
                 table: "AspNetUserTokens",
-                type: "nvarchar(128)",
+                type: "text",
                 maxLength: 128,
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(450)");
+                oldType: "text");
 
             migrationBuilder.AlterColumn<string>(
                 name: "LoginProvider",
                 table: "AspNetUserTokens",
-                type: "nvarchar(128)",
+                type: "text",
                 maxLength: 128,
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(450)");
+                oldType: "text");
 
             migrationBuilder.AlterColumn<string>(
                 name: "ProviderKey",
                 table: "AspNetUserLogins",
-                type: "nvarchar(128)",
+                type: "text",
                 maxLength: 128,
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(450)");
+                oldType: "text");
 
             migrationBuilder.AlterColumn<string>(
                 name: "LoginProvider",
                 table: "AspNetUserLogins",
-                type: "nvarchar(128)",
+                type: "text",
                 maxLength: 128,
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(450)");
+                oldType: "text");
         }
     }
 }

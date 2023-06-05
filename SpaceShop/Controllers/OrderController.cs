@@ -11,6 +11,7 @@ using System.Security.Claims;
 
 namespace SpaceShop.Controllers
 {
+    [Authorize]
     public class OrderController : Controller
     {
         [BindProperty]

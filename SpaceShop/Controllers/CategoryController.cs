@@ -6,7 +6,7 @@ using SpaceShop_Models;
 using SpaceShop_Utility;
 namespace SpaceShop.Controllers
 {
-    //[Authorize(Roles = PathManager.AdminRole)]
+    [Authorize(Roles = PathManager.AdminRole)]
     public class CategoryController : Controller
     {
         //public ApplicationDbContext database;
@@ -34,6 +34,7 @@ namespace SpaceShop.Controllers
         {
             if (ModelState.IsValid)
             {
+                category.Id = 0;
                 repositoryCategory.Add(category);
                 repositoryCategory.Save();
                 return RedirectToAction("Index");

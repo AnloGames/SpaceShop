@@ -12,10 +12,10 @@ namespace SpaceShop_DataMigrations
                 name: "Category",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    DisplayOrder = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

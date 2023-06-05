@@ -5,8 +5,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using SpaceShop_Utility;
+using Npgsql;
 using ShopM4_Utility.BrainTree;
-
+using Microsoft.AspNetCore.Authentication.Google;
 using SpaceShop_DataMigrations.Repository.IRepository;
 using SpaceShop_DataMigrations.Repository;
 using SpaceShop_Utility.BrainTree;
@@ -26,8 +27,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultUI().AddDef
 
 builder.Services.AddAuthentication().AddGoogle(googleOptions =>
 {
-    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    googleOptions.ClientId = "40186367825-oafiten6a6u1rvj1sni7tni7tdm581gh.apps.googleusercontent.com";
+    googleOptions.ClientSecret = "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";
 });
 builder.Services.AddAuthentication().AddFacebook(options =>
 {
@@ -45,9 +46,8 @@ builder.Services.AddScoped<IRepositoryOrderHeader, RepositoryOrderHeader>();
 builder.Services.AddScoped<IRepositoryOrderDetail, RepositoryOrderDetail>();
 builder.Services.AddScoped<IRepositoryApplicationUser, RepositoryApplicationUser>();
 
-builder.Services.AddDbContext<ApplicationDbContext>(
-    options=>options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-    );
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
 //   .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -80,26 +80,19 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-/*app.Use((context, next) =>
-{
-    context.Items["name"] = "Dany";
-    return next.Invoke();
-});*/
 
-app.UseSession(); //���������� �������������� �� ��� ������ � ��������
+app.UseSession(); 
 
-/*app.Run(x =>
+
+using (var scope = app.Services.CreateScope())
 {
-    //return x.Response.WriteAsync("Hello " + x.Items["name"]);
-    if (x.Session.Keys.Contains("name"))
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    if (context.Database.GetPendingMigrations().Any())
     {
-        return x.Response.WriteAsync("OK " + x.Session.GetString("name"));
+        context.Database.Migrate();
     }
-    else
-    {
-        x.Session.SetString("name", "Anton");
-        return x.Response.WriteAsync("NO");
-    }
-});*/
+}
 
 app.Run();

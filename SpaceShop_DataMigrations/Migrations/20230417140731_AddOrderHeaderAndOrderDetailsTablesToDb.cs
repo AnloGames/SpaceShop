@@ -13,20 +13,20 @@ namespace SpaceShop_DataMigrations
                 name: "OrderHeader",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AdminId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DateOrder = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TotalPrice = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Street = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    House = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Apartment = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    AdminId = table.Column<string>(type: "text", nullable: false),
+                    DateOrder = table.Column<DateTime>(type: "date", nullable: false),
+                    TotalPrice = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    FullName = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Phone = table.Column<string>(type: "text", nullable: false),
+                    City = table.Column<string>(type: "text", nullable: false),
+                    Street = table.Column<string>(type: "text", nullable: false),
+                    House = table.Column<string>(type: "text", nullable: false),
+                    Apartment = table.Column<string>(type: "text", nullable: false),
+                    PostalCode = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -43,12 +43,12 @@ namespace SpaceShop_DataMigrations
                 name: "OrderDetail",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderHeaderId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Count = table.Column<int>(type: "int", nullable: false),
-                    PricePerUnit = table.Column<int>(type: "int", nullable: false)
+                    OrderHeaderId = table.Column<int>(type: "integer", nullable: false),
+                    ProductId = table.Column<int>(type: "integer", nullable: false),
+                    Count = table.Column<int>(type: "integer", nullable: false),
+                    PricePerUnit = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

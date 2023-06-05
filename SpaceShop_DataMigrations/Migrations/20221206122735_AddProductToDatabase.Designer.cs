@@ -27,16 +27,16 @@ namespace SpaceShop_DataMigrations
             {
                 b.Property<int>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("int");
+                    .HasColumnType("integer");
 
                 SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                 b.Property<int>("DisplayOrder")
-                    .HasColumnType("int");
+                    .HasColumnType("integer");
 
                 b.Property<string>("Name")
                     .IsRequired()
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.HasKey("Id");
 
@@ -47,16 +47,16 @@ namespace SpaceShop_DataMigrations
             {
                 b.Property<int>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("int");
+                    .HasColumnType("integer");
 
                 SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                 b.Property<string>("Name")
                     .IsRequired()
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<int>("Number")
-                    .HasColumnType("int");
+                    .HasColumnType("integer");
 
                 b.HasKey("Id");
 
@@ -67,31 +67,31 @@ namespace SpaceShop_DataMigrations
             {
                 b.Property<int>("Id")
                     .ValueGeneratedOnAdd()
-                    .HasColumnType("int");
+                    .HasColumnType("integer");
 
                 SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                 b.Property<int>("CategoryId")
-                    .HasColumnType("int");
+                    .HasColumnType("integer");
 
                 b.Property<string>("Description")
                     .IsRequired()
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("Image")
                     .IsRequired()
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<string>("Name")
                     .IsRequired()
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.Property<double>("Price")
-                    .HasColumnType("float");
+                    .HasColumnType("real");
 
                 b.Property<string>("ShortDescription")
                     .IsRequired()
-                    .HasColumnType("nvarchar(max)");
+                    .HasColumnType("text");
 
                 b.HasKey("Id");
 

@@ -1,0 +1,10 @@
+services:
+  app:
+    image: space_shop_new
+    ports:
+      - 5000:5000
+  db:
+    image: postgres
+    restart: always
+    environment:
+        POSTGRES_PASSWORD: example

