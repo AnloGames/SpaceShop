@@ -12,7 +12,7 @@ namespace SpaceShop_DataMigrations
             migrationBuilder.AddColumn<DateTime>(
                 name: "DateExecution",
                 table: "OrderHeader",
-                type: "date",
+                type: "timestamp with time zone",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 

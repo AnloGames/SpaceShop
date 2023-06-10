@@ -339,10 +339,10 @@ namespace SpaceShop_DataMigrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("DateExecution")
-                        .HasColumnType("date");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("DateOrder")
-                        .HasColumnType("date");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -471,7 +471,7 @@ namespace SpaceShop_DataMigrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("QueryDate")
-                        .HasColumnType("date");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 

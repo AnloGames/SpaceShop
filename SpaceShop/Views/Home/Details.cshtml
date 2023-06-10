@@ -7,34 +7,35 @@
 <form method="post">
     <input asp-for="@id" hidden></input>
     <p>
-        <h2>@Model.Product.Name</h2>
+        <h2>Name: @Model.Product.Name</h2>
 
-        <h2>@Model.Product.Price</h2>
+        <h2>Price: @Model.Product.Price</h2>
     </p>
     <p>
+
         <img src="@SpaceShop_Utility.PathManager.ImageProductPath@Model.Product.Image" />
     </p>
     <p>
-        <h2>@Model.Product.Category.Name</h2>
+        <h2>Category: @Model.Product.Category.Name</h2>
     </p>
     <p>
         @Html.Raw(Model.Product.Description)
     </p>
-    @if (true)//User.IsInRole(PathManager.Admin)
-    {
-        <p>
-            Count:
-        </p>
-        <p>@if (Model.IsInCart)
-            {
-                <input asp-for="@count" class="form-control" disabled/>
-            }
-            else
-            {
-                <input asp-for="@count" class="form-control" />
-            }
-        </p>
-    }
+    <p>
+        Count:
+    </p>
+    <p>@if (Model.IsInCart)
+        {
+            <input asp-for="@count" class="form-control" disabled/>
+        }
+        else
+        {
+            <input asp-for="@count" class="form-control" />
+        }
+    </p>
+    <p>
+        <h4>Products in stock: @Model.Product.ShopCount</h4>
+    </p>
     <p>
         <a class="btn btn-primary" asp-action="Index">Back</a>
         @if (Model.IsInCart)

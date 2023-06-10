@@ -83,22 +83,11 @@
             <input id="nonce" name="payment_method_nonce" type="hidden" />
         </div>
 
-    @if (User.IsInRole(SpaceShop_Utility.PathManager.AdminRole))
-    {
         <p>
             <button type="submit" class="btn btn-primary form-control" onclick="return funcValidation()">
                 Submit Order
             </button>
         </p>
-    }
-    else
-    {
-        <p>
-            <button type="submit" class="btn btn-success form-control" onclick="return funcValidation()">
-                Submit Query
-            </button>
-        </p>
-    }
 
 </form>
 @section Scripts{
@@ -109,103 +98,103 @@
     <script src="https://js.braintreegateway.com/web/dropin/1.34.0/js/dropin.min.js"></script>
 
     <script>
-                            var tokenClient = "@ViewBag.TokenClient";
-                            var form = document.querySelector('#payment-form');
-                            // подключение для braintree
-                            braintree.dropin.create({
-                                authorization: tokenClient,
-                                container: '#dropin-container'
-                            },
-                                // первый параметр для ошибки, второй - экземпляр подключения
-                                function (error, dropinInstance) {
-                                    // тут происходит обработка события
-                                    form.addEventListener('submit', function () {
-                                        // блочим автоматическую передачу формы
-                                        event.preventDefault();
-                                        // добавить nonce в форму и затем отправить ее
-                                        dropinInstance.requestPaymentMethod(function (err, payload) {
-                                            // отправить nonce на наш сервер
-                                            document.querySelector('#nonce').value = payload.nonce;
-                                            form.submit();
-                                        })
-                                    })
-                                });
+        var tokenClient = "@ViewBag.TokenClient";
+        var form = document.querySelector('#payment-form');
+        // подключение для braintree
+        braintree.dropin.create({
+            authorization: tokenClient,
+            container: '#dropin-container'
+        },
+            // первый параметр для ошибки, второй - экземпляр подключения
+            function (error, dropinInstance) {
+                // тут происходит обработка события
+                form.addEventListener('submit', function () {
+                    // блочим автоматическую передачу формы
+                    event.preventDefault();
+                    // добавить nonce в форму и затем отправить ее
+                    dropinInstance.requestPaymentMethod(function (err, payload) {
+                        // отправить nonce на наш сервер
+                        document.querySelector('#nonce').value = payload.nonce;
+                        form.submit();
+                    })
+                })
+            });
 
-                            function funcValidation() {
-                                var full_name = document.getElementById("ApplicationUser_FullName").value;
-                                var phone = document.getElementById("ApplicationUser_PhoneNumber").value;
-                                var email = document.getElementById("ApplicationUser_Email").value;
-                                var city = document.getElementById("ApplicationUser_City").value;
-                                var street = document.getElementById("ApplicationUser_Street").value;
-                                var house = document.getElementById("ApplicationUser_House").value;
-                                var apartment = document.getElementById("ApplicationUser_Apartment").value;
-                                var postal_code = document.getElementById("ApplicationUser_PostalCode").value;
-                                if (full_name == '') {
-                                    Swal.fire(
-                                        'Error!',
-                                        'Пожалуйста, введите имя!',
-                                        'error'
-                                    )
-                                    return false;
-                                }
-                                if (phone == '') {
-                                    Swal.fire(
-                                        'Error!',
-                                        'Пожалуйста, введите телефон!',
-                                        'error'
-                                    )
-                                    return false;
-                                }
-                                if (email == '') {
-                                    Swal.fire(
-                                        'Error!',
-                                        'Пожалуйста, введите email!',
-                                        'error'
-                                    )
-                                    return false;
-                                }
-                                if (city == '') {
-                                    Swal.fire(
-                                        'Error!',
-                                        'Пожалуйста, введите город!',
-                                        'error'
-                                    )
-                                    return false;
-                                }
-                                if (street == '') {
-                                    Swal.fire(
-                                        'Error!',
-                                        'Пожалуйста, введите улицу!',
-                                        'error'
-                                    )
-                                    return false;
-                                }
-                                if (house == '') {
-                                    Swal.fire(
-                                        'Error!',
-                                        'Пожалуйста, введите дом!',
-                                        'error'
-                                    )
-                                    return false;
-                                }
-                                if (apartment == '') {
-                                    Swal.fire(
-                                        'Error!',
-                                        'Пожалуйста, введите квартиру!',
-                                        'error'
-                                    )
-                                    return false;
-                                }
-                                if (postal_code == '') {
-                                    Swal.fire(
-                                        'Error!',
-                                        'Пожалуйста, введите почтовый индекс!',
-                                        'error'
-                                    )
-                                    return false;
-                                }
-                                return true;
-                            }
+        function funcValidation() {
+            var full_name = document.getElementById("ApplicationUser_FullName").value;
+            var phone = document.getElementById("ApplicationUser_PhoneNumber").value;
+            var email = document.getElementById("ApplicationUser_Email").value;
+            var city = document.getElementById("ApplicationUser_City").value;
+            var street = document.getElementById("ApplicationUser_Street").value;
+            var house = document.getElementById("ApplicationUser_House").value;
+            var apartment = document.getElementById("ApplicationUser_Apartment").value;
+            var postal_code = document.getElementById("ApplicationUser_PostalCode").value;
+            if (full_name == '') {
+                Swal.fire(
+                    'Error!',
+                    'Пожалуйста, введите имя!',
+                    'error'
+                )
+                return false;
+            }
+            if (phone == '') {
+                Swal.fire(
+                    'Error!',
+                    'Пожалуйста, введите телефон!',
+                    'error'
+                )
+                return false;
+            }
+            if (email == '') {
+                Swal.fire(
+                    'Error!',
+                    'Пожалуйста, введите email!',
+                    'error'
+                )
+                return false;
+            }
+            if (city == '') {
+                Swal.fire(
+                    'Error!',
+                    'Пожалуйста, введите город!',
+                    'error'
+                )
+                return false;
+            }
+            if (street == '') {
+                Swal.fire(
+                    'Error!',
+                    'Пожалуйста, введите улицу!',
+                    'error'
+                )
+                return false;
+            }
+            if (house == '') {
+                Swal.fire(
+                    'Error!',
+                    'Пожалуйста, введите дом!',
+                    'error'
+                )
+                return false;
+            }
+            if (apartment == '') {
+                Swal.fire(
+                    'Error!',
+                    'Пожалуйста, введите квартиру!',
+                    'error'
+                )
+                return false;
+            }
+            if (postal_code == '') {
+                Swal.fire(
+                    'Error!',
+                    'Пожалуйста, введите почтовый индекс!',
+                    'error'
+                )
+                return false;
+            }
+            return true;
+        }
     </script>
     }
 }

@@ -374,7 +374,7 @@ namespace SpaceShop_DataMigrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("QueryDate")
-                        .HasColumnType("date");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 

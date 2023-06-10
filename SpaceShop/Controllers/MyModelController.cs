@@ -4,6 +4,7 @@ using SpaceShop_DataMigrations;
 using SpaceShop_Models;
 using SpaceShop_Utility;
 using SpaceShop_DataMigrations.Repository.IRepository;
+using SpaceShop_DataMigrations.Repository;
 
 namespace SpaceShop.Controllers
 {
@@ -27,11 +28,34 @@ namespace SpaceShop.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(MyModel myModel)
         {
-            repositoryMyModel.Add(myModel);
-            repositoryMyModel.Save();
+            if (ModelState.IsValid)
+            {
+                repositoryMyModel.Add(myModel);
+                repositoryMyModel.Save();
+                return RedirectToAction("Index");
+            }
+            return View(myModel);
+        }
 
+        public IActionResult Delete(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            MyModel myModel = repositoryMyModel.Find((int)id);
+
+            if (myModel == null)
+            {
+                return NotFound();
+            }
+
+            repositoryMyModel.Remove(myModel);
+            repositoryMyModel.Save();
             return RedirectToAction("Index");
         }
     }

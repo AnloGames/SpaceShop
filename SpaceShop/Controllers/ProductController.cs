@@ -8,6 +8,7 @@ using SpaceShop_ViewModels;
 using System.IO;
 using SpaceShop_Utility;
 using SpaceShop_DataMigrations.Repository.IRepository;
+using NuGet.Packaging.Signing;
 
 namespace SpaceShop.Controllers
 {
@@ -91,15 +92,22 @@ namespace SpaceShop.Controllers
                 string upload = wwwRoot + PathManager.ImageProductPath;
                 string imageName = Guid.NewGuid().ToString();
 
-                string extension = Path.GetExtension(files[0].FileName);
-
-                string path = upload + imageName + extension;
-                using (var FileStream = new FileStream(path, FileMode.Create))
+                if (files.Count > 0)
                 {
-                    files[0].CopyTo(FileStream);
+                    string extension = Path.GetExtension(files[0].FileName);
+                    string path = upload + imageName + extension;
+                    using (var FileStream = new FileStream(path, FileMode.Create))
+                    {
+                        files[0].CopyTo(FileStream);
+                    }
+                    product.Image = imageName + extension;
                 }
-                product.Image = imageName + extension;
-                product.ShopCount = 0;
+                else
+                {
+                    product.Image = "NONE.png";
+                }
+
+                product.ShopCount = 1;
                 repositoryProduct.Add(product);
             }
             else
@@ -138,7 +146,7 @@ namespace SpaceShop.Controllers
                 repositoryProduct.Update(product);
             }
             product.Category = repositoryCategory.FirstOrDefault(filter: u => u.Id == product.CategoryId);
-            product.ShortDescription = "Category: " + product.Category.Name + "; MyModels: ";
+            product.ShortDescription = "Category: " + product.Category.Name + "; Tags: ";
             foreach (int MyModelId in MyModelsId)
             {
                 repositoryProduct.Save();

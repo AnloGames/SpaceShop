@@ -21,92 +21,173 @@
                 <div class="row">
                     <h2>Details Order</h2>
                 </div>
-
-                <div class="row">
-                    <div class="col-3">Full Name: </div>
-                    <div class="col-9">
-                        <input asp-for="OrderHeader.FullName" type="text" class="form-control" />
-                        <span asp-validation-for="OrderHeader.FullName" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-3">Email: </div>
-                    <div class="col-9">
-                        <input asp-for="OrderHeader.Email" type="text" class="form-control" />
-                        <span asp-validation-for="OrderHeader.Email" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-3">Phone: </div>
-                    <div class="col-9">
-                        <input asp-for="OrderHeader.Phone" type="text" class="form-control" />
-                        <span asp-validation-for="OrderHeader.Phone" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-3">City: </div>
-                    <div class="col-9">
-                        <input asp-for="OrderHeader.City" type="text" class="form-control" />
-                        <span asp-validation-for="OrderHeader.City" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-3">Street: </div>
-                    <div class="col-9">
-                        <input asp-for="OrderHeader.Street" type="text" class="form-control" />
-                        <span asp-validation-for="OrderHeader.Street" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-3">House: </div>
-                    <div class="col-9">
-                        <input asp-for="OrderHeader.House" type="text" class="form-control" />
-                        <span asp-validation-for="OrderHeader.House" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-3">Apartment: </div>
-                    <div class="col-9">
-                        <input asp-for="OrderHeader.Apartment" type="text" class="form-control" />
-                        <span asp-validation-for="OrderHeader.Apartment" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-3">PostalCode: </div>
-                    <div class="col-9">
-                        <input asp-for="OrderHeader.PostalCode" type="text" class="form-control" />
-                        <span asp-validation-for="OrderHeader.PostalCode" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-3">DateOrder: </div>
-                    <div class="col-9">
-                        <input value="@Model.OrderHeader.DateOrder.ToShortDateString()" type="text"
-                           class="form-control" readonly />
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-3">Date Execution: </div>
-                    <div class="col-9">
-                        <input value="@Model.OrderHeader.DateExecution.ToShortDateString()" type="text"
-                               class="form-control" readonly />
-                    </div>
-                </div>
                 @if (User.IsInRole(PathManager.AdminRole))
                 {
+                    <div class="row">
+                        <div class="col-3">Full Name: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.FullName" type="text" class="form-control" />
+                            <span asp-validation-for="OrderHeader.FullName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">Email: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.Email" type="text" class="form-control" />
+                            <span asp-validation-for="OrderHeader.Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">Phone: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.Phone" type="text" class="form-control" />
+                            <span asp-validation-for="OrderHeader.Phone" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">City: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.City" type="text" class="form-control" />
+                            <span asp-validation-for="OrderHeader.City" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">Street: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.Street" type="text" class="form-control" />
+                            <span asp-validation-for="OrderHeader.Street" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">House: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.House" type="text" class="form-control" />
+                            <span asp-validation-for="OrderHeader.House" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">Apartment: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.Apartment" type="text" class="form-control" />
+                            <span asp-validation-for="OrderHeader.Apartment" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">PostalCode: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.PostalCode" type="text" class="form-control" />
+                            <span asp-validation-for="OrderHeader.PostalCode" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">DateOrder: </div>
+                        <div class="col-9">
+                            <input value="@Model.OrderHeader.DateOrder.ToShortDateString()" type="text"
+                               class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">Date Execution: </div>
+                        <div class="col-9">
+                            <input value="@Model.OrderHeader.DateExecution.ToShortDateString()" type="text"
+                                   class="form-control" readonly />
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-3">ID Transaction: </div>
                         <div class="col-9">
                             <input asp-for="@Model.OrderHeader.TransactionId" type="text" class="form-control"
-                                   readonly />
+                                    readonly />
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row">
+                        <div class="col-3">Full Name: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.FullName" type="text" class="form-control" readonly />
+                            <span asp-validation-for="OrderHeader.FullName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">Email: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.Email" type="text" class="form-control" readonly />
+                            <span asp-validation-for="OrderHeader.Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">Phone: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.Phone" type="text" class="form-control" readonly />
+                            <span asp-validation-for="OrderHeader.Phone" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">City: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.City" type="text" class="form-control" readonly />
+                            <span asp-validation-for="OrderHeader.City" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">Street: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.Street" type="text" class="form-control" readonly />
+                            <span asp-validation-for="OrderHeader.Street" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">House: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.House" type="text" class="form-control" readonly/>
+                            <span asp-validation-for="OrderHeader.House" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">Apartment: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.Apartment" type="text" class="form-control" readonly />
+                            <span asp-validation-for="OrderHeader.Apartment" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">PostalCode: </div>
+                        <div class="col-9">
+                            <input asp-for="OrderHeader.PostalCode" type="text" class="form-control" readonly />
+                            <span asp-validation-for="OrderHeader.PostalCode" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">DateOrder: </div>
+                        <div class="col-9">
+                            <input value="@Model.OrderHeader.DateOrder.ToShortDateString()" type="text"
+                           class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">Date Execution: </div>
+                        <div class="col-9">
+                            <input value="@Model.OrderHeader.DateExecution.ToShortDateString()" type="text"
+                           class="form-control" readonly />
                         </div>
                     </div>
                 }
@@ -154,7 +235,7 @@
 
                 <div class="row">
                     <div class="col-sm">
-                        <h2> Final Total: @Model.OrderHeader.TotalPrice </h2>
+                        <h2> Final total price: @Model.OrderHeader.TotalPrice </h2>
                     </div>
                 </div>
 

@@ -55,7 +55,6 @@ namespace SpaceShop.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
-            TempData[PathManager.Success] = User.IsInRole(PathManager.AdminRole).ToString();
             List<Cart> cartList = new List<Cart>();
 
             if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
@@ -210,6 +209,7 @@ namespace SpaceShop.Controllers
 
             orderHeader.TransactionId = id;
             repositoryOrderHeader.Save();
+            HttpContext.Session.Clear();
 
             return View();
         }

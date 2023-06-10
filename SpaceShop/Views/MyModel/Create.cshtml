@@ -1,0 +1,32 @@
+﻿@model MyModel
+
+<h3>Add MyModel</h3>
+
+<form method="post" asp-action="Create">
+    <p>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </p>
+    <p>
+        <label asp-for="Number"></label>
+        <input asp-for="Number" class="form-control" />
+        <span asp-validation-for="Number" class="text-danger"></span>
+    </p>
+    <p>
+        <input type="submit" class="btn border btn-success" value="Create" /> <i class="fa-sharp fa-solid fa-check"></i>
+    </p>
+    <p>
+        <a class="btn btn-danger" asp-controller="MyModel" asp-action="Index"><i class="fa-solid fa-backward"></i> Back</a>
+
+    </p>
+    <p>
+        <div asp-validation-summary="All"></div>
+    </p>
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+    }
