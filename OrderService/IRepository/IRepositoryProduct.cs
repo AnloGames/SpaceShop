@@ -1,7 +1,7 @@
 ﻿using SpaceShop_Models;
 using System;
 
-namespace SpaceShop_DataMigrations.Repository.IRepository
+namespace LogicService.IRepository
 {
     public interface IRepositoryProduct : IRepository<Product>
     {

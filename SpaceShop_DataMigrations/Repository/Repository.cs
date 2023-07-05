@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SpaceShop_DataMigrations.Repository.IRepository;
+using SpaceShop_DataMigrations;
 using System.Linq.Expressions;
+using LogicService.IRepository;
 
 namespace SpaceShop_DataMigrations.Repository
 {
@@ -8,7 +9,7 @@ namespace SpaceShop_DataMigrations.Repository
     {
         protected readonly ApplicationDbContext db;
         protected DbSet<T> dbSet;
-      
+
         public Repository(ApplicationDbContext db)
         {
             this.db = db;
@@ -25,8 +26,8 @@ namespace SpaceShop_DataMigrations.Repository
             return dbSet.Find(id);
         }
 
-        public T FirstOrDefault(Expression<Func<T, bool>> filter = null, 
-            string includeProperties = null, 
+        public T FirstOrDefault(Expression<Func<T, bool>> filter = null,
+            string includeProperties = null,
             bool isTracking = true)
         {
             IQueryable<T> query = dbSet;
@@ -50,8 +51,8 @@ namespace SpaceShop_DataMigrations.Repository
             return query.FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, 
-            IOrderedQueryable<T>> orderBy = null, 
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>,
+            IOrderedQueryable<T>> orderBy = null,
             string includeProperties = null,
             bool isTracking = true)
         {
@@ -62,7 +63,7 @@ namespace SpaceShop_DataMigrations.Repository
             {
                 query = query.AsNoTracking();
             }
-            if (filter != null) 
+            if (filter != null)
             {
                 query = query.Where(filter);
             }
@@ -73,7 +74,7 @@ namespace SpaceShop_DataMigrations.Repository
                     query = query.Include(item);
                 }
             }
-            if (orderBy != null) 
+            if (orderBy != null)
             {
                 query = orderBy(query);
             }

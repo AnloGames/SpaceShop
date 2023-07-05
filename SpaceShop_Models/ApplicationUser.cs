@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SpaceShop_Models
@@ -18,5 +17,5 @@ namespace SpaceShop_Models
         [NotMapped]
         public string PostalCode { get; set; }
     }
-        //Если хотим добавить в таблицу столбец, наследуем класс от модели таблицы
+    //Если хотим добавить в таблицу столбец, наследуем класс от модели таблицы
 }

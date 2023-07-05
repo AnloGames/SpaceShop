@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SpaceShop_DataMigrations.Repository.IRepository;
+using LogicService.IRepository;
 using SpaceShop_Utility.BrainTree;
 using SpaceShop_Utility;
 using SpaceShop_ViewModels;

@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpaceShop_DataMigrations.Repository.IRepository
+namespace LogicService.IRepository
 {
-    public interface IRepositoryApplicationUser : IRepository<ApplicationUser>
+    public interface IRepositoryOrderHeader : IRepository<OrderHeader>
     {
+        void Update(OrderHeader obj);
     }
 }

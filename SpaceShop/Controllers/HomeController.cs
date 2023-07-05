@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SpaceShop_DataMigrations.Repository.IRepository;
+using LogicService.IRepository;
 using SpaceShop_Models;
 using SpaceShop_Utility;
 using SpaceShop_ViewModels;

@@ -1,5 +1,4 @@
-﻿using System;
-using SpaceShop_Models;
+﻿using SpaceShop_Models;
 
 namespace SpaceShop_ViewModels
 {

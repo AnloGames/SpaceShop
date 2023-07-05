@@ -1,6 +1,4 @@
-﻿using System;
-using SpaceShop_Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 //using Microsoft.Net.Http.Headers;
 using System.ComponentModel.DataAnnotations.Schema;
 

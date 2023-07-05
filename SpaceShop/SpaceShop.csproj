@@ -36,6 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OrderService\LogicService.csproj" />
     <ProjectReference Include="..\SpaceShop_DataMigrations\SpaceShop_DataMigrations.csproj" />
     <ProjectReference Include="..\SpaceShop_Models\SpaceShop_Models.csproj" />
     <ProjectReference Include="..\SpaceShop_Utility\SpaceShop_Utility.csproj" />

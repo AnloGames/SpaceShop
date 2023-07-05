@@ -4,7 +4,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SpaceShop_DataMigrations;
 using SpaceShop_Models;
@@ -12,11 +11,12 @@ using SpaceShop_ViewModels;
 using SpaceShop_Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore.Storage;
-using SpaceShop_DataMigrations.Repository.IRepository;
+using LogicService.IRepository;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SpaceShop_Utility.BrainTree;
 using Braintree;
+using LogicService.Service.IService;
 
 namespace SpaceShop.Controllers
 {
@@ -37,10 +37,12 @@ namespace SpaceShop.Controllers
         IRepositoryOrderHeader repositoryOrderHeader;
         IRepositoryOrderDetail repositoryOrderDetail;
 
+        IOrderService orderService;
+
         public CartController(IWebHostEnvironment environment, IEmailSender emailSender, 
-            IRepositoryProduct repositoryProduct, IRepositoryApplicationUser repositoryApplicationUser, 
+            IRepositoryProduct repositoryProduct, IRepositoryApplicationUser repositoryApplicationUser,
             IRepositoryOrderHeader repositoryOrderHeader, IRepositoryOrderDetail repositoryOrderDetail,
-            IBrainTreeBridge brainTreeBridge)
+            IBrainTreeBridge brainTreeBridge, IOrderService orderService)
         {
             this.environment = environment;
             this.emailSender = emailSender;
@@ -49,6 +51,7 @@ namespace SpaceShop.Controllers
             this.repositoryOrderHeader = repositoryOrderHeader;
             this.repositoryOrderDetail = repositoryOrderDetail;
             this.brainTreeBridge = brainTreeBridge;
+            this.orderService = orderService;
         }
 
 
@@ -141,74 +144,9 @@ namespace SpaceShop.Controllers
 
         public async Task<IActionResult> InquiryConfirmation(IFormCollection collection, ProductUserViewModel productUserViewModel)
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             ApplicationUser user = productUserViewModel.ApplicationUser;
-            int totalPrice = 0;
-
-            foreach (var item in productUserViewModel.ProductList)
-            {
-                totalPrice += (int)(item.TempCount * item.Price);
-            }
-            //Work With Order
-            OrderHeader orderHeader = new OrderHeader()
-            {
-                UserId = claim.Value,
-                DateOrder = DateTime.Now,
-                TotalPrice = totalPrice,
-                Status = PathManager.StatusAccepted,
-                FullName = user.FullName,
-                Email = user.Email,
-                Phone = user.PhoneNumber,
-                City = user.City,
-                Street = user.Street,
-                House = user.House,
-                Apartment = user.Apartment,
-                PostalCode = user.PostalCode,
-                TransactionId = "NONE"
-            };
-            repositoryOrderHeader.Add(orderHeader);
-            repositoryOrderHeader.Save();
-
-
-            foreach (var product in productUserViewModel.ProductList)
-            {
-                OrderDetail orderDetail = new OrderDetail()
-                {
-                    OrderHeaderId = orderHeader.Id,
-                    ProductId = product.Id,
-                    Count = product.TempCount,
-                    PricePerUnit = (int)product.Price,
-                    IsProductHadReturn = false
-                };
-                Product ShopProduct = repositoryProduct.Find(product.Id);
-                ShopProduct.ShopCount -= product.TempCount;
-                repositoryProduct.Update(ShopProduct);
-                repositoryOrderDetail.Add(orderDetail);
-            }
-
-            repositoryOrderDetail.Save();
-
-
-            string nonce = collection["payment_method_nonce"];
-
-            var request = new TransactionRequest
-            {
-                Amount = 1, 
-                PaymentMethodNonce = nonce,
-                OrderId = "1",
-                Options = new TransactionOptionsRequest{ SubmitForSettlement = true }
-            };
-
-            var getWay = brainTreeBridge.GetGateWay();
-
-            var resultTransaction = getWay.Transaction.Sale(request);
-
-            var id = resultTransaction.Target.Id;
-            var status = resultTransaction.Target.ProcessorResponseText;
-
-            orderHeader.TransactionId = id;
-            repositoryOrderHeader.Save();
+            List<Product> productList = productUserViewModel.ProductList;
+            orderService.SaveOrder(user, productList, collection);
             HttpContext.Session.Clear();
 
             return View();

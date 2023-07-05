@@ -8,7 +8,7 @@ using SpaceShop_Utility;
 using Npgsql;
 using ShopM4_Utility.BrainTree;
 using Microsoft.AspNetCore.Authentication.Google;
-using SpaceShop_DataMigrations.Repository.IRepository;
+using LogicService.IRepository;
 using SpaceShop_DataMigrations.Repository;
 using SpaceShop_Utility.BrainTree;
 using Microsoft.AspNetCore.HttpOverrides;

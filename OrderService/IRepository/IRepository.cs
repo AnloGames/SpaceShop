@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace SpaceShop_DataMigrations.Repository.IRepository
+namespace LogicService.IRepository
 {
     public interface IRepository<T> where T: class
     {

@@ -1,6 +1,6 @@
 ﻿using SpaceShop_Models;
 
-namespace SpaceShop_DataMigrations.Repository.IRepository
+namespace LogicService.IRepository
 {
     public interface IRepositoryCategory : IRepository<Category>
     {

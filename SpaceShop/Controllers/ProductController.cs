@@ -7,7 +7,7 @@ using SpaceShop_Models;
 using SpaceShop_ViewModels;
 using System.IO;
 using SpaceShop_Utility;
-using SpaceShop_DataMigrations.Repository.IRepository;
+using LogicService.IRepository;
 using NuGet.Packaging.Signing;
 
 namespace SpaceShop.Controllers

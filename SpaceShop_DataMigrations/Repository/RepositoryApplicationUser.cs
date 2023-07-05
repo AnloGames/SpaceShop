@@ -1,10 +1,6 @@
-﻿using SpaceShop_DataMigrations.Repository.IRepository;
+﻿using SpaceShop_DataMigrations;
 using SpaceShop_Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LogicService.IRepository;
 
 namespace SpaceShop_DataMigrations.Repository
 {

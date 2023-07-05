@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SpaceShop_DataMigrations;
 using SpaceShop_Models;
 using SpaceShop_Utility;
-using SpaceShop_DataMigrations.Repository.IRepository;
-using SpaceShop_DataMigrations.Repository;
+using LogicService.IRepository;
 
 namespace SpaceShop.Controllers
 {

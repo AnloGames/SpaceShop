@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpaceShop_DataMigrations.Repository.IRepository
+namespace LogicService.IRepository
 {
-    public interface IRepositoryMyModel : IRepository<MyModel>
+    public interface IRepositoryOrderDetail : IRepository<OrderDetail>
     {
-        void Update(MyModel obj);
+        void Update(OrderDetail obj);
     }
 }
