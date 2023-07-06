@@ -30,7 +30,7 @@ public class HomeController : Controller
         HomeViewModel homeViewModel = new HomeViewModel()
         {
             products = repositoryProduct.GetAll(x => x.ShopCount > 0),
-            categories = repositoryCategory.GetAll()
+            categories = //repositoryCategory.GetAll()
         };
 
         return View(homeViewModel);

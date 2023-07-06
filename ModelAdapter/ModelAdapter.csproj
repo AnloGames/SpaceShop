@@ -17,8 +17,4 @@
     <ProjectReference Include="..\SpaceShop_Models\SpaceShop_Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Adapter\" />
-  </ItemGroup>
-
 </Project>

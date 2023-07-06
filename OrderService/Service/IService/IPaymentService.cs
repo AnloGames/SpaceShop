@@ -10,5 +10,6 @@ namespace LogicService.Service.IService
     public interface IPaymentService
     {
         string GetTransactionId(IFormCollection collection);
+        string GetTokenClient();
     }
 }

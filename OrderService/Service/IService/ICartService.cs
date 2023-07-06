@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace LogicService.Service.IService
 {
-    public interface IOrderService
+    public interface ICartService
     {
-        void SaveOrder(ApplicationUser user, List<Product> porductList, string transactionId);
+        IEnumerable<Cart> GetCartListByProducts(IEnumerable<Product> productList);
+        IEnumerable<Cart> GetSessionCartList(HttpContext httpContext);
     }
 }
-    

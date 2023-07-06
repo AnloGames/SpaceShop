@@ -18,7 +18,7 @@ namespace LogicService.Service
             this.repositoryProduct = repositoryProduct;
         }
 
-        public void SaveOrder(string UserId, ApplicationUser user, List<Product> productList, string transactionId)
+        public void SaveOrder(ApplicationUser user, List<Product> productList, string transactionId)
         {
             int totalPrice = 0;
 
@@ -28,7 +28,7 @@ namespace LogicService.Service
             }
             OrderHeader orderHeader = new OrderHeader()
             {
-                UserId = UserId,
+                UserId = user.Id,
                 DateOrder = DateTime.Now,
                 TotalPrice = totalPrice,
                 Status = PathManager.StatusAccepted,

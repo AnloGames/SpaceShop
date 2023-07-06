@@ -38,12 +38,14 @@ namespace SpaceShop.Controllers
         IOrderService orderService;
         IPaymentService paymentService;
         IProductService productService;
+        ICartService cartService;
+        IApplicationUserService applicationUserService;
 
         public CartController(IWebHostEnvironment environment, IEmailSender emailSender, 
             IRepositoryProduct repositoryProduct, IRepositoryApplicationUser repositoryApplicationUser,
             IRepositoryOrderHeader repositoryOrderHeader, IRepositoryOrderDetail repositoryOrderDetail,
-            IBrainTreeBridge brainTreeBridge, IOrderService orderService, IPaymentService paymentService, 
-            IProductService productService)
+            IBrainTreeBridge brainTreeBridge, IOrderService orderService, IPaymentService paymentService,
+            IProductService productService, ICartService cartService, IApplicationUserService applicationUserService)
         {
             this.environment = environment;
             this.emailSender = emailSender;
@@ -55,40 +57,26 @@ namespace SpaceShop.Controllers
             this.orderService = orderService;
             this.paymentService = paymentService;
             this.productService = productService;
+            this.cartService = cartService;
+            this.applicationUserService = applicationUserService;
         }
 
 
         // GET: /<controller>/
         public IActionResult Index()
         {
-            List<Cart> cartList = new List<Cart>();
-
-            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
-                && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
-            {
-                cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
-            }
-
+            List<Cart> cartList = cartService.GetSessionCartList(HttpContext).ToList();
             IEnumerable<Product> productList = productService.GetProductsInCart(cartList);
-
 
             return View(productList);
         }
 
         public IActionResult Remove(int id)
         {
-            // удаление из корзины
-            List<Cart> cartList = new List<Cart>();
-
-            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
-                && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
-            {
-                cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
-            }
+            List<Cart> cartList = cartService.GetSessionCartList(HttpContext).ToList();
 
             cartList.Remove(cartList.FirstOrDefault(x => x.ProductId == id));
 
-            // переназначение сессии
             HttpContext.Session.Set(PathManager.SessionCart, cartList);
 
             return RedirectToAction("Index");
@@ -97,26 +85,11 @@ namespace SpaceShop.Controllers
         [HttpPost]
         public IActionResult Summary()
         {
-            ApplicationUser applicationUser;
+            ApplicationUser applicationUser = applicationUserService.GetApplicationUserByIdentity(User);
 
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            ViewBag.TokenClient = paymentService.GetTokenClient();
 
-            // если пользователь вошел в систему, то объект будет определен
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            applicationUser = repositoryApplicationUser.FirstOrDefault(x => x.Id == claim.Value);
-
-            //Оплата
-            var getWay = brainTreeBridge.GetGateWay();
-            var tokenClient = getWay.ClientToken.Generate();
-            ViewBag.TokenClient = tokenClient;
-
-            List<Cart> cartList = new List<Cart>();
-
-            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
-                && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
-            {
-                cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
-            }
+            List<Cart> cartList = cartService.GetSessionCartList(HttpContext).ToList();
 
             IEnumerable<Product> productList = productService.GetProductsInCart(cartList);
 
@@ -131,15 +104,12 @@ namespace SpaceShop.Controllers
 
         public async Task<IActionResult> InquiryConfirmation(IFormCollection collection, ProductUserViewModel productUserViewModel)
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             ApplicationUser user = productUserViewModel.ApplicationUser;
-
             List<Product> productList = productUserViewModel.ProductList;
 
             string transactionId = paymentService.GetTransactionId(collection);
 
-            orderService.SaveOrder(claim.Value, user, productList, transactionId);
+            orderService.SaveOrder(user, productList, transactionId);
             HttpContext.Session.Clear();
 
             return View();
@@ -147,15 +117,7 @@ namespace SpaceShop.Controllers
 
         public IActionResult Update(Product[] products)
         {
-            List<Cart> cartList = new List<Cart>();
-            foreach (var prod in products)
-            {
-                cartList.Add(new Cart()
-                {
-                    ProductId = prod.Id,
-                    TempCount = prod.TempCount
-                });
-            }
+            List<Cart> cartList = cartService.GetCartListByProducts(products).ToList();
 
             HttpContext.Session.Set(PathManager.SessionCart, cartList);
 

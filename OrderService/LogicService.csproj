@@ -11,8 +11,4 @@
     <ProjectReference Include="..\SpaceShop_Utility\SpaceShop_Utility.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="IAdapter\" />
-  </ItemGroup>
-
 </Project>

@@ -19,6 +19,13 @@ namespace LogicService.Service
             this.brainTreeBridge = brainTreeBridge;
         }
 
+        public string GetTokenClient()
+        {
+            var getWay = brainTreeBridge.GetGateWay();
+            var tokenClient = getWay.ClientToken.Generate();
+            return tokenClient;
+        }
+
         public string GetTransactionId(IFormCollection collection)
         {
             string nonce = collection["payment_method_nonce"];
