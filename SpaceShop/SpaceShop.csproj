@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Braintree" Version="5.16.0" />
     <PackageReference Include="Mailjet.Api" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.10" />
@@ -36,6 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ModelAdapter\ModelAdapter.csproj" />
     <ProjectReference Include="..\OrderService\LogicService.csproj" />
     <ProjectReference Include="..\SpaceShop_DataMigrations\SpaceShop_DataMigrations.csproj" />
     <ProjectReference Include="..\SpaceShop_Models\SpaceShop_Models.csproj" />

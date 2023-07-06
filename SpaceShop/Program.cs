@@ -12,6 +12,9 @@ using LogicService.IRepository;
 using SpaceShop_DataMigrations.Repository;
 using SpaceShop_Utility.BrainTree;
 using Microsoft.AspNetCore.HttpOverrides;
+using LogicService.Service.IService;
+using LogicService.Service;
+using ModelAdapter.ModelMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +42,8 @@ builder.Services.AddAuthentication().AddFacebook(options =>
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
+builder.Services.AddAutoMapper(typeof(CategoryMappingProfile));
+
 builder.Services.AddScoped<IRepositoryCategory, RepositoryCategory>();
 builder.Services.AddScoped<IRepositoryMyModel, RepositoryMyModel>();
 builder.Services.AddScoped<IRepositoryProduct, RepositoryProduct>();
@@ -46,6 +51,10 @@ builder.Services.AddScoped<IRepositoryConnectionProductMyModel, RepositoryConnec
 builder.Services.AddScoped<IRepositoryOrderHeader, RepositoryOrderHeader>();
 builder.Services.AddScoped<IRepositoryOrderDetail, RepositoryOrderDetail>();
 builder.Services.AddScoped<IRepositoryApplicationUser, RepositoryApplicationUser>();
+
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

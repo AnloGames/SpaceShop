@@ -32,17 +32,18 @@ namespace SpaceShop.Controllers
 
         IRepositoryApplicationUser repositoryApplicationUser;
         IRepositoryProduct repositoryProduct;
-
-
         IRepositoryOrderHeader repositoryOrderHeader;
         IRepositoryOrderDetail repositoryOrderDetail;
 
         IOrderService orderService;
+        IPaymentService paymentService;
+        IProductService productService;
 
         public CartController(IWebHostEnvironment environment, IEmailSender emailSender, 
             IRepositoryProduct repositoryProduct, IRepositoryApplicationUser repositoryApplicationUser,
             IRepositoryOrderHeader repositoryOrderHeader, IRepositoryOrderDetail repositoryOrderDetail,
-            IBrainTreeBridge brainTreeBridge, IOrderService orderService)
+            IBrainTreeBridge brainTreeBridge, IOrderService orderService, IPaymentService paymentService, 
+            IProductService productService)
         {
             this.environment = environment;
             this.emailSender = emailSender;
@@ -52,6 +53,8 @@ namespace SpaceShop.Controllers
             this.repositoryOrderDetail = repositoryOrderDetail;
             this.brainTreeBridge = brainTreeBridge;
             this.orderService = orderService;
+            this.paymentService = paymentService;
+            this.productService = productService;
         }
 
 
@@ -64,19 +67,10 @@ namespace SpaceShop.Controllers
                 && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
             {
                 cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
-
-                // хотим получить каждый товар из корзины
             }
 
-            // получаем лист id товаров
-            List<int> productsIdInCart = cartList.Select(x => x.ProductId).ToList();
+            IEnumerable<Product> productList = productService.GetProductsInCart(cartList);
 
-            // извлекаем сами продукты по списку id
-            IEnumerable<Product> productList = repositoryProduct.GetAll(x => productsIdInCart.Contains(x.Id));
-            foreach (Product product in productList)
-            {
-                product.TempCount = cartList.FirstOrDefault(x => x.ProductId == product.Id).TempCount;
-            }
 
             return View(productList);
         }
@@ -124,19 +118,12 @@ namespace SpaceShop.Controllers
                 cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
             }
 
-            // извлекаем сами продукты по списку id
-            List<Product> productList = new List<Product>();
-            foreach (var cart in cartList)
-            {
-                Product product = repositoryProduct.Find(cart.ProductId);
-                product.TempCount = cart.TempCount;
-                productList.Add(product);
-            }
+            IEnumerable<Product> productList = productService.GetProductsInCart(cartList);
 
             productUserViewModel = new ProductUserViewModel()
             {
                 ApplicationUser = applicationUser,
-                ProductList = productList
+                ProductList = productList.ToList()
             };
 
             return View(productUserViewModel);
@@ -144,9 +131,15 @@ namespace SpaceShop.Controllers
 
         public async Task<IActionResult> InquiryConfirmation(IFormCollection collection, ProductUserViewModel productUserViewModel)
         {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             ApplicationUser user = productUserViewModel.ApplicationUser;
+
             List<Product> productList = productUserViewModel.ProductList;
-            orderService.SaveOrder(user, productList, collection);
+
+            string transactionId = paymentService.GetTransactionId(collection);
+
+            orderService.SaveOrder(claim.Value, user, productList, transactionId);
             HttpContext.Session.Clear();
 
             return View();

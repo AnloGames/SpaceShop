@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using LogicService.Service.IService;
+﻿using LogicService.Service.IService;
 using SpaceShop_Utility;
 using LogicService.IRepository;
-using SpaceShop_Utility.BrainTree;
-using Microsoft.AspNetCore.Mvc;
-using Braintree;
-using Microsoft.AspNetCore.Http;
 using SpaceShop_Models;
 
 namespace LogicService.Service
@@ -21,10 +11,14 @@ namespace LogicService.Service
         IRepositoryOrderDetail repositoryOrderDetail;
         IRepositoryProduct repositoryProduct;
 
-        IBrainTreeBridge brainTreeBridge;
+        public OrderService(IRepositoryOrderHeader repositoryOrderHeader, IRepositoryOrderDetail repositoryOrderDetail, IRepositoryProduct repositoryProduct)
+        {
+            this.repositoryOrderHeader = repositoryOrderHeader;
+            this.repositoryOrderDetail = repositoryOrderDetail;
+            this.repositoryProduct = repositoryProduct;
+        }
 
-
-        public void SaveOrder(ApplicationUser user, List<Product> productList, IFormCollection collection)
+        public void SaveOrder(string UserId, ApplicationUser user, List<Product> productList, string transactionId)
         {
             int totalPrice = 0;
 
@@ -34,7 +28,7 @@ namespace LogicService.Service
             }
             OrderHeader orderHeader = new OrderHeader()
             {
-                UserId = user.Id,
+                UserId = UserId,
                 DateOrder = DateTime.Now,
                 TotalPrice = totalPrice,
                 Status = PathManager.StatusAccepted,
@@ -46,7 +40,7 @@ namespace LogicService.Service
                 House = user.House,
                 Apartment = user.Apartment,
                 PostalCode = user.PostalCode,
-                TransactionId = "NONE"
+                TransactionId = transactionId
 };
             repositoryOrderHeader.Add(orderHeader);
             repositoryOrderHeader.Save();
@@ -68,27 +62,6 @@ namespace LogicService.Service
             }
 
             repositoryOrderDetail.Save();
-
-
-            string nonce = collection["payment_method_nonce"];
-
-            var request = new TransactionRequest
-            {
-                Amount = 1,
-                PaymentMethodNonce = nonce,
-                OrderId = "1",
-                Options = new TransactionOptionsRequest { SubmitForSettlement = true }
-            };
-
-            var getWay = brainTreeBridge.GetGateWay();
-
-            var resultTransaction = getWay.Transaction.Sale(request);
-
-            var id = resultTransaction.Target.Id;
-            var status = resultTransaction.Target.ProcessorResponseText;
-
-            orderHeader.TransactionId = id;
-            repositoryOrderHeader.Save();
        
         }
     }
