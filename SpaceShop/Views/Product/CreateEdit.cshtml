@@ -1,9 +1,10 @@
 ﻿@using SpaceShop_ViewModels;
+@using LogicService.Dto;
 @model ProductCreation
 @{
     var title = "Create";
-    Product product = Model.product;
-    IEnumerable<Category> categories = Model.categories;
+    ProductDto product = Model.product;
+    IEnumerable<CategoryDto> categories = Model.categories;
     IEnumerable<MyModel> myModels = Model.myModels;
     int[] MyModelsId = new int[categories.Count()];
 }
@@ -47,7 +48,7 @@
         
         <label asp-for="product.Category"></label>
         <select asp-for="product.CategoryId" class="form-control">
-            @foreach (Category item in categories)
+            @foreach (CategoryDto item in categories)
             {
                 <option value="@item.Id">@item.Name</option>
             }

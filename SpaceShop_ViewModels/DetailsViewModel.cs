@@ -1,12 +1,13 @@
 ﻿using SpaceShop_Models;
+using LogicService.Dto;
 
 namespace SpaceShop_ViewModels
 {
     public class DetailsViewModel
     {
-        public Product Product { get; set; }
+        public ProductDto Product { get; set; }
         public bool IsInCart { get; set; }
-        public DetailsViewModel(bool isInCart, Product product)
+        public DetailsViewModel(bool isInCart, ProductDto product)
         {
             IsInCart = isInCart;
             Product = product;

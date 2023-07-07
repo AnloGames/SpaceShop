@@ -1,7 +1,8 @@
-﻿@model IEnumerable<Product>
+﻿@model IEnumerable<ProductDto>
 @using SpaceShop_Utility;
+@using LogicService.Dto;
 @{
-    List<Product> products = Model.ToList();
+    List<ProductDto> products = Model.ToList();
     double totalPriceProducts = 0;
 }
 <h1>Shooping Cart</h1>

@@ -5,6 +5,8 @@ using LogicService.IRepository;
 using SpaceShop_Models;
 using SpaceShop_Utility;
 using SpaceShop_ViewModels;
+using LogicService.IAdapter;
+using LogicService.Dto;
 
 namespace SpaceShop.Controllers;
 
@@ -13,30 +15,31 @@ public class HomeController : Controller
     private readonly ILogger<HomeController> _logger;
 
     //private ApplicationDbContext db;
-    private IRepositoryProduct repositoryProduct;
-    private IRepositoryCategory repositoryCategory;
+    private IProductAdapter productAdapter;
+    private ICategoryAdapter categoryAdapter;
 
     public HomeController(ILogger<HomeController> logger,
-        IRepositoryProduct repositoryProduct, IRepositoryCategory repositoryCategory)
+        IProductAdapter productAdapter, ICategoryAdapter categoryAdapter)
     {
         _logger = logger;
 
-        this.repositoryCategory = repositoryCategory;
-        this.repositoryProduct = repositoryProduct;
+        this.productAdapter = productAdapter;
+
+        this.categoryAdapter = categoryAdapter;
     }
 
     public IActionResult Index()
     {
         HomeViewModel homeViewModel = new HomeViewModel()
         {
-            products = repositoryProduct.GetAll(x => x.ShopCount > 0),
-            categories = //repositoryCategory.GetAll()
+            products = productAdapter.GetAllByShopCount(0),
+            categories = categoryAdapter.GetAll()
         };
 
         return View(homeViewModel);
     }
 
-    public IActionResult Details(int? id)
+    public IActionResult Details(int id)
     {
         List<Cart> cartList = new List<Cart>();
 
@@ -47,9 +50,7 @@ public class HomeController : Controller
         }
 
 
-        DetailsViewModel detailsViewModel = new DetailsViewModel(false, repositoryProduct.FirstOrDefault(
-                filter: x => x.Id == id));
-        detailsViewModel.Product.Category = repositoryCategory.Find(detailsViewModel.Product.CategoryId);
+        DetailsViewModel detailsViewModel = new DetailsViewModel(false, productAdapter.FirstOrDefaultById(id, includeProperties: "Category"));
         // проверка на наличие товара в корзине
         // если товар есть, то меняем свойство
         foreach (var item in cartList)
@@ -66,7 +67,7 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult Details(int id, int count)
     {
-        Product product = repositoryProduct.Find(id);
+        ProductDto product = productAdapter.Find(id);
         if (count <= product.ShopCount)
         {
             List<Cart> cartList = new List<Cart>();

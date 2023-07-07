@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.HttpOverrides;
 using LogicService.Service.IService;
 using LogicService.Service;
 using ModelAdapter.ModelMapper;
+using LogicService.IAdapter;
+using LogicService.Dto;
+using ModelAdapter.Adapter;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +45,7 @@ builder.Services.AddAuthentication().AddFacebook(options =>
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-builder.Services.AddAutoMapper(typeof(CategoryMappingProfile));
+builder.Services.AddAutoMapper(typeof(CategoryMappingProfile), typeof(ProductMappingProfile));
 
 builder.Services.AddScoped<IRepositoryCategory, RepositoryCategory>();
 builder.Services.AddScoped<IRepositoryMyModel, RepositoryMyModel>();
@@ -57,6 +60,9 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
+
+builder.Services.AddScoped<ICategoryAdapter, CategoryAdapter>();
+builder.Services.AddScoped<IProductAdapter, ProductAdapter>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

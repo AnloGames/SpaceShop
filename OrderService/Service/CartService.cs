@@ -1,4 +1,5 @@
-﻿using LogicService.Service.IService;
+﻿using LogicService.Dto;
+using LogicService.Service.IService;
 using Microsoft.AspNetCore.Http;
 using SpaceShop_Models;
 using SpaceShop_Utility;
@@ -12,7 +13,7 @@ namespace LogicService.Service
 {
     public class CartService : ICartService
     {
-        public IEnumerable<Cart> GetCartListByProducts(IEnumerable<Product> productList)
+        public IEnumerable<Cart> GetCartListByProducts(IEnumerable<ProductDto> productList)
         {
             List<Cart> cartList = new List<Cart>();
             foreach (var prod in productList)

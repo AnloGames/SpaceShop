@@ -22,8 +22,6 @@ namespace LogicService.IRepository
 
         void Remove(T item);
 
-        void Remove(IEnumerable<T> items);
-
         void Save();
     }
 }

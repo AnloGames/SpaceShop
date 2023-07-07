@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using LogicService.Dto;
+using Microsoft.AspNetCore.Http;
 using SpaceShop_Models;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace LogicService.Service.IService
 {
     public interface ICartService
     {
-        IEnumerable<Cart> GetCartListByProducts(IEnumerable<Product> productList);
+        IEnumerable<Cart> GetCartListByProducts(IEnumerable<ProductDto> productList);
         IEnumerable<Cart> GetSessionCartList(HttpContext httpContext);
     }
 }

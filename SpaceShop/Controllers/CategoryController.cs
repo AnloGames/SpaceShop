@@ -4,22 +4,26 @@ using Microsoft.EntityFrameworkCore.Storage;
 using LogicService.IRepository;
 using SpaceShop_Models;
 using SpaceShop_Utility;
+using LogicService.IAdapter;
+using LogicService.Dto;
+using ModelAdapter.Adapter;
+
 namespace SpaceShop.Controllers
 {
     [Authorize(Roles = PathManager.AdminRole)]
     public class CategoryController : Controller
     {
         //public ApplicationDbContext database;
-        private IRepositoryCategory repositoryCategory;
+        private ICategoryAdapter categoryAdapter;
 
-        public CategoryController(IRepositoryCategory repositoryCategory)
+        public CategoryController(ICategoryAdapter categoryAdapter)
         {
-            this.repositoryCategory = repositoryCategory;
+            this.categoryAdapter = categoryAdapter;
         }
 
         public IActionResult Index()
         {
-            IEnumerable<Category> categories = repositoryCategory.GetAll();
+            IEnumerable<CategoryDto> categories = categoryAdapter.GetAll();
             return View(categories);
         }
         public IActionResult Create()
@@ -30,13 +34,13 @@ namespace SpaceShop.Controllers
         //Post - Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Category category)
+        public IActionResult Create(CategoryDto category)
         {
             if (ModelState.IsValid)
             {
                 category.Id = 0;
-                repositoryCategory.Add(category);
-                repositoryCategory.Save();
+                categoryAdapter.Add(category);
+                categoryAdapter.Save();
                 return RedirectToAction("Index");
             }
             return View(category);
@@ -49,7 +53,7 @@ namespace SpaceShop.Controllers
                 return NotFound();
             }
 
-            Category category = repositoryCategory.Find((int)id);
+            CategoryDto category = categoryAdapter.Find((int)id);
 
             if (category == null)
             {
@@ -60,12 +64,12 @@ namespace SpaceShop.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Category category)
+        public IActionResult Edit(CategoryDto category)
         {
             if (ModelState.IsValid)
             {
-                repositoryCategory.Update(category);
-                repositoryCategory.Save();
+                categoryAdapter.Update(category);
+                categoryAdapter.Save();
                 return RedirectToAction("Index");
             }
             return View(category);
@@ -77,15 +81,15 @@ namespace SpaceShop.Controllers
                 return NotFound();
             }
 
-            Category category = repositoryCategory.Find((int)id);
+            CategoryDto category = categoryAdapter.FirstOrDefaultById((int)id, isTracking: false);
 
             if (category == null)
             {
                 return NotFound();
             }
 
-            repositoryCategory.Remove(category);
-            repositoryCategory.Save();
+            categoryAdapter.Remove(category);
+            categoryAdapter.Save();
             return RedirectToAction("Index");
         }
         public IActionResult Show(int id)

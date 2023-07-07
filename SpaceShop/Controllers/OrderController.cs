@@ -8,6 +8,8 @@ using Braintree;
 using SpaceShop_Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using LogicService.IAdapter;
+using LogicService.Dto;
 
 namespace SpaceShop.Controllers
 {
@@ -19,17 +21,18 @@ namespace SpaceShop.Controllers
 
         IRepositoryOrderHeader repositoryOrderHeader;
         IRepositoryOrderDetail repositoryOrderDetail;
-        IRepositoryProduct repositoryProduct;
         IBrainTreeBridge brainTreeBridge;
+
+        IProductAdapter productAdapter;
 
         public OrderController(IRepositoryOrderHeader repositoryOrderHeader,
             IRepositoryOrderDetail repositoryOrderDetail, IBrainTreeBridge brainTreeBridge,
-            IRepositoryProduct repositoryProduct)
+            IProductAdapter productAdapter)
         {
             this.brainTreeBridge = brainTreeBridge;
             this.repositoryOrderDetail = repositoryOrderDetail;
             this.repositoryOrderHeader = repositoryOrderHeader;
-            this.repositoryProduct = repositoryProduct;
+            this.productAdapter = productAdapter;
         }
 
         public IActionResult Index(string searchName = null, string searchEmail = null,
@@ -96,13 +99,13 @@ namespace SpaceShop.Controllers
         public IActionResult ReturnInStock(int id)
         {
             OrderDetail fullDetail = repositoryOrderDetail.Find(id);
-            Product product = repositoryProduct.Find(fullDetail.ProductId);
+            ProductDto product = productAdapter.FirstOrDefaultById(fullDetail.ProductId,isTracking: false);
             product.ShopCount += fullDetail.Count;
             fullDetail.IsProductHadReturn = true;
 
-            repositoryProduct.Update(product);
+            productAdapter.Update(product);
             repositoryOrderDetail.Update(fullDetail);
-            repositoryProduct.Save();
+            productAdapter.Save();
 
 
             return RedirectToAction("Details", "Order", new {id = fullDetail.OrderHeaderId});

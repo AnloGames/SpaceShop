@@ -1,4 +1,6 @@
-﻿using LogicService.IRepository;
+﻿using LogicService.Dto;
+using LogicService.IAdapter;
+using LogicService.IRepository;
 using LogicService.Service.IService;
 using SpaceShop_Models;
 using System;
@@ -11,19 +13,19 @@ namespace LogicService.Service
 {
     public class ProductService : IProductService
     {
-        IRepositoryProduct repositoryProduct;
+        IProductAdapter productAdapter;
 
-        public ProductService(IRepositoryProduct repositoryProduct)
+        public ProductService(IProductAdapter productAdapter)
         {
-            this.repositoryProduct = repositoryProduct;
+            this.productAdapter = productAdapter;
         }   
 
-        public IEnumerable<Product> GetProductsInCart(IEnumerable<Cart> cartList)
+        public IEnumerable<ProductDto> GetProductsInCart(IEnumerable<Cart> cartList)
         {
-            List<Product> productList = new List<Product>();
+            List<ProductDto> productList = new List<ProductDto>();
             foreach (var cart in cartList)
             {
-                Product product = repositoryProduct.Find(cart.ProductId);
+                ProductDto product = productAdapter.Find(cart.ProductId);
                 product.TempCount = cart.TempCount;
                 productList.Add(product);
             }

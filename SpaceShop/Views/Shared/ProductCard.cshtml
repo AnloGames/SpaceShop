@@ -1,4 +1,5 @@
-﻿@model SpaceShop_Models.Product
+﻿@using LogicService.Dto;
+@model ProductDto
 
 <div class="card filter @Model.Category.Name.Replace(' ', '_')" style="width: 18rem; float:left">
     <img src="@SpaceShop_Utility.PathManager.ImageProductPath@Model.Image" class="card-img-top" alt="...">

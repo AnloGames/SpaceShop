@@ -1,10 +1,11 @@
-﻿using SpaceShop_Models;
+﻿using LogicService.Dto;
+using SpaceShop_Models;
 
 namespace SpaceShop_ViewModels
 {
     public class HomeViewModel
     {
-        public IEnumerable<Product> products { get; set; }
-        public IEnumerable<Category> categories { get; set; }
+        public IEnumerable<ProductDto> products { get; set; }
+        public IEnumerable<CategoryDto> categories { get; set; }
     }
 }

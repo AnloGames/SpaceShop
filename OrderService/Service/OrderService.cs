@@ -2,6 +2,8 @@
 using SpaceShop_Utility;
 using LogicService.IRepository;
 using SpaceShop_Models;
+using LogicService.IAdapter;
+using LogicService.Dto;
 
 namespace LogicService.Service
 {
@@ -9,16 +11,17 @@ namespace LogicService.Service
     {
         IRepositoryOrderHeader repositoryOrderHeader;
         IRepositoryOrderDetail repositoryOrderDetail;
-        IRepositoryProduct repositoryProduct;
 
-        public OrderService(IRepositoryOrderHeader repositoryOrderHeader, IRepositoryOrderDetail repositoryOrderDetail, IRepositoryProduct repositoryProduct)
+        IProductAdapter productAdapter;
+
+        public OrderService(IRepositoryOrderHeader repositoryOrderHeader, IRepositoryOrderDetail repositoryOrderDetail, IProductAdapter productAdapter)
         {
             this.repositoryOrderHeader = repositoryOrderHeader;
             this.repositoryOrderDetail = repositoryOrderDetail;
-            this.repositoryProduct = repositoryProduct;
+            this.productAdapter = productAdapter;
         }
 
-        public void SaveOrder(ApplicationUser user, List<Product> productList, string transactionId)
+        public void SaveOrder(ApplicationUser user, List<ProductDto> productList, string transactionId)
         {
             int totalPrice = 0;
 
@@ -55,9 +58,9 @@ namespace LogicService.Service
                     PricePerUnit = (int)product.Price,
                     IsProductHadReturn = false
                 };
-                Product ShopProduct = repositoryProduct.Find(product.Id);
+                ProductDto ShopProduct = productAdapter.FirstOrDefaultById(product.Id, isTracking: false);
                 ShopProduct.ShopCount -= product.TempCount;
-                repositoryProduct.Update(ShopProduct);
+                productAdapter.Update(ShopProduct);
                 repositoryOrderDetail.Add(orderDetail);
             }
 

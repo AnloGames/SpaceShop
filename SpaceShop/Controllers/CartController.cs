@@ -17,6 +17,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SpaceShop_Utility.BrainTree;
 using Braintree;
 using LogicService.Service.IService;
+using LogicService.IAdapter;
+using LogicService.Dto;
 
 namespace SpaceShop.Controllers
 {
@@ -31,7 +33,7 @@ namespace SpaceShop.Controllers
         IBrainTreeBridge brainTreeBridge;
 
         IRepositoryApplicationUser repositoryApplicationUser;
-        IRepositoryProduct repositoryProduct;
+        IProductAdapter productAdapter;
         IRepositoryOrderHeader repositoryOrderHeader;
         IRepositoryOrderDetail repositoryOrderDetail;
 
@@ -41,15 +43,15 @@ namespace SpaceShop.Controllers
         ICartService cartService;
         IApplicationUserService applicationUserService;
 
-        public CartController(IWebHostEnvironment environment, IEmailSender emailSender, 
-            IRepositoryProduct repositoryProduct, IRepositoryApplicationUser repositoryApplicationUser,
+        public CartController(IWebHostEnvironment environment, IEmailSender emailSender,
+            IProductAdapter productAdapter, IRepositoryApplicationUser repositoryApplicationUser,
             IRepositoryOrderHeader repositoryOrderHeader, IRepositoryOrderDetail repositoryOrderDetail,
             IBrainTreeBridge brainTreeBridge, IOrderService orderService, IPaymentService paymentService,
             IProductService productService, ICartService cartService, IApplicationUserService applicationUserService)
         {
             this.environment = environment;
             this.emailSender = emailSender;
-            this.repositoryProduct = repositoryProduct;
+            this.productAdapter = productAdapter;
             this.repositoryApplicationUser = repositoryApplicationUser;
             this.repositoryOrderHeader = repositoryOrderHeader;
             this.repositoryOrderDetail = repositoryOrderDetail;
@@ -66,7 +68,7 @@ namespace SpaceShop.Controllers
         public IActionResult Index()
         {
             List<Cart> cartList = cartService.GetSessionCartList(HttpContext).ToList();
-            IEnumerable<Product> productList = productService.GetProductsInCart(cartList);
+            IEnumerable<ProductDto> productList = productService.GetProductsInCart(cartList);
 
             return View(productList);
         }
@@ -91,7 +93,7 @@ namespace SpaceShop.Controllers
 
             List<Cart> cartList = cartService.GetSessionCartList(HttpContext).ToList();
 
-            IEnumerable<Product> productList = productService.GetProductsInCart(cartList);
+            IEnumerable<ProductDto> productList = productService.GetProductsInCart(cartList);
 
             productUserViewModel = new ProductUserViewModel()
             {
@@ -105,7 +107,7 @@ namespace SpaceShop.Controllers
         public async Task<IActionResult> InquiryConfirmation(IFormCollection collection, ProductUserViewModel productUserViewModel)
         {
             ApplicationUser user = productUserViewModel.ApplicationUser;
-            List<Product> productList = productUserViewModel.ProductList;
+            List<ProductDto> productList = productUserViewModel.ProductList;
 
             string transactionId = paymentService.GetTransactionId(collection);
 
@@ -115,7 +117,7 @@ namespace SpaceShop.Controllers
             return View();
         }
 
-        public IActionResult Update(Product[] products)
+        public IActionResult Update(ProductDto[] products)
         {
             List<Cart> cartList = cartService.GetCartListByProducts(products).ToList();
 

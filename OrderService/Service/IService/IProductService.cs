@@ -1,4 +1,5 @@
-﻿using SpaceShop_Models;
+﻿using LogicService.Dto;
+using SpaceShop_Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace LogicService.Service.IService
 {
     public interface IProductService
     {
-        IEnumerable<Product> GetProductsInCart(IEnumerable<Cart> cartList);
+        IEnumerable<ProductDto> GetProductsInCart(IEnumerable<Cart> cartList);
     }
 }

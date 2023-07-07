@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OrderService\LogicService.csproj" />
     <ProjectReference Include="..\SpaceShop_Models\SpaceShop_Models.csproj" />
   </ItemGroup>
 
