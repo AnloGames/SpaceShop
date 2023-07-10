@@ -11,7 +11,7 @@ namespace LogicService.Service.IService
 {
     public interface IOrderService
     {
-        void SaveOrder(ApplicationUser user, List<ProductDto> porductList, string transactionId);
+        void SaveOrder(ApplicationUserDto user, List<ProductDto> porductList, string transactionId);
     }
 }
     

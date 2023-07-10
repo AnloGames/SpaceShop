@@ -1,4 +1,5 @@
-﻿using SpaceShop_Models;
+﻿using LogicService.Dto;
+using SpaceShop_Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace LogicService.Service.IService
 {
     public interface IApplicationUserService
     {
-        ApplicationUser GetApplicationUserByIdentity(ClaimsPrincipal User);
+        ApplicationUserDto GetApplicationUserByIdentity(ClaimsPrincipal User);
     }
 }

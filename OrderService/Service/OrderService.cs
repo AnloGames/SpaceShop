@@ -21,7 +21,7 @@ namespace LogicService.Service
             this.productAdapter = productAdapter;
         }
 
-        public void SaveOrder(ApplicationUser user, List<ProductDto> productList, string transactionId)
+        public void SaveOrder(ApplicationUserDto user, List<ProductDto> productList, string transactionId)
         {
             int totalPrice = 0;
 

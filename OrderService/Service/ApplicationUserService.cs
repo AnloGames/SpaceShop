@@ -1,4 +1,6 @@
-﻿using LogicService.IRepository;
+﻿using LogicService.Dto;
+using LogicService.IAdapter;
+using LogicService.IRepository;
 using LogicService.Service.IService;
 using SpaceShop_Models;
 using System;
@@ -12,18 +14,18 @@ namespace LogicService.Service
 {
     public class ApplicationUserService : IApplicationUserService
     {
-        IRepositoryApplicationUser repositoryApplicationUser;
+        IApplicationUserAdapter applicationUserAdapter;
 
-        public ApplicationUserService(IRepositoryApplicationUser repositoryApplicationUser)
+        public ApplicationUserService(IApplicationUserAdapter applicationUserAdapter)
         {
-            this.repositoryApplicationUser = repositoryApplicationUser;
+            this.applicationUserAdapter = applicationUserAdapter;
         }
 
-        public ApplicationUser GetApplicationUserByIdentity(ClaimsPrincipal User)
+        public ApplicationUserDto GetApplicationUserByIdentity(ClaimsPrincipal User)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            ApplicationUser applicationUser = repositoryApplicationUser.FirstOrDefault(x => x.Id == claim.Value);
+            ApplicationUserDto applicationUser = applicationUserAdapter.FirstOrDefaultById(claim.Value);
             return applicationUser;
         }
     }

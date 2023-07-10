@@ -45,7 +45,9 @@ builder.Services.AddAuthentication().AddFacebook(options =>
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-builder.Services.AddAutoMapper(typeof(CategoryMappingProfile), typeof(ProductMappingProfile), typeof(MyModelMappingProfile),typeof(ConnectionProductMyModelMappingProfile));
+builder.Services.AddAutoMapper(typeof(CategoryMappingProfile), typeof(ProductMappingProfile),
+    typeof(MyModelMappingProfile), typeof(ConnectionProductMyModelMappingProfile),
+    typeof(ApplicationUserMappingProfile));
 
 builder.Services.AddScoped<IRepositoryCategory, RepositoryCategory>();
 builder.Services.AddScoped<IRepositoryMyModel, RepositoryMyModel>();
@@ -65,6 +67,7 @@ builder.Services.AddScoped<ICategoryAdapter, CategoryAdapter>();
 builder.Services.AddScoped<IProductAdapter, ProductAdapter>();
 builder.Services.AddScoped<IMyModelAdapter, MyModelAdapter>();
 builder.Services.AddScoped<IConnectionProductMyModelAdapter, ConnectionProductMyModelAdapter>();
+builder.Services.AddScoped<IApplicationUserAdapter, ApplicationUserAdapter>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

@@ -26,16 +26,8 @@ namespace SpaceShop.Controllers
     public class CartController : Controller
     {
         private IWebHostEnvironment environment;
-        IEmailSender emailSender;
 
         ProductUserViewModel productUserViewModel;
-
-        IBrainTreeBridge brainTreeBridge;
-
-        IRepositoryApplicationUser repositoryApplicationUser;
-        IProductAdapter productAdapter;
-        IRepositoryOrderHeader repositoryOrderHeader;
-        IRepositoryOrderDetail repositoryOrderDetail;
 
         IOrderService orderService;
         IPaymentService paymentService;
@@ -43,19 +35,10 @@ namespace SpaceShop.Controllers
         ICartService cartService;
         IApplicationUserService applicationUserService;
 
-        public CartController(IWebHostEnvironment environment, IEmailSender emailSender,
-            IProductAdapter productAdapter, IRepositoryApplicationUser repositoryApplicationUser,
-            IRepositoryOrderHeader repositoryOrderHeader, IRepositoryOrderDetail repositoryOrderDetail,
-            IBrainTreeBridge brainTreeBridge, IOrderService orderService, IPaymentService paymentService,
+        public CartController(IWebHostEnvironment environment, IOrderService orderService, IPaymentService paymentService,
             IProductService productService, ICartService cartService, IApplicationUserService applicationUserService)
         {
             this.environment = environment;
-            this.emailSender = emailSender;
-            this.productAdapter = productAdapter;
-            this.repositoryApplicationUser = repositoryApplicationUser;
-            this.repositoryOrderHeader = repositoryOrderHeader;
-            this.repositoryOrderDetail = repositoryOrderDetail;
-            this.brainTreeBridge = brainTreeBridge;
             this.orderService = orderService;
             this.paymentService = paymentService;
             this.productService = productService;
@@ -87,7 +70,7 @@ namespace SpaceShop.Controllers
         [HttpPost]
         public IActionResult Summary()
         {
-            ApplicationUser applicationUser = applicationUserService.GetApplicationUserByIdentity(User);
+            ApplicationUserDto applicationUser = applicationUserService.GetApplicationUserByIdentity(User);
 
             ViewBag.TokenClient = paymentService.GetTokenClient();
 
@@ -106,7 +89,7 @@ namespace SpaceShop.Controllers
 
         public async Task<IActionResult> InquiryConfirmation(IFormCollection collection, ProductUserViewModel productUserViewModel)
         {
-            ApplicationUser user = productUserViewModel.ApplicationUser;
+            ApplicationUserDto user = productUserViewModel.ApplicationUser;
             List<ProductDto> productList = productUserViewModel.ProductList;
 
             string transactionId = paymentService.GetTransactionId(collection);
