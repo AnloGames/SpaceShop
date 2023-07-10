@@ -9,13 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpaceShop_Utility", "SpaceS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpaceShop_Models", "SpaceShop_Models\SpaceShop_Models.csproj", "{EAC58134-E16C-4104-91C4-2B20FEDE75DF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpaceShop_ViewModels", "SpaceShop_ViewModels\SpaceShop_ViewModels.csproj", "{8B0F7E7A-9675-4E5D-8EB9-9EE0A0553A77}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpaceShop_DataMigrations", "SpaceShop_DataMigrations\SpaceShop_DataMigrations.csproj", "{12C6EF8F-D328-43B1-990B-395D4FF9E402}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicService", "OrderService\LogicService.csproj", "{8E8AAE33-4779-4BE2-9D97-B2B171B66B67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelAdapter", "ModelAdapter\ModelAdapter.csproj", "{9AE7162D-4651-4AF2-A4D2-D6F462FE1D6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelAdapter", "ModelAdapter\ModelAdapter.csproj", "{9AE7162D-4651-4AF2-A4D2-D6F462FE1D6C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{EAC58134-E16C-4104-91C4-2B20FEDE75DF} = {EAC58134-E16C-4104-91C4-2B20FEDE75DF}
 	EndProjectSection
@@ -38,10 +36,6 @@ Global
 		{EAC58134-E16C-4104-91C4-2B20FEDE75DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAC58134-E16C-4104-91C4-2B20FEDE75DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAC58134-E16C-4104-91C4-2B20FEDE75DF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8B0F7E7A-9675-4E5D-8EB9-9EE0A0553A77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8B0F7E7A-9675-4E5D-8EB9-9EE0A0553A77}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8B0F7E7A-9675-4E5D-8EB9-9EE0A0553A77}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8B0F7E7A-9675-4E5D-8EB9-9EE0A0553A77}.Release|Any CPU.Build.0 = Release|Any CPU
 		{12C6EF8F-D328-43B1-990B-395D4FF9E402}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{12C6EF8F-D328-43B1-990B-395D4FF9E402}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12C6EF8F-D328-43B1-990B-395D4FF9E402}.Release|Any CPU.ActiveCfg = Release|Any CPU

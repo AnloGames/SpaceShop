@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SpaceShop_DataMigrations;
 using System.Linq.Expressions;
-using LogicService.IRepository;
+using SpaceShop_DataMigrations.Repository.IRepository;
 
 namespace SpaceShop_DataMigrations.Repository
 {

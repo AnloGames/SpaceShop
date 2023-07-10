@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SpaceShop_Models\SpaceShop_Models.csproj" />
     <ProjectReference Include="..\SpaceShop_Utility\SpaceShop_Utility.csproj" />
   </ItemGroup>
 

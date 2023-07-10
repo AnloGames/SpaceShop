@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using LogicService.Dto;
 using LogicService.IAdapter;
-using LogicService.IRepository;
+using SpaceShop_DataMigrations.Repository.IRepository;
 using SpaceShop_Models;
 using System;
 using System.Collections.Generic;

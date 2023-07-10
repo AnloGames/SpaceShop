@@ -1,7 +1,5 @@
 ﻿using LogicService.Service.IService;
 using SpaceShop_Utility;
-using LogicService.IRepository;
-using SpaceShop_Models;
 using LogicService.IAdapter;
 using LogicService.Dto;
 

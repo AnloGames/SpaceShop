@@ -4,13 +4,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SpaceShop_DataMigrations;
 using SpaceShop_Models;
-using SpaceShop_ViewModels;
 using System.IO;
 using SpaceShop_Utility;
-using LogicService.IRepository;
 using NuGet.Packaging.Signing;
 using LogicService.IAdapter;
 using LogicService.Dto;
+using LogicService.Dto.ViewModels;
 
 namespace SpaceShop.Controllers
 {

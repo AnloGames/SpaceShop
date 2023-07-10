@@ -1,7 +1,6 @@
 ﻿using LogicService.Dto;
-using SpaceShop_Models;
 
-namespace SpaceShop_ViewModels
+namespace LogicService.Dto.ViewModels
 {
     public class OrderHeaderDetailViewModel
     {

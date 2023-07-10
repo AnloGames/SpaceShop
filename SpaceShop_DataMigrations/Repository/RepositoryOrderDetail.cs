@@ -1,6 +1,6 @@
 ﻿using SpaceShop_DataMigrations;
 using SpaceShop_Models;
-using LogicService.IRepository;
+using SpaceShop_DataMigrations.Repository.IRepository;
 
 namespace SpaceShop_DataMigrations.Repository
 {

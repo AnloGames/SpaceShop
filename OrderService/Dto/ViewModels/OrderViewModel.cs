@@ -1,9 +1,8 @@
 ﻿using LogicService.Dto;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SpaceShop_Models;
 
 
-namespace SpaceShop_ViewModels
+namespace LogicService.Dto.ViewModels
 {
     public class OrderViewModel
     {

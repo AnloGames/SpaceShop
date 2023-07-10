@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage;
-using LogicService.IRepository;
 using SpaceShop_Models;
 using SpaceShop_Utility;
 using LogicService.IAdapter;
 using LogicService.Dto;
 using ModelAdapter.Adapter;
+using LogicService.Service.IService;
 
 namespace SpaceShop.Controllers
 {
@@ -14,16 +14,16 @@ namespace SpaceShop.Controllers
     public class CategoryController : Controller
     {
         //public ApplicationDbContext database;
-        private ICategoryAdapter categoryAdapter;
+        private ICategoryService categoryService;
 
-        public CategoryController(ICategoryAdapter categoryAdapter)
+        public CategoryController(ICategoryService categoryService)
         {
-            this.categoryAdapter = categoryAdapter;
+            this.categoryService = categoryService;
         }
 
         public IActionResult Index()
         {
-            IEnumerable<CategoryDto> categories = categoryAdapter.GetAll();
+            IEnumerable<CategoryDto> categories = categoryService.GetAllCategories();
             return View(categories);
         }
         public IActionResult Create()
@@ -36,24 +36,17 @@ namespace SpaceShop.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(CategoryDto category)
         {
-            if (ModelState.IsValid)
+            CategoryDto? createdCategory = categoryService.CreateCategory(ModelState.IsValid, category);
+            if (createdCategory != null)
             {
-                category.Id = 0;
-                categoryAdapter.Add(category);
-                categoryAdapter.Save();
                 return RedirectToAction("Index");
             }
             return View(category);
         }
 
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-
-            CategoryDto category = categoryAdapter.Find((int)id);
+            CategoryDto? category = categoryService.GetCategory(id);
 
             if (category == null)
             {
@@ -66,30 +59,21 @@ namespace SpaceShop.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(CategoryDto category)
         {
-            if (ModelState.IsValid)
+            CategoryDto updatedCategory = categoryService.UpdateCategory(ModelState.IsValid, category);
+            if (updatedCategory != null)
             {
-                categoryAdapter.Update(category);
-                categoryAdapter.Save();
                 return RedirectToAction("Index");
             }
             return View(category);
         }
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-
-            CategoryDto category = categoryAdapter.FirstOrDefaultById((int)id, isTracking: false);
+            CategoryDto? category = categoryService.RemoveCategory(id);
 
             if (category == null)
             {
                 return NotFound();
             }
-
-            categoryAdapter.Remove(category);
-            categoryAdapter.Save();
             return RedirectToAction("Index");
         }
         public IActionResult Show(int id)

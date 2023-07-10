@@ -1,4 +1,4 @@
-﻿using LogicService.Dto;
+﻿using LogicService.Dto.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace LogicService.Service.IService
 {
-    public interface IProductService
+    public interface IHomeService
     {
-        IEnumerable<ProductDto> GetProductsInCart(IEnumerable<Cart> cartList);
+        public HomeViewModel CreateHomeViewModel();
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogicService.IRepository
+namespace SpaceShop_DataMigrations.Repository.IRepository
 {
     public interface IRepositoryConnectionProductMyModel : IRepository<ConnectionProductMyModel>
     {

@@ -1,7 +1,5 @@
-﻿using SpaceShop_Models;
-using LogicService.Dto;
-
-namespace SpaceShop_ViewModels
+﻿
+namespace LogicService.Dto.ViewModels
 {
     public class DetailsViewModel
     {

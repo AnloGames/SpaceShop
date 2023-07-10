@@ -1,8 +1,6 @@
 ﻿using LogicService.Dto;
 using LogicService.IAdapter;
-using LogicService.IRepository;
 using LogicService.Service.IService;
-using SpaceShop_Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

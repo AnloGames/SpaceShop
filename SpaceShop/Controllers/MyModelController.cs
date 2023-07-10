@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using SpaceShop_DataMigrations;
 using SpaceShop_Models;
 using SpaceShop_Utility;
-using LogicService.IRepository;
 using LogicService.IAdapter;
 using LogicService.Dto;
 

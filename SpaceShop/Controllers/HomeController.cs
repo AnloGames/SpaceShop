@@ -1,40 +1,33 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using LogicService.IRepository;
 using SpaceShop_Models;
 using SpaceShop_Utility;
-using SpaceShop_ViewModels;
 using LogicService.IAdapter;
 using LogicService.Dto;
+using LogicService.Service;
+using LogicService.Service.IService;
+using LogicService.Dto.ViewModels;
 
 namespace SpaceShop.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-
-    //private ApplicationDbContext db;
-    private IProductAdapter productAdapter;
-    private ICategoryAdapter categoryAdapter;
-
-    public HomeController(ILogger<HomeController> logger,
-        IProductAdapter productAdapter, ICategoryAdapter categoryAdapter)
+    private ICategoryService categoryService;
+    private IProductService productService;
+    private IHomeService homeService;
+    public HomeController(ILogger<HomeController> logger, IProductService productService, ICategoryService categoryService, IHomeService homeService)
     {
         _logger = logger;
-
-        this.productAdapter = productAdapter;
-
-        this.categoryAdapter = categoryAdapter;
+        this.productService = productService;
+        this.categoryService = categoryService;
+        this.homeService = homeService;
     }
 
     public IActionResult Index()
     {
-        HomeViewModel homeViewModel = new HomeViewModel()
-        {
-            products = productAdapter.GetAllByShopCount(0),
-            categories = categoryAdapter.GetAll()
-        };
+        HomeViewModel homeViewModel = homeService.CreateHomeViewModel();
 
         return View(homeViewModel);
     }

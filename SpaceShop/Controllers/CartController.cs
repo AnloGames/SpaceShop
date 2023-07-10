@@ -7,11 +7,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpaceShop_DataMigrations;
 using SpaceShop_Models;
-using SpaceShop_ViewModels;
 using SpaceShop_Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore.Storage;
-using LogicService.IRepository;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SpaceShop_Utility.BrainTree;
@@ -19,6 +17,7 @@ using Braintree;
 using LogicService.Service.IService;
 using LogicService.IAdapter;
 using LogicService.Dto;
+using LogicService.Dto.ViewModels;
 
 namespace SpaceShop.Controllers
 {
