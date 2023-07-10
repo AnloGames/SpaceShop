@@ -210,7 +210,7 @@
                     <h2>Product Details</h2>
                 </div>
 
-                @foreach (OrderDetail detail in Model.OrderDetail)
+                @foreach (var detail in Model.OrderDetail)
                 {
                     <div class="row bg-light m-2">
                         <h5>Product Name: @detail.Product.Name</h5>

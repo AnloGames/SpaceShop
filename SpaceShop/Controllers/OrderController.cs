@@ -19,35 +19,34 @@ namespace SpaceShop.Controllers
         [BindProperty]
         public OrderHeaderDetailViewModel OrderViewModel { get; set; }
 
-        IRepositoryOrderHeader repositoryOrderHeader;
-        IRepositoryOrderDetail repositoryOrderDetail;
         IBrainTreeBridge brainTreeBridge;
 
+        IOrderDetailAdapter orderDetailAdapter;
+        IOrderHeaderAdapter orderHeaderAdapter;
         IProductAdapter productAdapter;
 
-        public OrderController(IRepositoryOrderHeader repositoryOrderHeader,
-            IRepositoryOrderDetail repositoryOrderDetail, IBrainTreeBridge brainTreeBridge,
-            IProductAdapter productAdapter)
+        public OrderController(IBrainTreeBridge brainTreeBridge,
+            IProductAdapter productAdapter, IOrderHeaderAdapter orderHeaderAdapter, IOrderDetailAdapter orderDetailAdapter)
         {
             this.brainTreeBridge = brainTreeBridge;
-            this.repositoryOrderDetail = repositoryOrderDetail;
-            this.repositoryOrderHeader = repositoryOrderHeader;
             this.productAdapter = productAdapter;
+            this.orderHeaderAdapter = orderHeaderAdapter;
+            this.orderDetailAdapter = orderDetailAdapter;
         }
 
         public IActionResult Index(string searchName = null, string searchEmail = null,
                     string searchPhone = null, string status = null)
         {
-            IEnumerable<OrderHeader> orderHeaderList;
+            IEnumerable<OrderHeaderDto> orderHeaderList;
             if (User.IsInRole(PathManager.AdminRole))
             {
-                orderHeaderList = repositoryOrderHeader.GetAll();
+                orderHeaderList = orderHeaderAdapter.GetAll();
             }
             else
             {
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                orderHeaderList = repositoryOrderHeader.GetAll(x => x.UserId == claim.Value);
+                orderHeaderList = orderHeaderAdapter.GetAllByUserId(claim.Value);
             }
             OrderViewModel viewModel = new OrderViewModel()
             {
@@ -88,8 +87,8 @@ namespace SpaceShop.Controllers
         {
             OrderViewModel = new OrderHeaderDetailViewModel()
             {
-                OrderHeader = repositoryOrderHeader.FirstOrDefault(x => x.Id == id),
-                OrderDetail = repositoryOrderDetail.GetAll(x => x.OrderHeaderId == id, includeProperties: "Product")
+                OrderHeader = orderHeaderAdapter.FirstOrDefaultById(id),
+                OrderDetail = orderDetailAdapter.GetAllByOrderHeaderId(id, includeProperties: "Product")
             };
 
 
@@ -98,13 +97,13 @@ namespace SpaceShop.Controllers
         [Authorize(Roles = PathManager.AdminRole)]
         public IActionResult ReturnInStock(int id)
         {
-            OrderDetail fullDetail = repositoryOrderDetail.Find(id);
+            OrderDetailDto fullDetail = orderDetailAdapter.FirstOrDefaultById(id);
             ProductDto product = productAdapter.FirstOrDefaultById(fullDetail.ProductId,isTracking: false);
             product.ShopCount += fullDetail.Count;
             fullDetail.IsProductHadReturn = true;
 
             productAdapter.Update(product);
-            repositoryOrderDetail.Update(fullDetail);
+            orderDetailAdapter.Update(fullDetail);
             productAdapter.Save();
 
 
@@ -115,12 +114,12 @@ namespace SpaceShop.Controllers
         public IActionResult StartInProcessing()
         {
             // получаем объект из бд
-            OrderHeader orderHeader = repositoryOrderHeader.
-                FirstOrDefault(x => x.Id == OrderViewModel.OrderHeader.Id);
+            OrderHeaderDto orderHeader = orderHeaderAdapter.
+                FirstOrDefaultById(OrderViewModel.OrderHeader.Id);
 
             orderHeader.Status = PathManager.StatusInProcess;
-
-            repositoryOrderHeader.Save();
+            orderHeaderAdapter.Update(orderHeader);
+            orderHeaderAdapter.Save();
 
             return RedirectToAction("Details", "Order", new { id = orderHeader.Id });
         }
@@ -128,11 +127,12 @@ namespace SpaceShop.Controllers
         [HttpPost]
         public IActionResult StartOrderDone()
         {
-            OrderHeader orderHeader = repositoryOrderHeader.
-                FirstOrDefault(x => x.Id == OrderViewModel.OrderHeader.Id);
+            OrderHeaderDto orderHeader = orderHeaderAdapter.
+                FirstOrDefaultById(OrderViewModel.OrderHeader.Id);
 
             orderHeader.Status = PathManager.StatusOrderDone;
-            repositoryOrderHeader.Save();
+            orderHeaderAdapter.Update(orderHeader);
+            orderHeaderAdapter.Save();
 
             return RedirectToAction("Details", "Order", new { id = orderHeader.Id });
         }
@@ -140,8 +140,8 @@ namespace SpaceShop.Controllers
         [HttpPost]
         public IActionResult StartOrderCancel()
         {
-            OrderHeader orderHeader = repositoryOrderHeader.
-                FirstOrDefault(x => x.Id == OrderViewModel.OrderHeader.Id);
+            OrderHeaderDto orderHeader = orderHeaderAdapter.
+                FirstOrDefaultById(OrderViewModel.OrderHeader.Id);
 
 
             var gateWay = brainTreeBridge.GetGateWay();
@@ -161,7 +161,8 @@ namespace SpaceShop.Controllers
             }
 
             orderHeader.Status = PathManager.StatusDenied;
-            repositoryOrderHeader.Save();
+            orderHeaderAdapter.Update(orderHeader);
+            orderHeaderAdapter.Save();
 
             return RedirectToAction("Details", "Order", new { id = orderHeader.Id });
         }

@@ -47,7 +47,7 @@ builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.AddAutoMapper(typeof(CategoryMappingProfile), typeof(ProductMappingProfile),
     typeof(MyModelMappingProfile), typeof(ConnectionProductMyModelMappingProfile),
-    typeof(ApplicationUserMappingProfile));
+    typeof(ApplicationUserMappingProfile), typeof(OrderHeaderMappingProfile), typeof(OrderDetailMappingProfile));
 
 builder.Services.AddScoped<IRepositoryCategory, RepositoryCategory>();
 builder.Services.AddScoped<IRepositoryMyModel, RepositoryMyModel>();
@@ -68,6 +68,8 @@ builder.Services.AddScoped<IProductAdapter, ProductAdapter>();
 builder.Services.AddScoped<IMyModelAdapter, MyModelAdapter>();
 builder.Services.AddScoped<IConnectionProductMyModelAdapter, ConnectionProductMyModelAdapter>();
 builder.Services.AddScoped<IApplicationUserAdapter, ApplicationUserAdapter>();
+builder.Services.AddScoped<IOrderDetailAdapter, OrderDetailAdapter>();
+builder.Services.AddScoped<IOrderHeaderAdapter, OrderHeaderAdapter>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

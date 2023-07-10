@@ -1,11 +1,12 @@
-﻿using SpaceShop_Models;
+﻿using LogicService.Dto;
+using SpaceShop_Models;
 
 namespace SpaceShop_ViewModels
 {
     public class OrderHeaderDetailViewModel
     {
-        public OrderHeader OrderHeader { get; set; }
+        public OrderHeaderDto OrderHeader { get; set; }
 
-        public IEnumerable<OrderDetail> OrderDetail { get; set; }
+        public IEnumerable<OrderDetailDto> OrderDetail { get; set; }
     }
 }

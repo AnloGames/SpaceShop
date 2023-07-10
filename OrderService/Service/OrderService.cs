@@ -9,16 +9,16 @@ namespace LogicService.Service
 {
     public class OrderService : IOrderService
     {
-        IRepositoryOrderHeader repositoryOrderHeader;
-        IRepositoryOrderDetail repositoryOrderDetail;
+        IOrderHeaderAdapter orderHeaderAdapter;
+        IOrderDetailAdapter orderDetailAdapter;
 
         IProductAdapter productAdapter;
 
-        public OrderService(IRepositoryOrderHeader repositoryOrderHeader, IRepositoryOrderDetail repositoryOrderDetail, IProductAdapter productAdapter)
+        public OrderService(IProductAdapter productAdapter, IOrderHeaderAdapter orderHeaderAdapter, IOrderDetailAdapter orderDetailAdapter)
         {
-            this.repositoryOrderHeader = repositoryOrderHeader;
-            this.repositoryOrderDetail = repositoryOrderDetail;
             this.productAdapter = productAdapter;
+            this.orderHeaderAdapter = orderHeaderAdapter;
+            this.orderDetailAdapter = orderDetailAdapter;
         }
 
         public void SaveOrder(ApplicationUserDto user, List<ProductDto> productList, string transactionId)
@@ -29,7 +29,7 @@ namespace LogicService.Service
             {
                 totalPrice += (int)(item.TempCount * item.Price);
             }
-            OrderHeader orderHeader = new OrderHeader()
+            OrderHeaderDto orderHeader = new OrderHeaderDto()
             {
                 UserId = user.Id,
                 DateOrder = DateTime.Now,
@@ -45,12 +45,12 @@ namespace LogicService.Service
                 PostalCode = user.PostalCode,
                 TransactionId = transactionId
 };
-            repositoryOrderHeader.Add(orderHeader);
-            repositoryOrderHeader.Save();
+            orderHeader = orderHeaderAdapter.AddAndChange(orderHeader);
+            orderHeaderAdapter.Save();
 
             foreach (var product in productList)
             {
-                OrderDetail orderDetail = new OrderDetail()
+                OrderDetailDto orderDetail = new OrderDetailDto()
                 {
                     OrderHeaderId = orderHeader.Id,
                     ProductId = product.Id,
@@ -61,10 +61,10 @@ namespace LogicService.Service
                 ProductDto ShopProduct = productAdapter.FirstOrDefaultById(product.Id, isTracking: false);
                 ShopProduct.ShopCount -= product.TempCount;
                 productAdapter.Update(ShopProduct);
-                repositoryOrderDetail.Add(orderDetail);
+                orderDetailAdapter.Add(orderDetail);
             }
 
-            repositoryOrderDetail.Save();
+            orderDetailAdapter.Save();
        
         }
     }

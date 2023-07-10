@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using LogicService.Dto;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SpaceShop_Models;
 
 
@@ -6,7 +7,7 @@ namespace SpaceShop_ViewModels
 {
     public class OrderViewModel
     {
-        public IEnumerable<OrderHeader> OrderHeaderList { get; set; }
+        public IEnumerable<OrderHeaderDto> OrderHeaderList { get; set; }
 
         // для выдападающего списка - статус
         public IEnumerable<SelectListItem> StatusList { get; set; }
