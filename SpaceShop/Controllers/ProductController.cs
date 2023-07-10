@@ -26,19 +26,19 @@ namespace SpaceShop.Controllers
             this.environment = environment;
         }*/
         private IProductAdapter productAdapter;
-        private IRepositoryMyModel repositoryMyModel;
-        private IRepositoryConnectionProductMyModel repositoryConnectionProductMyModel;
+        private IMyModelAdapter myModelAdapter;
         private IWebHostEnvironment environment;
 
         private ICategoryAdapter categoryAdapter;
+        private IConnectionProductMyModelAdapter connectionProductMyModelAdapter;
         public ProductController(IWebHostEnvironment environment, IProductAdapter productAdapter, 
-            IRepositoryMyModel repositoryMyModel, IRepositoryConnectionProductMyModel repositoryConnectionProductMyModel, 
-            ApplicationDbContext database, ICategoryAdapter categoryAdapter)
+            IMyModelAdapter myModelAdapter,ApplicationDbContext database, 
+            ICategoryAdapter categoryAdapter, IConnectionProductMyModelAdapter connectionProductMyModelAdapter)
         {
             this.environment = environment;
             this.productAdapter = productAdapter;
-            this.repositoryMyModel = repositoryMyModel;
-            this.repositoryConnectionProductMyModel = repositoryConnectionProductMyModel;
+            this.myModelAdapter = myModelAdapter;
+            this.connectionProductMyModelAdapter = connectionProductMyModelAdapter;
             this.database = database;
             this.categoryAdapter = categoryAdapter;
         }
@@ -69,7 +69,7 @@ namespace SpaceShop.Controllers
                     return NotFound();
                 }
             }
-            ProductCreation data = new ProductCreation(product, categoryAdapter.GetAll(), repositoryMyModel.GetAll());
+            ProductCreation data = new ProductCreation(product, categoryAdapter.GetAll(), myModelAdapter.GetAll());
             return View(data);
             /*IEnumerable<SelectListItem> CategoriesList = database.Category.Select(x => new SelectListItem
             {
@@ -115,9 +115,9 @@ namespace SpaceShop.Controllers
             }
             else
             {
-                foreach (ConnectionProductMyModel connection in repositoryConnectionProductMyModel.GetAll(filter: (u => u.ProductId == product.Id), isTracking: false))
+                foreach (var connection in connectionProductMyModelAdapter.GetAllByProductId(product.Id, isTracking: false))
                 {
-                    repositoryConnectionProductMyModel.Remove(connection);
+                    connectionProductMyModelAdapter.Remove(connection);
                     productAdapter.Save();
                 }
                 ProductDto NowProduct = productAdapter.FirstOrDefaultById(product.Id, isTracking: false);
@@ -149,25 +149,30 @@ namespace SpaceShop.Controllers
             }
             CategoryDto productCategory = categoryAdapter.Find(product.CategoryId);
             product.ShortDescription = "Category: " + productCategory.Name + "; Tags: ";
+            List<ConnectionProductMyModelDto> connections = new List<ConnectionProductMyModelDto>();
             foreach (int MyModelId in MyModelsId)
             {
-                productAdapter.Save();
-                ConnectionProductMyModel connection = new ConnectionProductMyModel();
+                ConnectionProductMyModelDto connection = new ConnectionProductMyModelDto();
                 connection.Id = 0;
                 connection.MyModelId = MyModelId;
-                connection.ProductId = product.Id;
-                repositoryConnectionProductMyModel.Add(connection);
-                product.ShortDescription += repositoryMyModel.Find(MyModelId).Name + ", ";
+                connections.Add(connection);
+                product.ShortDescription += myModelAdapter.FirstOrDefaultById(MyModelId).Name + ", ";
             }
             if (product.Id == 0)
             {
-                productAdapter.Add(product);
+                product = productAdapter.AddAndChange(product);
             }
             else
             {
                 productAdapter.Update(product);
             }
             productAdapter.Save();
+            foreach (var connection in connections)
+            {
+                connection.ProductId = product.Id;
+                connectionProductMyModelAdapter.Add(connection);
+                connectionProductMyModelAdapter.Save();
+            }
             return RedirectToAction("Index");
         }
 
@@ -190,13 +195,13 @@ namespace SpaceShop.Controllers
         public IActionResult Delete(int id)
         {
             ProductDto product = productAdapter.FirstOrDefaultById(id);
-            IEnumerable<ConnectionProductMyModel> connections = repositoryConnectionProductMyModel.GetAll(filter: (u => u.ProductId == id));
+            IEnumerable<ConnectionProductMyModelDto> connections = connectionProductMyModelAdapter.GetAllByProductId(id);
             List<int> ids = new List<int>();
-            foreach (ConnectionProductMyModel connection in connections)
+            foreach (var connection in connections)
             {
                 ids.Add(connection.MyModelId);
             }
-            IEnumerable<MyModel> connectedModels = repositoryMyModel.GetAll(filter: u => ids.Contains(u.Id));
+            IEnumerable<MyModelDto> connectedModels = myModelAdapter.GetAllByIdList(ids);
             ProductCreation productCreation = new ProductCreation(product, connectedModels);
 
             return View(productCreation);
@@ -220,9 +225,9 @@ namespace SpaceShop.Controllers
             {
                 System.IO.File.Delete(oldFile);
             }
-            foreach (ConnectionProductMyModel connection in repositoryConnectionProductMyModel.GetAll((u => u.ProductId == product.Id)))
+            foreach (var connection in connectionProductMyModelAdapter.GetAllByProductId(product.Id, isTracking: false))
             {
-                repositoryConnectionProductMyModel.Remove(connection);
+                connectionProductMyModelAdapter.Remove(connection);
                 productAdapter.Save();
             }
 

@@ -4,21 +4,23 @@ using SpaceShop_DataMigrations;
 using SpaceShop_Models;
 using SpaceShop_Utility;
 using LogicService.IRepository;
+using LogicService.IAdapter;
+using LogicService.Dto;
 
 namespace SpaceShop.Controllers
 {
     [Authorize(Roles = PathManager.AdminRole)]
     public class MyModelController : Controller
     {
-        private IRepositoryMyModel repositoryMyModel;
+        private IMyModelAdapter myModelAdapter;
 
-        public MyModelController(IRepositoryMyModel repositoryMyModel)
+        public MyModelController(IMyModelAdapter myModelAdapter)
         {
-            this.repositoryMyModel = repositoryMyModel;
+            this.myModelAdapter = myModelAdapter;
         }
         public IActionResult Index()
         {
-            IEnumerable<MyModel> MyModels = repositoryMyModel.GetAll();
+            IEnumerable<MyModelDto> MyModels = myModelAdapter.GetAll();
             return View(MyModels);
         }
         public IActionResult Create()
@@ -28,12 +30,12 @@ namespace SpaceShop.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(MyModel myModel)
+        public IActionResult Create(MyModelDto myModel)
         {
             if (ModelState.IsValid)
             {
-                repositoryMyModel.Add(myModel);
-                repositoryMyModel.Save();
+                myModelAdapter.Add(myModel);
+                myModelAdapter.Save();
                 return RedirectToAction("Index");
             }
             return View(myModel);
@@ -46,15 +48,15 @@ namespace SpaceShop.Controllers
                 return NotFound();
             }
 
-            MyModel myModel = repositoryMyModel.Find((int)id);
+            MyModelDto myModel = myModelAdapter.FirstOrDefaultById((int)id, isTracking: false);
 
             if (myModel == null)
             {
                 return NotFound();
             }
 
-            repositoryMyModel.Remove(myModel);
-            repositoryMyModel.Save();
+            myModelAdapter.Remove(myModel);
+            myModelAdapter.Save();
             return RedirectToAction("Index");
         }
     }

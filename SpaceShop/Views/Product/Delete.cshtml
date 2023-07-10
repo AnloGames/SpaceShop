@@ -39,7 +39,7 @@ string title = "Delete";
         <table class="table table-bordered table-striped" style="width: 1rem; display:inline-table;">
             <tbody>
                 <tr>
-                    @foreach (MyModel myModel in Model.myModels)
+                    @foreach (var myModel in Model.myModels)
                     {
                         <td>@myModel.Name</td>
                     }

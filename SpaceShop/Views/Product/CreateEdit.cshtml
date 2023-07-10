@@ -5,7 +5,7 @@
     var title = "Create";
     ProductDto product = Model.product;
     IEnumerable<CategoryDto> categories = Model.categories;
-    IEnumerable<MyModel> myModels = Model.myModels;
+    IEnumerable<MyModelDto> myModels = Model.myModels;
     int[] MyModelsId = new int[categories.Count()];
 }
 @if (product.Id != 0)
@@ -48,7 +48,7 @@
         
         <label asp-for="product.Category"></label>
         <select asp-for="product.CategoryId" class="form-control">
-            @foreach (CategoryDto item in categories)
+            @foreach (var item in categories)
             {
                 <option value="@item.Id">@item.Name</option>
             }
@@ -58,7 +58,7 @@
 
         </><label asp-for="@MyModelsId"></label>
         <select asp-for="@MyModelsId" class="form-control" multiple>
-            @foreach (MyModel item in myModels)
+            @foreach (var item in myModels)
             {
                 <option value="@item.Id">@item.Name</option>
             }

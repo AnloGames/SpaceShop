@@ -16,6 +16,7 @@ namespace LogicService.IAdapter
         IEnumerable<ProductDto> GetAllByCategoryId(int categoryId, bool isTracking = true, string includeProperties = null);
         ProductDto FirstOrDefaultById(int id, bool isTracking = false, string includeProperties = null);
         void Add(ProductDto productDto);
+        ProductDto AddAndChange(ProductDto productDto);
         void Update(ProductDto productDto);
         void Remove(ProductDto productDto);
         void Save();

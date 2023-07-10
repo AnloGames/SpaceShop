@@ -27,6 +27,14 @@ namespace ModelAdapter.Adapter
             repositoryProduct.Add(product);
         }
 
+        public ProductDto AddAndChange(ProductDto productDto)
+        {
+            Product product = mapper.Map<Product>(productDto);
+            repositoryProduct.Add(product);
+            repositoryProduct.Save();
+            return mapper.Map<ProductDto>(product);
+        }
+
         public ProductDto Find(int id)
         {
             Product product = repositoryProduct.Find(id);
