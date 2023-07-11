@@ -5,7 +5,6 @@ using SpaceShop_Models;
 using SpaceShop_Utility;
 using LogicService.IAdapter;
 using LogicService.Dto;
-using ModelAdapter.Adapter;
 using LogicService.Service.IService;
 
 namespace SpaceShop.Controllers

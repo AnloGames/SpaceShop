@@ -46,5 +46,24 @@ namespace LogicService.Service
             var status = resultTransaction.Target.ProcessorResponseText;
             return id;
         }
+
+        public void RefundTransaction(string transactionId)
+        {
+            var gateWay = brainTreeBridge.GetGateWay();
+
+            // get transaction
+            Transaction transaction = gateWay.Transaction.Find(transactionId);
+
+            // условия при которых не возвращаем
+            if (transaction.Status == TransactionStatus.AUTHORIZED ||
+                transaction.Status == TransactionStatus.SUBMITTED_FOR_SETTLEMENT)
+            {
+                var res = gateWay.Transaction.Void(transactionId);
+            }
+            else // возврат средств
+            {
+                var res = gateWay.Transaction.Refund(transactionId);
+            }
+        }
     }
 }

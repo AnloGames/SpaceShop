@@ -5,21 +5,22 @@ using SpaceShop_Models;
 using SpaceShop_Utility;
 using LogicService.IAdapter;
 using LogicService.Dto;
+using LogicService.Service;
+using LogicService.Service.IService;
 
 namespace SpaceShop.Controllers
 {
     [Authorize(Roles = PathManager.AdminRole)]
     public class MyModelController : Controller
     {
-        private IMyModelAdapter myModelAdapter;
-
-        public MyModelController(IMyModelAdapter myModelAdapter)
+        IMyModelService myModelService;
+        public MyModelController(IMyModelService myModelService)
         {
-            this.myModelAdapter = myModelAdapter;
+            this.myModelService = myModelService;
         }
         public IActionResult Index()
         {
-            IEnumerable<MyModelDto> MyModels = myModelAdapter.GetAll();
+            IEnumerable<MyModelDto> MyModels = myModelService.GetMyModels();
             return View(MyModels);
         }
         public IActionResult Create()
@@ -31,31 +32,22 @@ namespace SpaceShop.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(MyModelDto myModel)
         {
-            if (ModelState.IsValid)
+            MyModelDto createdModel = myModelService.CreateMyModel(ModelState.IsValid, myModel);
+            if (createdModel != null)
             {
-                myModelAdapter.Add(myModel);
-                myModelAdapter.Save();
                 return RedirectToAction("Index");
             }
             return View(myModel);
         }
 
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int id)
         {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-
-            MyModelDto myModel = myModelAdapter.FirstOrDefaultById((int)id, isTracking: false);
+            MyModelDto myModel = myModelService.RemoveMyModel(id);
 
             if (myModel == null)
             {
                 return NotFound();
             }
-
-            myModelAdapter.Remove(myModel);
-            myModelAdapter.Save();
             return RedirectToAction("Index");
         }
     }

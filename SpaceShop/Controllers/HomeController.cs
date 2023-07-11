@@ -14,14 +14,15 @@ namespace SpaceShop.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private ICategoryService categoryService;
     private IProductService productService;
     private IHomeService homeService;
-    public HomeController(ILogger<HomeController> logger, IProductService productService, ICategoryService categoryService, IHomeService homeService)
+    ICartService cartService;
+    public HomeController(ILogger<HomeController> logger, IProductService productService, 
+        IHomeService homeService, ICartService cartService)
     {
         _logger = logger;
+        this.cartService = cartService;
         this.productService = productService;
-        this.categoryService = categoryService;
         this.homeService = homeService;
     }
 
@@ -34,25 +35,9 @@ public class HomeController : Controller
 
     public IActionResult Details(int id)
     {
-        List<Cart> cartList = new List<Cart>();
+        IEnumerable<Cart> cartList = cartService.GetSessionCartList(HttpContext).ToList();
 
-        if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
-            && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
-        {
-            cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
-        }
-
-
-        DetailsViewModel detailsViewModel = new DetailsViewModel(false, productAdapter.FirstOrDefaultById(id, includeProperties: "Category"));
-        // проверка на наличие товара в корзине
-        // если товар есть, то меняем свойство
-        foreach (var item in cartList)
-        {
-            if (item.ProductId == id)
-            {
-                detailsViewModel.IsInCart = true;
-            }
-        }
+        DetailsViewModel detailsViewModel = homeService.CreateDetailsViewModel(id, cartList);
 
         return View(detailsViewModel);
     }
@@ -60,16 +45,10 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult Details(int id, int count)
     {
-        ProductDto product = productAdapter.Find(id);
-        if (count <= product.ShopCount)
+        int productShopCount = productService.GetProductShopCount(id);
+        if (count <= productShopCount)
         {
-            List<Cart> cartList = new List<Cart>();
-
-            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
-                && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
-            {
-                cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
-            }
+            List<Cart> cartList = cartService.GetSessionCartList(HttpContext).ToList();
 
             cartList.Add(new Cart() { ProductId = id, TempCount = count });
 
@@ -85,23 +64,13 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult RemoveFromCart(int id)
     {
-        List<Cart> cartList = new List<Cart>();
-
-        if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
-            && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
-        {
-            cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
-        }
-
-        // get product from cart
+        List<Cart> cartList = cartService.GetSessionCartList(HttpContext).ToList();
         var item = cartList.Single(x => x.ProductId == id);
-
         if (item != null)
         {
             cartList.Remove(item);
         }
 
-        // SET SESSION
         HttpContext.Session.Set(PathManager.SessionCart, cartList);
 
         return RedirectToAction("Index");

@@ -62,6 +62,9 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IHomeService, HomeService>();
+builder.Services.AddScoped<IMyModelService, MyModelService>();
 
 builder.Services.AddScoped<ICategoryAdapter, CategoryAdapter>();
 builder.Services.AddScoped<IProductAdapter, ProductAdapter>();

@@ -1,4 +1,5 @@
-﻿using LogicService.Dto.ViewModels;
+﻿using LogicService.Dto;
+using LogicService.Dto.ViewModels;
 using LogicService.IAdapter;
 using LogicService.Service.IService;
 using System;
@@ -17,6 +18,19 @@ namespace LogicService.Service
         {
             this.productAdapter = productAdapter;
             this.categoryAdapter = categoryAdapter;
+        }
+
+        public DetailsViewModel CreateDetailsViewModel(int productId, IEnumerable<Cart> cartList)
+        {
+            DetailsViewModel detailsViewModel = new DetailsViewModel(false, productAdapter.FirstOrDefaultById(productId, includeProperties: "Category"));
+            foreach (var item in cartList)
+            {
+                if (item.ProductId == productId)
+                {
+                    detailsViewModel.IsInCart = true;
+                }
+            }
+            return detailsViewModel;
         }
 
         public HomeViewModel CreateHomeViewModel()

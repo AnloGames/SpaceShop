@@ -10,6 +10,7 @@ using System.Security.Claims;
 using LogicService.IAdapter;
 using LogicService.Dto;
 using LogicService.Dto.ViewModels;
+using LogicService.Service.IService;
 
 namespace SpaceShop.Controllers
 {
@@ -19,35 +20,19 @@ namespace SpaceShop.Controllers
         [BindProperty]
         public OrderHeaderDetailViewModel OrderViewModel { get; set; }
 
-        IBrainTreeBridge brainTreeBridge;
+        IOrderService orderService;
+        IPaymentService paymentService;
 
-        IOrderDetailAdapter orderDetailAdapter;
-        IOrderHeaderAdapter orderHeaderAdapter;
-        IProductAdapter productAdapter;
-
-        public OrderController(IBrainTreeBridge brainTreeBridge,
-            IProductAdapter productAdapter, IOrderHeaderAdapter orderHeaderAdapter, IOrderDetailAdapter orderDetailAdapter)
+        public OrderController(IOrderService orderService, IPaymentService paymentService)
         {
-            this.brainTreeBridge = brainTreeBridge;
-            this.productAdapter = productAdapter;
-            this.orderHeaderAdapter = orderHeaderAdapter;
-            this.orderDetailAdapter = orderDetailAdapter;
+            this.orderService = orderService;
+            this.paymentService = paymentService;
         }
 
         public IActionResult Index(string searchName = null, string searchEmail = null,
                     string searchPhone = null, string status = null)
         {
-            IEnumerable<OrderHeaderDto> orderHeaderList;
-            if (User.IsInRole(PathManager.AdminRole))
-            {
-                orderHeaderList = orderHeaderAdapter.GetAll();
-            }
-            else
-            {
-                var claimsIdentity = (ClaimsIdentity)User.Identity;
-                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                orderHeaderList = orderHeaderAdapter.GetAllByUserId(claim.Value);
-            }
+            IEnumerable<OrderHeaderDto> orderHeaderList = orderService.CreateOrderTable(User);
             OrderViewModel viewModel = new OrderViewModel()
             {
                 OrderHeaderList = orderHeaderList,
@@ -85,84 +70,36 @@ namespace SpaceShop.Controllers
 
         public IActionResult Details(int id)
         {
-            OrderViewModel = new OrderHeaderDetailViewModel()
-            {
-                OrderHeader = orderHeaderAdapter.FirstOrDefaultById(id),
-                OrderDetail = orderDetailAdapter.GetAllByOrderHeaderId(id, includeProperties: "Product")
-            };
-
-
+            OrderViewModel = orderService.CreateOrderDetailViewModel(id);
             return View(OrderViewModel);
         }
         [Authorize(Roles = PathManager.AdminRole)]
         public IActionResult ReturnInStock(int id)
         {
-            OrderDetailDto fullDetail = orderDetailAdapter.FirstOrDefaultById(id);
-            ProductDto product = productAdapter.FirstOrDefaultById(fullDetail.ProductId,isTracking: false);
-            product.ShopCount += fullDetail.Count;
-            fullDetail.IsProductHadReturn = true;
-
-            productAdapter.Update(product);
-            orderDetailAdapter.Update(fullDetail);
-            productAdapter.Save();
-
-
-            return RedirectToAction("Details", "Order", new {id = fullDetail.OrderHeaderId});
+            orderService.ReturnProductInStock(id);
+            return RedirectToAction("Details", "Order", new {id = OrderViewModel.OrderHeader.Id});
         }
         [Authorize(Roles = PathManager.AdminRole)]
         [HttpPost]
         public IActionResult StartInProcessing()
         {
-            // получаем объект из бд
-            OrderHeaderDto orderHeader = orderHeaderAdapter.
-                FirstOrDefaultById(OrderViewModel.OrderHeader.Id);
-
-            orderHeader.Status = PathManager.StatusInProcess;
-            orderHeaderAdapter.Update(orderHeader);
-            orderHeaderAdapter.Save();
-
-            return RedirectToAction("Details", "Order", new { id = orderHeader.Id });
+            orderService.ChangeOrderStatus(PathManager.StatusInProcess, OrderViewModel.OrderHeader.Id);
+            return RedirectToAction("Details", "Order", new { id = OrderViewModel.OrderHeader.Id });
         }
         [Authorize(Roles = PathManager.AdminRole)]
         [HttpPost]
         public IActionResult StartOrderDone()
         {
-            OrderHeaderDto orderHeader = orderHeaderAdapter.
-                FirstOrDefaultById(OrderViewModel.OrderHeader.Id);
-
-            orderHeader.Status = PathManager.StatusOrderDone;
-            orderHeaderAdapter.Update(orderHeader);
-            orderHeaderAdapter.Save();
-
-            return RedirectToAction("Details", "Order", new { id = orderHeader.Id });
+            orderService.ChangeOrderStatus(PathManager.StatusOrderDone, OrderViewModel.OrderHeader.Id);
+            return RedirectToAction("Details", "Order", new { id = OrderViewModel.OrderHeader.Id });
         }
         [Authorize(Roles = PathManager.AdminRole)]
         [HttpPost]
         public IActionResult StartOrderCancel()
         {
-            OrderHeaderDto orderHeader = orderHeaderAdapter.
-                FirstOrDefaultById(OrderViewModel.OrderHeader.Id);
-
-
-            var gateWay = brainTreeBridge.GetGateWay();
-
-            // get transaction
-            Transaction transaction = gateWay.Transaction.Find(orderHeader.TransactionId);
-
-            // условия при которых не возвращаем
-            if (transaction.Status == TransactionStatus.AUTHORIZED ||
-                transaction.Status == TransactionStatus.SUBMITTED_FOR_SETTLEMENT)
-            {
-                var res = gateWay.Transaction.Void(orderHeader.TransactionId);
-            }
-            else // возврат средств
-            {
-                var res = gateWay.Transaction.Refund(orderHeader.TransactionId);
-            }
-
-            orderHeader.Status = PathManager.StatusDenied;
-            orderHeaderAdapter.Update(orderHeader);
-            orderHeaderAdapter.Save();
+            OrderHeaderDto orderHeader = OrderViewModel.OrderHeader;
+            orderService.ChangeOrderStatus(PathManager.StatusDenied, orderHeader.Id);
+            paymentService.RefundTransaction(orderHeader.TransactionId);
 
             return RedirectToAction("Details", "Order", new { id = orderHeader.Id });
         }

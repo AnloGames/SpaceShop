@@ -10,50 +10,27 @@ using NuGet.Packaging.Signing;
 using LogicService.IAdapter;
 using LogicService.Dto;
 using LogicService.Dto.ViewModels;
+using LogicService.Service.IService;
 
 namespace SpaceShop.Controllers
 {
     [Authorize(Roles = PathManager.AdminRole)]
     public class ProductController : Controller
     {
-        private ApplicationDbContext database;
-        /*private IWebHostEnvironment environment;
-
-        public ProductController(ApplicationDbContext database, IWebHostEnvironment environment)
+        IProductService productService;
+        ICategoryService categoryService;
+        IMyModelService myModelService;
+        public ProductController(ICategoryService categoryService, IMyModelService myModelService, IProductService productService)
         {
-            this.database = database;
-            this.environment = environment;
-        }*/
-        private IProductAdapter productAdapter;
-        private IMyModelAdapter myModelAdapter;
-        private IWebHostEnvironment environment;
-
-        private ICategoryAdapter categoryAdapter;
-        private IConnectionProductMyModelAdapter connectionProductMyModelAdapter;
-        public ProductController(IWebHostEnvironment environment, IProductAdapter productAdapter, 
-            IMyModelAdapter myModelAdapter,ApplicationDbContext database, 
-            ICategoryAdapter categoryAdapter, IConnectionProductMyModelAdapter connectionProductMyModelAdapter)
-        {
-            this.environment = environment;
-            this.productAdapter = productAdapter;
-            this.myModelAdapter = myModelAdapter;
-            this.connectionProductMyModelAdapter = connectionProductMyModelAdapter;
-            this.database = database;
-            this.categoryAdapter = categoryAdapter;
+            this.productService = productService;
+            this.categoryService = categoryService;
+            this.myModelService = myModelService;
         }
         public IActionResult Index(int? CategoryId)
         {
 
-            IEnumerable<ProductDto> products;
-            if (CategoryId == null)
-            {
-                products = productAdapter.GetAll();
-            }
-            else
-            {
-                products = productAdapter.GetAllByCategoryId((int)CategoryId, isTracking: false);
+            IEnumerable<ProductDto> products = productService.GetProducts(CategoryId);
 
-            }
             return View(products);
         }
         public IActionResult CreateEdit(int? id)
@@ -62,21 +39,14 @@ namespace SpaceShop.Controllers
             if (id != null)
             {
                 //edit
-                product = productAdapter.FirstOrDefaultById((int)id, isTracking: false);
+                product = productService.GetProduct((int)id);
                 if (product == null)
                 {
                     return NotFound();
                 }
             }
-            ProductCreation data = new ProductCreation(product, categoryAdapter.GetAll(), myModelAdapter.GetAll());
+            ProductCreation data = new ProductCreation(product, categoryService.GetAllCategories(), myModelService.GetMyModels());
             return View(data);
-            /*IEnumerable<SelectListItem> CategoriesList = database.Category.Select(x => new SelectListItem
-            {
-                Text = x.Name,
-                Value = x.Id.ToString()
-            });
-            ViewBag.Categories = CategoriesList;
-            return View(product);*/
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -183,11 +153,7 @@ namespace SpaceShop.Controllers
         [HttpPost]
         public IActionResult ChangeCount(int id, int count)
         {
-            ProductDto product = productAdapter.FirstOrDefaultById(id, isTracking: false);
-            product.ShopCount = count;
-            productAdapter.Update(product);
-            productAdapter.Save();
-
+            productService.ChangeProductShopCount(id, count);
             return RedirectToAction("Index");
         }
 

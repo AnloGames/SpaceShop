@@ -16,7 +16,39 @@ namespace LogicService.Service
         public ProductService(IProductAdapter productAdapter)
         {
             this.productAdapter = productAdapter;
-        }   
+        }
+
+        public void ChangeProductShopCount(int productId, int count)
+        {
+            ProductDto product = productAdapter.FirstOrDefaultById(id, isTracking: false);
+            product.ShopCount = count;
+            productAdapter.Update(product);
+            productAdapter.Save();
+        }
+
+        public ProductDto GetProduct(int productId)
+        {
+            return productAdapter.FirstOrDefaultById(productId, isTracking: false);
+        }
+
+        public IEnumerable<ProductDto> GetProducts(int? categoryId)
+        {
+            if (categoryId == null)
+            {
+                return productAdapter.GetAll();
+            }
+            else
+            {
+                return productAdapter.GetAllByCategoryId((int)categoryId, isTracking: false);
+
+            }
+        }
+
+        public int GetProductShopCount(int productId)
+        {
+            ProductDto product = productAdapter.Find(productId);
+            return product.ShopCount;
+        }
 
         public IEnumerable<ProductDto> GetProductsInCart(IEnumerable<Cart> cartList)
         {
@@ -29,5 +61,6 @@ namespace LogicService.Service
             }
             return productList;
         }
+
     }
 }

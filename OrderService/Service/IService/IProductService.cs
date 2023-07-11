@@ -10,5 +10,9 @@ namespace LogicService.Service.IService
     public interface IProductService
     {
         IEnumerable<ProductDto> GetProductsInCart(IEnumerable<Cart> cartList);
+        int GetProductShopCount(int productId);
+        ProductDto GetProduct(int productId);
+        IEnumerable<ProductDto> GetProducts(int? categoryId);
+        void ChangeProductShopCount(int productId, int count);
     }
 }

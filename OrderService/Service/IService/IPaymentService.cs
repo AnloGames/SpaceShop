@@ -11,5 +11,6 @@ namespace LogicService.Service.IService
     {
         string GetTransactionId(IFormCollection collection);
         string GetTokenClient();
+        void RefundTransaction(string transactionId);
     }
 }
