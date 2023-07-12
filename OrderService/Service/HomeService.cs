@@ -37,7 +37,7 @@ namespace LogicService.Service
         {
             HomeViewModel homeViewModel = new HomeViewModel()
             {
-                products = productAdapter.GetAllByShopCount(0),
+                products = productAdapter.GetAllByShopCount(0, includeProperties: "Category"),
                 categories = categoryAdapter.GetAll()
             };
             return homeViewModel;

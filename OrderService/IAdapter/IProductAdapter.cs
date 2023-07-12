@@ -11,9 +11,9 @@ namespace LogicService.IAdapter
     public interface IProductAdapter
     {
         ProductDto Find(int id);
-        IEnumerable<ProductDto> GetAll(bool isTracking = true, string includeProperties = null);
-        IEnumerable<ProductDto> GetAllByShopCount(int preferredShopCount, bool isTracking = true, string includeProperties = null);
-        IEnumerable<ProductDto> GetAllByCategoryId(int categoryId, bool isTracking = true, string includeProperties = null);
+        IEnumerable<ProductDto> GetAll(bool isTracking = false, string includeProperties = null);
+        IEnumerable<ProductDto> GetAllByShopCount(int preferredShopCount, bool isTracking = false, string includeProperties = null);
+        IEnumerable<ProductDto> GetAllByCategoryId(int categoryId, bool isTracking = false, string includeProperties = null);
         ProductDto FirstOrDefaultById(int id, bool isTracking = false, string includeProperties = null);
         void Add(ProductDto productDto);
         ProductDto AddAndChange(ProductDto productDto);

@@ -32,7 +32,7 @@ namespace LogicService.Service
 
         public IEnumerable<CategoryDto> GetAllCategories()
         {
-            throw new NotImplementedException();
+            return categoryAdapter.GetAll();
         }
 
         public CategoryDto? GetCategory(int id)

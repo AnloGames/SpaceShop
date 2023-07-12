@@ -47,7 +47,7 @@ namespace ModelAdapter.Adapter
             return mapper.Map<ProductDto>(product);
         }
 
-        public IEnumerable<ProductDto> GetAll(bool isTracking = true, string includeProperties = null)
+        public IEnumerable<ProductDto> GetAll(bool isTracking = false, string includeProperties = null)
         {
             IEnumerable<Product> products = repositoryProduct.GetAll(isTracking: isTracking, includeProperties: includeProperties);
             foreach (Product product in products)
@@ -56,7 +56,7 @@ namespace ModelAdapter.Adapter
             }
         }
 
-        public IEnumerable<ProductDto> GetAllByCategoryId(int categoryId, bool isTracking = true, string includeProperties = null)
+        public IEnumerable<ProductDto> GetAllByCategoryId(int categoryId, bool isTracking = false, string includeProperties = null)
         {
             IEnumerable<Product> products = repositoryProduct.GetAll(filter: x => x.CategoryId == categoryId, isTracking: isTracking, includeProperties: includeProperties);
             foreach (Product product in products)
@@ -65,7 +65,7 @@ namespace ModelAdapter.Adapter
             }
         }
 
-        public IEnumerable<ProductDto> GetAllByShopCount(int preferredShopCount, bool isTracking = true, string includeProperties = null)
+        public IEnumerable<ProductDto> GetAllByShopCount(int preferredShopCount, bool isTracking = false, string includeProperties = null)
         {
             IEnumerable<Product> products = repositoryProduct.GetAll(filter: x => x.ShopCount > preferredShopCount, isTracking: isTracking, includeProperties: includeProperties);
             foreach (Product product in products)
