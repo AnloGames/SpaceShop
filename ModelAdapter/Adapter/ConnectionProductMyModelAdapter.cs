@@ -13,8 +13,8 @@ namespace ModelAdapter.Adapter
 {
     public class ConnectionProductMyModelAdapter : IConnectionProductMyModelAdapter
     {
-        IRepositoryConnectionProductMyModel repositoryConnectionProductMyModel;
-        IMapper mapper;
+        readonly IRepositoryConnectionProductMyModel repositoryConnectionProductMyModel;
+        readonly IMapper mapper;
 
         public ConnectionProductMyModelAdapter(IRepositoryConnectionProductMyModel repositoryConnectionProductMyModel, IMapper mapper)
         {

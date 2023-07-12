@@ -13,8 +13,8 @@ namespace ModelAdapter.Adapter
 {
     public class OrderDetailAdapter : IOrderDetailAdapter
     {
-        IRepositoryOrderDetail repositoryOrderDetail;
-        IMapper mapper;
+        readonly IRepositoryOrderDetail repositoryOrderDetail;
+        readonly IMapper mapper;
 
         public OrderDetailAdapter(IMapper mapper, IRepositoryOrderDetail repositoryOrderDetail)
         {

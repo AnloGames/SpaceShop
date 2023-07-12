@@ -13,8 +13,8 @@ namespace ModelAdapter.Adapter
 {
     public class ProductAdapter : IProductAdapter
     {
-        IRepositoryProduct repositoryProduct;
-        IMapper mapper;
+        readonly IRepositoryProduct repositoryProduct;
+        readonly IMapper mapper;
 
         public ProductAdapter(IRepositoryProduct repositoryProduct, IMapper mapper)
         {

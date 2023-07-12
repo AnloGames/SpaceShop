@@ -13,8 +13,8 @@ namespace ModelAdapter.Adapter
 {
     public class ApplicationUserAdapter : IApplicationUserAdapter
     {
-        public IRepositoryApplicationUser repositoryApplicationUser;
-        public IMapper mapper;
+        readonly IRepositoryApplicationUser repositoryApplicationUser;
+        readonly IMapper mapper;
 
         public ApplicationUserAdapter(IRepositoryApplicationUser repositoryApplicationUser, IMapper mapper)
         {

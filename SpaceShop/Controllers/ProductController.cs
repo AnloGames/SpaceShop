@@ -17,9 +17,9 @@ namespace SpaceShop.Controllers
     [Authorize(Roles = PathManager.AdminRole)]
     public class ProductController : Controller
     {
-        IProductService productService;
-        ICategoryService categoryService;
-        IMyModelService myModelService;
+        readonly IProductService productService;
+        readonly ICategoryService categoryService;
+        readonly IMyModelService myModelService;
         public ProductController(ICategoryService categoryService, IMyModelService myModelService, IProductService productService)
         {
             this.productService = productService;
@@ -54,22 +54,19 @@ namespace SpaceShop.Controllers
         {
 
             var files = HttpContext.Request.Form.Files;
-
+            product = productService.UploadImage(files, product);
             if (product.Id == 0)
             {
-                product = productService.UploadImage(files, product);
                 product = productService.SetShopCount(product, count: 1);
             }
             else
             {
-                product = productService.UploadImage(files, product);
                 product = productService.SetShopCount(product);
                 productService.RemoveProductMyModelConnections(product.Id);
             }
             product.ShortDescription = "NONE";
             product = productService.CompleteProductCreation(product);
             productService.CreateProductMyModelConnections(product, MyModelsId);
-            //productService.ChangeProductShortDescription(product);
             return RedirectToAction("Index");
         }
 

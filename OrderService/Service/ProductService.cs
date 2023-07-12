@@ -15,11 +15,11 @@ namespace LogicService.Service
 {
     public class ProductService : IProductService
     {
-        IProductAdapter productAdapter;
-        IWebHostEnvironment environment;
-        IConnectionProductMyModelAdapter connectionProductMyModelAdapter;
-        ICategoryAdapter categoryAdapter;
-        IMyModelAdapter myModelAdapter;
+        readonly IProductAdapter productAdapter;
+        readonly IWebHostEnvironment environment;
+        readonly IConnectionProductMyModelAdapter connectionProductMyModelAdapter;
+        readonly ICategoryAdapter categoryAdapter;
+        readonly IMyModelAdapter myModelAdapter;
 
         public ProductService(IProductAdapter productAdapter, IWebHostEnvironment environment,
             IConnectionProductMyModelAdapter connectionProductMyModelAdapter, ICategoryAdapter categoryAdapter, IMyModelAdapter myModelAdapter)

@@ -11,7 +11,7 @@ namespace LogicService.Service
 {
     public class MyModelService : IMyModelService
     {
-        IMyModelAdapter myModelAdapter;
+        readonly IMyModelAdapter myModelAdapter;
         public MyModelService(IMyModelAdapter myModelAdapter)
         {
             this.myModelAdapter = myModelAdapter;

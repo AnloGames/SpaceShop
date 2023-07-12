@@ -26,13 +26,13 @@ namespace LogicService.Service
             return cartList;
         }
 
-        public IEnumerable<Cart> GetSessionCartList(HttpContext HttpContext)
+        public IEnumerable<Cart> GetSessionCartList(HttpContext httpContext)
         {
             IEnumerable<Cart> cartList = new List<Cart>();
-            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
-            && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
+            if (httpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
+            && httpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Any())
             {
-                cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
+                cartList = httpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
             }
             return cartList;
         }

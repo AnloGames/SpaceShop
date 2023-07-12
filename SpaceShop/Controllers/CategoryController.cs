@@ -12,8 +12,7 @@ namespace SpaceShop.Controllers
     [Authorize(Roles = PathManager.AdminRole)]
     public class CategoryController : Controller
     {
-        //public ApplicationDbContext database;
-        private ICategoryService categoryService;
+        readonly ICategoryService categoryService;
 
         public CategoryController(ICategoryService categoryService)
         {

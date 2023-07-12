@@ -12,7 +12,7 @@ namespace LogicService.Service
 {
     public class ApplicationUserService : IApplicationUserService
     {
-        IApplicationUserAdapter applicationUserAdapter;
+        readonly IApplicationUserAdapter applicationUserAdapter;
 
         public ApplicationUserService(IApplicationUserAdapter applicationUserAdapter)
         {

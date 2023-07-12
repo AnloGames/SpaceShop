@@ -13,8 +13,8 @@ namespace ModelAdapter.Adapter
 {
     public class OrderHeaderAdapter : IOrderHeaderAdapter
     {
-        IMapper mapper;
-        IRepositoryOrderHeader repositoryOrderHeader;
+        readonly IMapper mapper;
+        readonly IRepositoryOrderHeader repositoryOrderHeader;
         public OrderHeaderAdapter(IMapper mapper, IRepositoryOrderHeader repositoryOrderHeader)
         {
             this.mapper = mapper;

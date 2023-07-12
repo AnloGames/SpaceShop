@@ -12,8 +12,8 @@ namespace LogicService.Service
 {
     public class HomeService : IHomeService
     {
-        IProductAdapter productAdapter;
-        ICategoryAdapter categoryAdapter;
+        readonly IProductAdapter productAdapter;
+        readonly ICategoryAdapter categoryAdapter;
         public HomeService(IProductAdapter productAdapter, ICategoryAdapter categoryAdapter)
         {
             this.productAdapter = productAdapter;

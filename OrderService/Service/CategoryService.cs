@@ -11,7 +11,7 @@ namespace LogicService.Service
 {
     public class CategoryService : ICategoryService
     {
-        private ICategoryAdapter categoryAdapter;
+        readonly ICategoryAdapter categoryAdapter;
 
         public CategoryService(ICategoryAdapter categoryAdapter)
         {
@@ -42,7 +42,7 @@ namespace LogicService.Service
 
         public CategoryDto? RemoveCategory(int id)
         {
-            CategoryDto? category = categoryAdapter.FirstOrDefaultById(id);
+            CategoryDto? category = categoryAdapter.FirstOrDefaultById(id, isTracking: false);
             if (category.Id == 0) { return null; } 
             categoryAdapter.Remove(category);
             categoryAdapter.Save();

@@ -13,7 +13,7 @@ namespace SpaceShop.Controllers
     [Authorize(Roles = PathManager.AdminRole)]
     public class MyModelController : Controller
     {
-        IMyModelService myModelService;
+        readonly IMyModelService myModelService;
         public MyModelController(IMyModelService myModelService)
         {
             this.myModelService = myModelService;

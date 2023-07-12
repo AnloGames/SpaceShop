@@ -12,7 +12,7 @@ namespace LogicService.Service
 {
     public class PaymentService : IPaymentService
     {
-        IBrainTreeBridge brainTreeBridge;
+        readonly IBrainTreeBridge brainTreeBridge;
 
         public PaymentService(IBrainTreeBridge brainTreeBridge)
         {
@@ -43,7 +43,6 @@ namespace LogicService.Service
             var resultTransaction = getWay.Transaction.Sale(request);
 
             var id = resultTransaction.Target.Id;
-            var status = resultTransaction.Target.ProcessorResponseText;
             return id;
         }
 
@@ -58,11 +57,11 @@ namespace LogicService.Service
             if (transaction.Status == TransactionStatus.AUTHORIZED ||
                 transaction.Status == TransactionStatus.SUBMITTED_FOR_SETTLEMENT)
             {
-                var res = gateWay.Transaction.Void(transactionId);
+                gateWay.Transaction.Void(transactionId);
             }
             else // возврат средств
             {
-                var res = gateWay.Transaction.Refund(transactionId);
+                gateWay.Transaction.Refund(transactionId);
             }
         }
     }

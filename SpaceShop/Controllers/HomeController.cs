@@ -13,14 +13,12 @@ namespace SpaceShop.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-    private IProductService productService;
-    private IHomeService homeService;
-    ICartService cartService;
-    public HomeController(ILogger<HomeController> logger, IProductService productService, 
+    readonly IProductService productService;
+    readonly IHomeService homeService;
+    readonly ICartService cartService;
+    public HomeController(IProductService productService, 
         IHomeService homeService, ICartService cartService)
     {
-        _logger = logger;
         this.cartService = cartService;
         this.productService = productService;
         this.homeService = homeService;

@@ -9,10 +9,10 @@ namespace LogicService.Service
 {
     public class OrderService : IOrderService
     {
-        IOrderHeaderAdapter orderHeaderAdapter;
-        IOrderDetailAdapter orderDetailAdapter;
+        readonly IOrderHeaderAdapter orderHeaderAdapter;
+        readonly IOrderDetailAdapter orderDetailAdapter;
 
-        IProductAdapter productAdapter;
+        readonly IProductAdapter productAdapter;
 
         public OrderService(IProductAdapter productAdapter, IOrderHeaderAdapter orderHeaderAdapter, IOrderDetailAdapter orderDetailAdapter)
         {
@@ -68,11 +68,11 @@ namespace LogicService.Service
             productAdapter.Save();
         }
 
-        public void SaveOrder(ApplicationUserDto user, List<ProductDto> productList, string transactionId)
+        public void SaveOrder(ApplicationUserDto user, List<ProductDto> products, string transactionId)
         {
             int totalPrice = 0;
 
-            foreach (var item in productList)
+            foreach (var item in products)
             {
                 totalPrice += (int)(item.TempCount * item.Price);
             }
@@ -95,7 +95,7 @@ namespace LogicService.Service
             orderHeader = orderHeaderAdapter.AddAndChange(orderHeader);
             orderHeaderAdapter.Save();
 
-            foreach (var product in productList)
+            foreach (var product in products)
             {
                 OrderDetailDto orderDetail = new OrderDetailDto()
                 {

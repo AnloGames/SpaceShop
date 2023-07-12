@@ -24,20 +24,16 @@ namespace SpaceShop.Controllers
     [Authorize]
     public class CartController : Controller
     {
-        private IWebHostEnvironment environment;
 
-        ProductUserViewModel productUserViewModel;
+        readonly IOrderService orderService;
+        readonly IPaymentService paymentService;
+        readonly IProductService productService;
+        readonly ICartService cartService;
+        readonly IApplicationUserService applicationUserService;
 
-        IOrderService orderService;
-        IPaymentService paymentService;
-        IProductService productService;
-        ICartService cartService;
-        IApplicationUserService applicationUserService;
-
-        public CartController(IWebHostEnvironment environment, IOrderService orderService, IPaymentService paymentService,
+        public CartController(IOrderService orderService, IPaymentService paymentService,
             IProductService productService, ICartService cartService, IApplicationUserService applicationUserService)
         {
-            this.environment = environment;
             this.orderService = orderService;
             this.paymentService = paymentService;
             this.productService = productService;
@@ -59,7 +55,7 @@ namespace SpaceShop.Controllers
         {
             List<Cart> cartList = cartService.GetSessionCartList(HttpContext).ToList();
 
-            cartList.Remove(cartList.FirstOrDefault(x => x.ProductId == id));
+            cartList.Remove(cartList.Find(x => x.ProductId == id));
 
             HttpContext.Session.Set(PathManager.SessionCart, cartList);
 
@@ -77,7 +73,7 @@ namespace SpaceShop.Controllers
 
             IEnumerable<ProductDto> productList = productService.GetProductsInCart(cartList);
 
-            productUserViewModel = new ProductUserViewModel()
+            ProductUserViewModel productUserViewModel = new ProductUserViewModel()
             {
                 ApplicationUser = applicationUser,
                 ProductList = productList.ToList()

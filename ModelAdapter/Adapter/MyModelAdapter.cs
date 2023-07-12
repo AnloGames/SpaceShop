@@ -13,8 +13,8 @@ namespace ModelAdapter.Adapter
 {
     public class MyModelAdapter: IMyModelAdapter
     {
-        IRepositoryMyModel repositoryMyModel;
-        IMapper mapper;
+        readonly IRepositoryMyModel repositoryMyModel;
+        readonly IMapper mapper;
 
         public MyModelAdapter(IRepositoryMyModel repositoryMyModel, IMapper mapper)
         {

@@ -20,8 +20,8 @@ namespace SpaceShop.Controllers
         [BindProperty]
         public OrderHeaderDetailViewModel OrderViewModel { get; set; }
 
-        IOrderService orderService;
-        IPaymentService paymentService;
+        readonly IOrderService orderService;
+        readonly IPaymentService paymentService;
 
         public OrderController(IOrderService orderService, IPaymentService paymentService)
         {
@@ -36,7 +36,7 @@ namespace SpaceShop.Controllers
             OrderViewModel viewModel = new OrderViewModel()
             {
                 OrderHeaderList = orderHeaderList,
-                StatusList = PathManager.StatusList.ToList().
+                StatusList = PathManager.StatusList.
                                 Select(x => new SelectListItem { Text = x, Value = x })
 };
             viewModel.OrderHeaderList = viewModel.OrderHeaderList.Reverse();

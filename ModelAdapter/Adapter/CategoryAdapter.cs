@@ -13,8 +13,8 @@ namespace ModelAdapter.Adapter
 {
     public class CategoryAdapter : ICategoryAdapter
     {
-        IRepositoryCategory repositoryCategory;
-        IMapper mapper;
+        readonly IRepositoryCategory repositoryCategory;
+        readonly IMapper mapper;
 
         public CategoryAdapter(IRepositoryCategory repositoryCategory, IMapper mapper)
         {
@@ -22,9 +22,9 @@ namespace ModelAdapter.Adapter
             this.mapper = mapper;
         }
 
-        public void Add(CategoryDto dto)
+        public void Add(CategoryDto categoryDto)
         {
-            Category category = mapper.Map<Category>(dto);
+            Category category = mapper.Map<Category>(categoryDto);
             repositoryCategory.Add(category);
         }
 

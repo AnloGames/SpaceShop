@@ -38,6 +38,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ModelAdapter\ModelAdapter.csproj" />
     <ProjectReference Include="..\OrderService\LogicService.csproj" />
     <ProjectReference Include="..\SpaceShop_DataMigrations\SpaceShop_DataMigrations.csproj" />
