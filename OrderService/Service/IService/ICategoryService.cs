@@ -1,4 +1,5 @@
 ﻿using LogicService.Dto;
+using LogicService.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace LogicService.Service.IService
 {
     public interface ICategoryService
     {
-        IEnumerable<CategoryDto> GetAllCategories();
-        CategoryDto? CreateCategory(bool isValid, CategoryDto category);
-        CategoryDto? UpdateCategory(bool isValid, CategoryDto category);
-        CategoryDto? GetCategory(int id);
-        CategoryDto? RemoveCategory(int id);
+        IEnumerable<CategoryModel> GetAllCategories();
+        CategoryModel? CreateCategory(bool isValid, CategoryModel category);
+        CategoryModel? UpdateCategory(bool isValid, CategoryModel category);
+        CategoryModel? GetCategory(int id);
+        CategoryModel? RemoveCategory(int id);
     }
 }

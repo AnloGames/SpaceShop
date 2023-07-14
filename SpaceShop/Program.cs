@@ -18,6 +18,8 @@ using ModelAdapter.ModelMapper;
 using LogicService.IAdapter;
 using LogicService.Dto;
 using ModelAdapter.Adapter;
+using LogicService.ModelDtoMapper;
+using SpaceShop.ControllerModelMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,7 +49,8 @@ builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.AddAutoMapper(typeof(CategoryMappingProfile), typeof(ProductMappingProfile),
     typeof(MyModelMappingProfile), typeof(ConnectionProductMyModelMappingProfile),
-    typeof(ApplicationUserMappingProfile), typeof(OrderHeaderMappingProfile), typeof(OrderDetailMappingProfile));
+    typeof(ApplicationUserMappingProfile), typeof(OrderHeaderMappingProfile), typeof(OrderDetailMappingProfile),
+    typeof(CategoryModelDtoMappingProfile), typeof(CategoryControllerModelMappingProfile));
 
 builder.Services.AddScoped<IRepositoryCategory, RepositoryCategory>();
 builder.Services.AddScoped<IRepositoryMyModel, RepositoryMyModel>();

@@ -1,5 +1,7 @@
-﻿using LogicService.Dto;
+﻿using AutoMapper;
+using LogicService.Dto;
 using LogicService.IAdapter;
+using LogicService.Models;
 using LogicService.Service.IService;
 using System;
 using System.Collections.Generic;
@@ -12,50 +14,56 @@ namespace LogicService.Service
     public class CategoryService : ICategoryService
     {
         readonly ICategoryAdapter categoryAdapter;
+        readonly IMapper mapper;    
 
-        public CategoryService(ICategoryAdapter categoryAdapter)
+        public CategoryService(ICategoryAdapter categoryAdapter, IMapper mapper)
         {
             this.categoryAdapter = categoryAdapter;
+            this.mapper = mapper;
         }
 
-        public CategoryDto? CreateCategory(bool isValid, CategoryDto category)
+        public CategoryModel? CreateCategory(bool isValid, CategoryModel category)
         {
             if (!isValid)
             {
                 return null;
             }
             category.Id = 0;
-            categoryAdapter.Add(category);
+            categoryAdapter.Add(mapper.Map<CategoryDto>(category));
             categoryAdapter.Save();
             return category;
         }
 
-        public IEnumerable<CategoryDto> GetAllCategories()
+        public IEnumerable<CategoryModel> GetAllCategories()
         {
-            return categoryAdapter.GetAll();
+            foreach (var category in categoryAdapter.GetAll())
+            {
+                yield return mapper.Map<CategoryModel>(category);
+            }
+
         }
 
-        public CategoryDto? GetCategory(int id)
+        public CategoryModel? GetCategory(int id)
         {
-            return categoryAdapter.FirstOrDefaultById(id);
+            return mapper.Map<CategoryModel>(categoryAdapter.FirstOrDefaultById(id));
         }
 
-        public CategoryDto? RemoveCategory(int id)
+        public CategoryModel? RemoveCategory(int id)
         {
-            CategoryDto? category = categoryAdapter.FirstOrDefaultById(id, isTracking: false);
-            if (category.Id == 0) { return null; } 
+            CategoryDto? category = categoryAdapter.FirstOrDefaultById(id);
+            if (category == null) { return null; } 
             categoryAdapter.Remove(category);
             categoryAdapter.Save();
-            return category;
+            return mapper.Map<CategoryModel>(category);
         }
 
-        public CategoryDto? UpdateCategory(bool isValid, CategoryDto category)
+        public CategoryModel? UpdateCategory(bool isValid, CategoryModel category)
         {
             if (!isValid)
             {
                 return null;
             }
-            categoryAdapter.Update(category);
+            categoryAdapter.Update(mapper.Map<CategoryDto>(category));
             categoryAdapter.Save();
             return category;
         }

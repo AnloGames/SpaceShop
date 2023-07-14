@@ -71,13 +71,21 @@ namespace SpaceShop.Controllers
         public IActionResult Details(int id)
         {
             OrderViewModel = orderService.CreateOrderDetailViewModel(id);
+            if (OrderViewModel.OrderHeader == null)
+            {
+                return NotFound();
+            }
             return View(OrderViewModel);
         }
         [Authorize(Roles = PathManager.AdminRole)]
         public IActionResult ReturnInStock(int id)
         {
-            orderService.ReturnProductInStock(id);
-            return RedirectToAction("Details", "Order", new {id = OrderViewModel.OrderHeader.Id});
+            OrderDetailDto detail = orderService.ReturnProductInStock(id);
+            if (detail == null)
+            {
+                return NotFound();
+            }
+            return RedirectToAction("Details", "Order", new {id = detail.OrderHeaderId});
         }
         [Authorize(Roles = PathManager.AdminRole)]
         [HttpPost]

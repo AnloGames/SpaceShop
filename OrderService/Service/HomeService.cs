@@ -23,6 +23,10 @@ namespace LogicService.Service
         public DetailsViewModel CreateDetailsViewModel(int productId, IEnumerable<Cart> cartList)
         {
             DetailsViewModel detailsViewModel = new DetailsViewModel(false, productAdapter.FirstOrDefaultById(productId, includeProperties: "Category"));
+            if (detailsViewModel.Product == null)
+            {
+                return null;
+            }
             foreach (var item in cartList)
             {
                 if (item.ProductId == productId)

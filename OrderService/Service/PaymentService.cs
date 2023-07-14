@@ -50,16 +50,14 @@ namespace LogicService.Service
         {
             var gateWay = brainTreeBridge.GetGateWay();
 
-            // get transaction
             Transaction transaction = gateWay.Transaction.Find(transactionId);
 
-            // условия при которых не возвращаем
             if (transaction.Status == TransactionStatus.AUTHORIZED ||
                 transaction.Status == TransactionStatus.SUBMITTED_FOR_SETTLEMENT)
             {
                 gateWay.Transaction.Void(transactionId);
             }
-            else // возврат средств
+            else
             {
                 gateWay.Transaction.Refund(transactionId);
             }

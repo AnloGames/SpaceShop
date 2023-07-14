@@ -82,8 +82,12 @@ namespace SpaceShop.Controllers
             return View(productUserViewModel);
         }
 
-        public async Task<IActionResult> InquiryConfirmation(IFormCollection collection, ProductUserViewModel productUserViewModel)
+        public IActionResult InquiryConfirmation(IFormCollection collection, ProductUserViewModel productUserViewModel)
         {
+            if (collection["payment_method_nonce"].Count == 0)
+            {
+                return NotFound();
+            }
             ApplicationUserDto user = productUserViewModel.ApplicationUser;
             List<ProductDto> productList = productUserViewModel.ProductList;
 

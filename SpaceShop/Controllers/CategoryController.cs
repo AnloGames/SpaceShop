@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Storage;
-using SpaceShop_Models;
 using SpaceShop_Utility;
-using LogicService.IAdapter;
-using LogicService.Dto;
+using LogicService.Models;
 using LogicService.Service.IService;
+using AutoMapper;
+using SpaceShop.Models;
 
 namespace SpaceShop.Controllers
 {
@@ -13,15 +12,21 @@ namespace SpaceShop.Controllers
     public class CategoryController : Controller
     {
         readonly ICategoryService categoryService;
+        readonly IMapper mapper;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, IMapper mapper)
         {
             this.categoryService = categoryService;
+            this.mapper = mapper;
         }
 
         public IActionResult Index()
         {
-            IEnumerable<CategoryDto> categories = categoryService.GetAllCategories();
+            List<ControllerCategoryModel> categories = new List<ControllerCategoryModel>();
+            foreach (var item in categoryService.GetAllCategories())
+            {
+                categories.Add(mapper.Map<ControllerCategoryModel>(item));
+            }
             return View(categories);
         }
         public IActionResult Create()
@@ -32,9 +37,10 @@ namespace SpaceShop.Controllers
         //Post - Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CategoryDto category)
+        public IActionResult Create(ControllerCategoryModel category)
         {
-            CategoryDto? createdCategory = categoryService.CreateCategory(ModelState.IsValid, category);
+            ControllerCategoryModel? createdCategory = mapper.Map<ControllerCategoryModel>
+                (categoryService.CreateCategory(ModelState.IsValid, mapper.Map<CategoryModel>(category)));
             if (createdCategory != null)
             {
                 return RedirectToAction("Index");
@@ -44,7 +50,7 @@ namespace SpaceShop.Controllers
 
         public IActionResult Edit(int id)
         {
-            CategoryDto? category = categoryService.GetCategory(id);
+            ControllerCategoryModel? category = mapper.Map<ControllerCategoryModel>(categoryService.GetCategory(id));
 
             if (category == null)
             {
@@ -55,9 +61,10 @@ namespace SpaceShop.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(CategoryDto category)
+        public IActionResult Edit(ControllerCategoryModel category)
         {
-            CategoryDto updatedCategory = categoryService.UpdateCategory(ModelState.IsValid, category);
+            ControllerCategoryModel updatedCategory = mapper.Map<ControllerCategoryModel>(
+                categoryService.UpdateCategory(ModelState.IsValid, mapper.Map<CategoryModel>(category)));
             if (updatedCategory != null)
             {
                 return RedirectToAction("Index");
@@ -66,7 +73,7 @@ namespace SpaceShop.Controllers
         }
         public IActionResult Delete(int id)
         {
-            CategoryDto? category = categoryService.RemoveCategory(id);
+            ControllerCategoryModel? category = mapper.Map< ControllerCategoryModel>(categoryService.RemoveCategory(id));
 
             if (category == null)
             {

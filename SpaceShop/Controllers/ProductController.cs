@@ -73,6 +73,10 @@ namespace SpaceShop.Controllers
         public IActionResult ChangeCount(int id)
         {
             ProductDto product = productService.GetProduct(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
             productService.ChangeProductShortDescription(product);
             return View(id);
         }
@@ -87,6 +91,10 @@ namespace SpaceShop.Controllers
         public IActionResult Delete(int id)
         {
             ProductCreation productCreation = productService.CreateProductDeleteViewModel(id);
+            if (productCreation == null)
+            {
+                return NotFound();
+            }
 
             return View(productCreation);
         }

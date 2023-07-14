@@ -56,9 +56,15 @@ namespace LogicService.Service
             return orderHeaderList;
         }
 
-        public void ReturnProductInStock(int orderDetailId)
+        public OrderDetailDto ReturnProductInStock(int orderDetailId)
         {
             OrderDetailDto fullDetail = orderDetailAdapter.FirstOrDefaultById(orderDetailId);
+            if (fullDetail == null) { return null; }
+            OrderHeaderDto orderHeader = orderHeaderAdapter.FirstOrDefaultById(fullDetail.OrderHeaderId);
+            if (fullDetail.IsProductHadReturn || orderHeader.Status != PathManager.StatusDenied)
+            {
+                return fullDetail;
+            }
             ProductDto product = productAdapter.FirstOrDefaultById(fullDetail.ProductId, isTracking: false);
             product.ShopCount += fullDetail.Count;
             fullDetail.IsProductHadReturn = true;
@@ -66,6 +72,7 @@ namespace LogicService.Service
             productAdapter.Update(product);
             orderDetailAdapter.Update(fullDetail);
             productAdapter.Save();
+            return fullDetail;
         }
 
         public void SaveOrder(ApplicationUserDto user, List<ProductDto> products, string transactionId)

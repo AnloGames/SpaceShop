@@ -11,7 +11,7 @@ namespace LogicService.Service.IService
         void SaveOrder(ApplicationUserDto user, List<ProductDto> porductList, string transactionId);
         IEnumerable<OrderHeaderDto> CreateOrderTable(ClaimsPrincipal User);
         OrderHeaderDetailViewModel CreateOrderDetailViewModel(int orderHeaderId);
-        void ReturnProductInStock(int orderDetailId);
+        OrderDetailDto ReturnProductInStock(int orderDetailId);
         void ChangeOrderStatus(string status, int orderHeaderId);
     }
 }

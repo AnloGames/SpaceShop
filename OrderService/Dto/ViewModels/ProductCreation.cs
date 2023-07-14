@@ -1,13 +1,14 @@
 ﻿using LogicService.Dto;
+using LogicService.Models;
 
 namespace LogicService.Dto.ViewModels
 {
     public class ProductCreation
     {
         public ProductDto product { get; set; }
-        public IEnumerable<CategoryDto> categories { get; set; }
+        public IEnumerable<CategoryModel> categories { get; set; }
         public IEnumerable<MyModelDto> myModels { get; set; }
-        public ProductCreation(ProductDto product, IEnumerable<CategoryDto> categories, IEnumerable<MyModelDto> myModels)
+        public ProductCreation(ProductDto product, IEnumerable<CategoryModel> categories, IEnumerable<MyModelDto> myModels)
         {
             this.product = product;
             this.categories = categories;

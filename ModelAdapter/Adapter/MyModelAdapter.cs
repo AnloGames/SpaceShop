@@ -28,7 +28,7 @@ namespace ModelAdapter.Adapter
             repositoryMyModel.Add(myModel);
         }
 
-        public MyModelDto FirstOrDefaultById(int id, bool isTracking = true)
+        public MyModelDto FirstOrDefaultById(int id, bool isTracking = false)
         {
             MyModel myModel = repositoryMyModel.FirstOrDefault(filter: x => x.Id == id, isTracking: isTracking);
             return mapper.Map<MyModelDto>(myModel);

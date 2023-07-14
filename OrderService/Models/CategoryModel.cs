@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogicService.Dto
+namespace LogicService.Models
 {
-    public class CategoryDto
+     public class CategoryModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

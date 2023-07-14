@@ -11,7 +11,7 @@ namespace LogicService.IAdapter
     {
         IEnumerable<CategoryDto> GetAll();
         CategoryDto Find(int id);
-        CategoryDto FirstOrDefaultById(int id, bool isTracking = true);
+        CategoryDto FirstOrDefaultById(int id);
         void Add(CategoryDto categoryDto);
         void Remove(CategoryDto categoryDto);
         void Update(CategoryDto categoryDto);

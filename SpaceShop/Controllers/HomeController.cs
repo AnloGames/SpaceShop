@@ -34,8 +34,11 @@ public class HomeController : Controller
     public IActionResult Details(int id)
     {
         IEnumerable<Cart> cartList = cartService.GetSessionCartList(HttpContext).ToList();
-
         DetailsViewModel detailsViewModel = homeService.CreateDetailsViewModel(id, cartList);
+        if (detailsViewModel == null)
+        {
+            return NotFound();
+        }
 
         return View(detailsViewModel);
     }

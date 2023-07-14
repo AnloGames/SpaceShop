@@ -34,9 +34,9 @@ namespace ModelAdapter.Adapter
             return mapper.Map<CategoryDto>(category);
         }
 
-        public CategoryDto FirstOrDefaultById(int id, bool isTracking = true)
+        public CategoryDto FirstOrDefaultById(int id)
         {
-            Category category = repositoryCategory.FirstOrDefault(x => x.Id == id, isTracking: isTracking);
+            Category category = repositoryCategory.FirstOrDefault(x => x.Id == id, isTracking: false);
             return mapper.Map<CategoryDto>(category);
         }
 

@@ -41,7 +41,7 @@ namespace LogicService.Service
 
         public void ChangeProductShortDescription(ProductDto product)
         {
-            CategoryDto productCategory = categoryAdapter.FirstOrDefaultById(product.CategoryId, isTracking: false);
+            CategoryDto productCategory = categoryAdapter.FirstOrDefaultById(product.CategoryId);
             product.ShortDescription = "Category: " + productCategory.Name + "; Tags: ";
             IEnumerable<ConnectionProductMyModelDto> connections = connectionProductMyModelAdapter.GetAllByProductId(product.Id, isTracking: false);
             List<MyModelDto> myModels = new List<MyModelDto>();
@@ -74,6 +74,10 @@ namespace LogicService.Service
         public ProductCreation CreateProductDeleteViewModel(int productId)
         {
             ProductDto product = productAdapter.FirstOrDefaultById(productId);
+            if (product == null)
+            {
+                return null;
+            }
             IEnumerable<ConnectionProductMyModelDto> connections = connectionProductMyModelAdapter.GetAllByProductId(productId);
             List<int> ids = new List<int>();
             foreach (var connection in connections)
@@ -193,8 +197,6 @@ namespace LogicService.Service
                 {
                     product.Image = "NONE.png";
                 }
-
-                product.ShopCount = 1;
             }
             else
             {

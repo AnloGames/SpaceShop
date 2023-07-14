@@ -1,10 +1,11 @@
 ﻿@using LogicService.Dto.ViewModels;
 @using LogicService.Dto;
+@using LogicService.Models;
 @model ProductCreation
 @{
     var title = "Create";
     ProductDto product = Model.product;
-    IEnumerable<CategoryDto> categories = Model.categories;
+    IEnumerable<CategoryModel> categories = Model.categories;
     IEnumerable<MyModelDto> myModels = Model.myModels;
     int[] MyModelsId = new int[categories.Count()];
 }
